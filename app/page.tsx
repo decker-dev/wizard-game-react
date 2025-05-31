@@ -11,6 +11,7 @@ export default function BoxheadGame() {
   const { gameStateRef, initializeGameState, resetGameState, startNextWave } = useGameState()
   const { loadAssets, zombieSpritesRef, playerImageRef } = useAssetLoader()
   
+  console.log('hola')
   const [score, setScore] = useState(0)
   const [currentWave, setCurrentWave] = useState(0)
   const [playerHealth, setPlayerHealth] = useState(100)
