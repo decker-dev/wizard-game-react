@@ -1,5 +1,5 @@
 import { Player, GameState } from '@/types/game'
-import { PLAYER_SPEED, PLAYER_SPRITE_WIDTH, PLAYER_SPRITE_HEIGHT, PLAYER_COLLISION_RADIUS, MAP_WIDTH, MAP_HEIGHT, BASE_MAX_HEALTH, BASE_WEAPON_DAMAGE } from '@/constants/game'
+import { PLAYER_SPEED, PLAYER_SPRITE_WIDTH, PLAYER_SPRITE_HEIGHT, PLAYER_COLLISION_RADIUS, MAP_WIDTH, MAP_HEIGHT, BASE_MAX_HEALTH, BASE_WEAPON_DAMAGE, BASE_PROJECTILE_COUNT, BASE_PROJECTILE_SIZE, BASE_FIRE_RATE, BASE_SPREAD } from '@/constants/game'
 import { getEntityRect, checkAABBCollision } from '@/utils/math'
 
 export const createInitialPlayer = (playerSprites: {
@@ -24,7 +24,11 @@ export const createInitialPlayer = (playerSprites: {
     weaponDamage: BASE_WEAPON_DAMAGE,
     maxHealth: BASE_MAX_HEALTH,
     weaponLevel: 0,
-    healthLevel: 0
+    healthLevel: 0,
+    projectileCount: BASE_PROJECTILE_COUNT,
+    projectileSize: BASE_PROJECTILE_SIZE,
+    fireRate: BASE_FIRE_RATE,
+    spread: BASE_SPREAD
   }
 })
 

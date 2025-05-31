@@ -8,6 +8,10 @@ export interface PlayerUpgrades {
   maxHealth: number
   weaponLevel: number
   healthLevel: number
+  projectileCount: number
+  projectileSize: number
+  fireRate: number
+  spread: number
 }
 
 export interface Player {
@@ -59,6 +63,17 @@ export interface Obstacle {
   height: number
 }
 
+export interface CoinParticle {
+  id: string
+  x: number
+  y: number
+  vx: number
+  vy: number
+  alpha: number
+  scale: number
+  coins: number
+}
+
 export interface GameState {
   player: Player
   projectiles: Projectile[]
@@ -75,6 +90,7 @@ export interface GameState {
   mousePosition: Vector2
   waveTransitioning: boolean
   showMarketplace: boolean
+  coinParticles: CoinParticle[]
 }
 
 export interface LeaderboardEntry {

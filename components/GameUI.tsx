@@ -1,6 +1,7 @@
 import React from 'react'
 import { MAX_WAVES } from '@/constants/game'
 import { Player } from '@/types/game'
+import { CoinIcon } from './CoinIcon'
 
 interface GameUIProps {
   score: number
@@ -58,7 +59,10 @@ export const GameUI: React.FC<GameUIProps> = ({
             
             <div className="bg-black/40 border border-orange-500/20 rounded p-3 hover:border-orange-500/40 transition-colors">
               <div className="text-orange-400 text-sm">COINS</div>
-              <div className="text-2xl font-bold text-yellow-400">💰 {playerCoins}</div>
+              <div className="text-2xl font-bold text-yellow-400 flex items-center justify-center">
+                <CoinIcon size="md" className="mr-2" />
+                {playerCoins}
+              </div>
             </div>
           </div>
           

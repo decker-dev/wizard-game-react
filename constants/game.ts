@@ -41,6 +41,18 @@ export const BASE_MAX_HEALTH = 100;
 export const HEALTH_INCREASE = 20;
 export const MAX_UPGRADE_LEVEL = 5;
 
+// Nuevas constantes para mejoras avanzadas de armas
+export const BASE_PROJECTILE_COUNT = 1;
+export const BASE_PROJECTILE_SIZE = 1.0;
+export const BASE_FIRE_RATE = 250; // milisegundos entre disparos
+export const BASE_SPREAD = 0; // radianes
+
+// Incrementos por nivel de mejora
+export const PROJECTILE_COUNT_INCREASE = 1; // +1 proyectil por nivel (nivel 2 = 2 balas, etc)
+export const PROJECTILE_SIZE_INCREASE = 0.3; // +30% tamaño por nivel
+export const FIRE_RATE_IMPROVEMENT = 50; // -50ms por nivel (más rápido)
+export const SPREAD_INCREASE = 0.15; // +0.15 radianes de dispersión por proyectil adicional
+
 // Combat constants
 export const KNOCKBACK_FORCE = 50;
 export const INVULNERABILITY_TIME = 1000;

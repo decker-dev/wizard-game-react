@@ -7,10 +7,6 @@ import {
   PLAYER_SPRITE_WIDTH,
   PLAYER_SPRITE_HEIGHT,
   INVULNERABILITY_TIME,
-  MINIMAP_SIZE,
-  MINIMAP_PADDING,
-  MINIMAP_SCALE_X,
-  MINIMAP_SCALE_Y
 } from '@/constants/game'
 import { getZombieSprite } from './Zombies'
 import { getPlayerSprite } from './Player'

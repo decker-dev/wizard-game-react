@@ -10,6 +10,7 @@ import {
   COIN_REWARD_SHOOTER_ZOMBIE
 } from '@/constants/game'
 import { checkAABBCollision, getEntityRect, normalize } from '@/utils/math'
+import { createCoinParticle } from '@/utils/coinParticles'
 
 export const checkCollisions = (
   gameState: GameState,
@@ -86,6 +87,10 @@ export const checkCollisions = (
             if (setPlayerCoins) {
               setPlayerCoins(player.coins)
             }
+            
+            // Crear partículas de monedas en la posición del zombie muerto
+            const coinParticle = createCoinParticle(z.position.x, z.position.y, coinsEarned)
+            gameState.coinParticles.push(coinParticle)
             
             zombies.splice(j, 1)
             gameState.score++

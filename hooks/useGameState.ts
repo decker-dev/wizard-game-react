@@ -4,7 +4,11 @@ import {
   MAX_WAVES, 
   WEAPON_DAMAGE_INCREASE, 
   HEALTH_INCREASE, 
-  MAX_UPGRADE_LEVEL 
+  MAX_UPGRADE_LEVEL,
+  PROJECTILE_COUNT_INCREASE,
+  PROJECTILE_SIZE_INCREASE,
+  FIRE_RATE_IMPROVEMENT,
+  SPREAD_INCREASE
 } from '@/constants/game'
 import { getWeaponUpgradeCost, getHealthUpgradeCost } from '@/utils/marketplace'
 import { obstaclesData } from '@/data/obstacles'
@@ -33,6 +37,7 @@ export const useGameState = () => {
       mousePosition: { x: 70, y: 0 },
       waveTransitioning: false,
       showMarketplace: false,
+      coinParticles: [],
     }),
     [],
   )
@@ -135,7 +140,46 @@ export const useGameState = () => {
     if (player.coins >= cost && player.upgrades.weaponLevel < MAX_UPGRADE_LEVEL) {
       player.coins -= cost
       player.upgrades.weaponLevel++
+      
+      // Incrementar daño base
       player.upgrades.weaponDamage += WEAPON_DAMAGE_INCREASE
+      
+      // Aplicar mejoras avanzadas según el nivel específico
+      switch (player.upgrades.weaponLevel) {
+        case 1:
+          // Nivel 1: Disparo más rápido
+          player.upgrades.fireRate = 200
+          break
+          
+        case 2:
+          // Nivel 2: Doble disparo + más rápido
+          player.upgrades.projectileCount = 2
+          player.upgrades.spread = 0.2
+          player.upgrades.fireRate = 180
+          break
+          
+        case 3:
+          // Nivel 3: Balas más grandes + más rápido
+          player.upgrades.projectileSize = 1.5
+          player.upgrades.fireRate = 160
+          break
+          
+        case 4:
+          // Nivel 4: Triple disparo
+          player.upgrades.projectileCount = 3
+          player.upgrades.spread = 0.3
+          player.upgrades.fireRate = 150
+          break
+          
+        case 5:
+          // Nivel 5: Máximo poder - cuádruple disparo con balas enormes
+          player.upgrades.projectileCount = 4
+          player.upgrades.spread = 0.4
+          player.upgrades.projectileSize = 2.0
+          player.upgrades.fireRate = 120
+          break
+      }
+      
       setPlayerCoins(player.coins)
     }
   }, [])

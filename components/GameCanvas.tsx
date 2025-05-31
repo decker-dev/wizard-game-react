@@ -6,6 +6,8 @@ import { updateZombies } from '@/game/Zombies'
 import { updateProjectiles } from '@/game/Projectiles'
 import { checkCollisions } from '@/game/Collisions'
 import { render } from '@/game/Renderer'
+import { updateCoinParticles } from '@/utils/coinParticles'
+import { CoinParticles } from './CoinParticles'
 
 interface GameCanvasProps {
   gameState: GameState | null
@@ -102,6 +104,7 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
       updatePlayer(gameState)
       updateZombies(gameState)
       updateProjectiles(gameState)
+      gameState.coinParticles = updateCoinParticles(gameState.coinParticles)
       checkCollisions(gameState, startNextWave, setScore, setPlayerHealth, setGameOver, setPlayerCoins)
     }
 
@@ -177,19 +180,34 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
         </div>
       )}
 
-      <canvas
-        ref={canvasRef}
-        width={canvasDimensions.width}
-        height={canvasDimensions.height}
-        className={`${
-          isFullscreen 
-            ? 'border-2 border-orange-500/70 bg-gray-300 rounded shadow-2xl' 
-            : 'border-4 border-orange-500/50 bg-gray-300 rounded-lg shadow-lg hover:border-orange-500/70 transition-colors'
-        }`}
-        style={{
-          imageRendering: 'pixelated', // Maintain pixel art look when scaled
-        }}
-      />
+      {/* Canvas Container with Coin Particles */}
+      <div className="relative">
+        {/* Coin Particles Overlay */}
+        {gameState && (
+          <CoinParticles 
+            particles={gameState.coinParticles} 
+            removeParticle={(id: string) => {
+              if (gameState) {
+                gameState.coinParticles = gameState.coinParticles.filter(p => p.id !== id)
+              }
+            }} 
+          />
+        )}
+
+        <canvas
+          ref={canvasRef}
+          width={canvasDimensions.width}
+          height={canvasDimensions.height}
+          className={`${
+            isFullscreen 
+              ? 'border-2 border-orange-500/70 bg-gray-300 rounded shadow-2xl' 
+              : 'border-4 border-orange-500/50 bg-gray-300 rounded-lg shadow-lg hover:border-orange-500/70 transition-colors'
+          }`}
+          style={{
+            imageRendering: 'pixelated', // Maintain pixel art look when scaled
+          }}
+        />
+      </div>
     </div>
   )
 } 

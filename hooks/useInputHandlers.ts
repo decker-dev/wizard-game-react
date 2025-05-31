@@ -20,14 +20,54 @@ export const useInputHandlers = (gameStateRef: React.MutableRefObject<GameState 
       ) {
         const { player } = gameStateRef.current
         const now = Date.now()
-        if (now - lastShotTimeRef.current > 250) {
-          const direction = { ...player.lastMovementDirection }
-          gameStateRef.current.projectiles.push({
-            position: { ...player.position },
-            velocity: { x: direction.x * PROJECTILE_SPEED, y: direction.y * PROJECTILE_SPEED },
-            radius: 4,
-            speed: PROJECTILE_SPEED,
-          })
+        
+        // Usar el fire rate personalizado del player
+        if (now - lastShotTimeRef.current > player.upgrades.fireRate) {
+          const baseDirection = { ...player.lastMovementDirection }
+          const projectileCount = player.upgrades.projectileCount
+          const spread = player.upgrades.spread
+          const projectileSize = player.upgrades.projectileSize
+          
+          if (projectileCount === 1) {
+            // Disparo simple
+            gameStateRef.current.projectiles.push({
+              position: { ...player.position },
+              velocity: { x: baseDirection.x * PROJECTILE_SPEED, y: baseDirection.y * PROJECTILE_SPEED },
+              radius: 4 * projectileSize,
+              speed: PROJECTILE_SPEED,
+            })
+          } else {
+            // Múltiples proyectiles con dispersión
+            const baseAngle = Math.atan2(baseDirection.y, baseDirection.x)
+            
+            for (let i = 0; i < projectileCount; i++) {
+              // Calcular ángulo de dispersión más uniforme
+              let angleOffset = 0
+              
+              if (projectileCount === 2) {
+                // Para 2 proyectiles: -spread/2 y +spread/2
+                angleOffset = (i - 0.5) * spread
+              } else {
+                // Para 3+ proyectiles: distribuir uniformemente
+                angleOffset = (i - (projectileCount - 1) / 2) * (spread / (projectileCount - 1))
+              }
+              
+              const finalAngle = baseAngle + angleOffset
+              
+              const direction = {
+                x: Math.cos(finalAngle),
+                y: Math.sin(finalAngle)
+              }
+              
+              gameStateRef.current.projectiles.push({
+                position: { ...player.position },
+                velocity: { x: direction.x * PROJECTILE_SPEED, y: direction.y * PROJECTILE_SPEED },
+                radius: 4 * projectileSize,
+                speed: PROJECTILE_SPEED,
+              })
+            }
+          }
+          
           lastShotTimeRef.current = now
         }
       }

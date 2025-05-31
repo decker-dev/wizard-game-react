@@ -11,6 +11,7 @@ import { HomeScreen } from '@/components/HomeScreen'
 import { ScoreSubmissionModal } from '@/components/ScoreSubmissionModal'
 import { Marketplace } from '@/components/Marketplace'
 import { FloatingParticles } from '@/components/FloatingParticles'
+import { CoinIcon } from '@/components/CoinIcon'
 
 type GameScreen = 'home' | 'playing' | 'gameOver'
 
@@ -264,15 +265,16 @@ export default function BoxheadGame() {
               gameState={gameStateRef.current}
               zombieSprites={zombieSpritesRef.current}
               floorTexture={floorTextureRef.current}
-          waveMessage={waveMessage}
-          startNextWave={handleStartNextWave}
-          setScore={setScore}
-          setPlayerHealth={setPlayerHealth}
-          setPlayerCoins={setPlayerCoins}
-          setGameOver={setGameOver}
-          onMouseMove={handleMouseMoveWrapper}
-          onMouseClick={handleMouseClick}
-        /></div>
+              waveMessage={waveMessage}
+              startNextWave={handleStartNextWave}
+              setScore={setScore}
+              setPlayerHealth={setPlayerHealth}
+              setPlayerCoins={setPlayerCoins}
+              setGameOver={setGameOver}
+              onMouseMove={handleMouseMoveWrapper}
+              onMouseClick={handleMouseClick}
+            />
+          </div>
 
           {/* Game Over/Won Overlay */}
           {(gameOver || gameWon) && (
@@ -295,7 +297,10 @@ export default function BoxheadGame() {
                   </div>
                   <div className="bg-black/40 border border-orange-500/20 rounded p-4">
                     <div className="text-orange-400 font-mono text-sm">MONEDAS</div>
-                    <div className="text-3xl font-bold text-yellow-400 font-mono">💰 {playerCoins}</div>
+                    <div className="text-3xl font-bold text-yellow-400 font-mono flex items-center justify-center">
+                      <CoinIcon size="lg" className="mr-2" />
+                      {playerCoins}
+                    </div>
                   </div>
                   <div className="bg-black/40 border border-orange-500/20 rounded p-4">
                     <div className="text-orange-400 font-mono text-sm">WAVE ALCANZADA</div>
@@ -363,4 +368,4 @@ export default function BoxheadGame() {
       </div>
     </div>
   )
-}
+} 
