@@ -18,16 +18,18 @@ export const render = (
   ctx: CanvasRenderingContext2D,
   gameState: GameState,
   zombieSprites: {[key: string]: HTMLImageElement | null},
-  waveMessage: string
+  waveMessage: string,
+  canvasWidth: number = CANVAS_WIDTH,
+  canvasHeight: number = CANVAS_HEIGHT
 ) => {
   const { player } = gameState
 
-  const cameraX = Math.max(0, Math.min(MAP_WIDTH - CANVAS_WIDTH, player.position.x - CANVAS_WIDTH / 2))
-  const cameraY = Math.max(0, Math.min(MAP_HEIGHT - CANVAS_HEIGHT, player.position.y - CANVAS_HEIGHT / 2))
+  const cameraX = Math.max(0, Math.min(MAP_WIDTH - canvasWidth, player.position.x - canvasWidth / 2))
+  const cameraY = Math.max(0, Math.min(MAP_HEIGHT - canvasHeight, player.position.y - canvasHeight / 2))
 
   // Clear canvas with background color
   ctx.fillStyle = "#c2b280"
-  ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
+  ctx.fillRect(0, 0, canvasWidth, canvasHeight)
 
   // Render obstacles
   gameState.obstacles.forEach((obs) => {
@@ -36,9 +38,9 @@ export const render = (
 
     if (
       screenX + obs.width >= 0 &&
-      screenX <= CANVAS_WIDTH &&
+      screenX <= canvasWidth &&
       screenY + obs.height >= 0 &&
-      screenY <= CANVAS_HEIGHT
+      screenY <= canvasHeight
     ) {
       ctx.fillStyle = "#808080"
       ctx.fillRect(screenX, screenY, obs.width, obs.height)
@@ -97,9 +99,9 @@ export const render = (
     const screenY = p.position.y - cameraY
     if (
       screenX >= 0 &&
-      screenX <= CANVAS_WIDTH &&
+      screenX <= canvasWidth &&
       screenY >= 0 &&
-      screenY <= CANVAS_HEIGHT
+      screenY <= canvasHeight
     ) {
       ctx.fillStyle = p.isFireball ? '#FF4400' : '#FFFF00'
       ctx.beginPath()
@@ -115,9 +117,9 @@ export const render = (
 
     if (
       screenX + z.width >= 0 &&
-      screenX - z.width <= CANVAS_WIDTH &&
+      screenX - z.width <= canvasWidth &&
       screenY + z.height >= 0 &&
-      screenY - z.height <= CANVAS_HEIGHT
+      screenY - z.height <= canvasHeight
     ) {
       const zombieSprite = getZombieSprite(z, zombieSprites)
       
@@ -157,19 +159,19 @@ export const render = (
   })
 
   // Render minimap
-  renderMinimap(ctx, gameState, cameraX, cameraY)
+  renderMinimap(ctx, gameState, cameraX, cameraY, canvasWidth, canvasHeight)
 
   // Render wave messages
   if (waveMessage) {
     ctx.fillStyle = "rgba(0, 0, 0, 0.7)"
-    ctx.fillRect(CANVAS_WIDTH / 4, CANVAS_HEIGHT / 3, CANVAS_WIDTH / 2, CANVAS_HEIGHT / 4)
+    ctx.fillRect(canvasWidth / 4, canvasHeight / 3, canvasWidth / 2, canvasHeight / 4)
     ctx.font = "bold 24px Arial"
     ctx.fillStyle = "#FFFFFF"
     ctx.textAlign = "center"
-    ctx.fillText(waveMessage, CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 - 10)
+    ctx.fillText(waveMessage, canvasWidth / 2, canvasHeight / 2 - 10)
     if (gameState.waveTransitioning && !gameState.gameWon && !gameState.gameOver) {
       ctx.font = "16px Arial"
-      ctx.fillText("Prepare yourself!", CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 + 20)
+      ctx.fillText("Prepare yourself!", canvasWidth / 2, canvasHeight / 2 + 20)
     }
     ctx.textAlign = "left"
   }
@@ -179,74 +181,75 @@ const renderMinimap = (
   ctx: CanvasRenderingContext2D,
   gameState: GameState,
   cameraX: number,
-  cameraY: number
+  cameraY: number,
+  canvasWidth: number = CANVAS_WIDTH,
+  canvasHeight: number = CANVAS_HEIGHT
 ) => {
   const { player } = gameState
+
+  // Calculate minimap size proportional to canvas size
+  const minimapSize = Math.min(canvasWidth, canvasHeight) * 0.15 // 15% of smaller dimension
+  const minimapPadding = 10
+  const minimapScaleX = minimapSize / MAP_WIDTH
+  const minimapScaleY = minimapSize / MAP_HEIGHT
 
   // Fondo del minimapa
   ctx.fillStyle = "rgba(0, 0, 0, 0.5)"
   ctx.fillRect(
-    CANVAS_WIDTH - MINIMAP_SIZE - MINIMAP_PADDING,
-    MINIMAP_PADDING,
-    MINIMAP_SIZE,
-    MINIMAP_SIZE
+    canvasWidth - minimapSize - minimapPadding,
+    minimapPadding,
+    minimapSize,
+    minimapSize
   )
 
   // Borde del minimapa
   ctx.strokeStyle = "#FFFFFF"
   ctx.lineWidth = 2
   ctx.strokeRect(
-    CANVAS_WIDTH - MINIMAP_SIZE - MINIMAP_PADDING,
-    MINIMAP_PADDING,
-    MINIMAP_SIZE,
-    MINIMAP_SIZE
-  )
-
-  // Área visible en el minimapa
-  const visibleAreaX = (cameraX / MAP_WIDTH) * MINIMAP_SIZE
-  const visibleAreaY = (cameraY / MAP_HEIGHT) * MINIMAP_SIZE
-  const visibleAreaWidth = (CANVAS_WIDTH / MAP_WIDTH) * MINIMAP_SIZE
-  const visibleAreaHeight = (CANVAS_HEIGHT / MAP_HEIGHT) * MINIMAP_SIZE
-
-  ctx.strokeStyle = "#FFFF00"
-  ctx.strokeRect(
-    CANVAS_WIDTH - MINIMAP_SIZE - MINIMAP_PADDING + visibleAreaX,
-    MINIMAP_PADDING + visibleAreaY,
-    visibleAreaWidth,
-    visibleAreaHeight
+    canvasWidth - minimapSize - minimapPadding,
+    minimapPadding,
+    minimapSize,
+    minimapSize
   )
 
   // Obstáculos en el minimapa
+  ctx.fillStyle = "#808080"
   gameState.obstacles.forEach((obs) => {
-    const minimapX = CANVAS_WIDTH - MINIMAP_SIZE - MINIMAP_PADDING + obs.x * MINIMAP_SCALE_X
-    const minimapY = MINIMAP_PADDING + obs.y * MINIMAP_SCALE_Y
-    ctx.fillStyle = "#808080"
     ctx.fillRect(
-      minimapX,
-      minimapY,
-      obs.width * MINIMAP_SCALE_X,
-      obs.height * MINIMAP_SCALE_Y
+      canvasWidth - minimapSize - minimapPadding + obs.x * minimapScaleX,
+      minimapPadding + obs.y * minimapScaleY,
+      obs.width * minimapScaleX,
+      obs.height * minimapScaleY
     )
   })
 
   // Zombies en el minimapa
+  ctx.fillStyle = "#FF0000"
   gameState.zombies.forEach((z) => {
-    const minimapX = CANVAS_WIDTH - MINIMAP_SIZE - MINIMAP_PADDING + z.position.x * MINIMAP_SCALE_X
-    const minimapY = MINIMAP_PADDING + z.position.y * MINIMAP_SCALE_Y
-    ctx.fillStyle = z.type === 'shooter' ? '#FF4444' : '#2E8B57'
     ctx.fillRect(
-      minimapX - 2,
-      minimapY - 2,
-      4,
-      4
+      canvasWidth - minimapSize - minimapPadding + z.position.x * minimapScaleX - 1,
+      minimapPadding + z.position.y * minimapScaleY - 1,
+      2,
+      2
     )
   })
 
   // Jugador en el minimapa
-  const playerMinimapX = CANVAS_WIDTH - MINIMAP_SIZE - MINIMAP_PADDING + player.position.x * MINIMAP_SCALE_X
-  const playerMinimapY = MINIMAP_PADDING + player.position.y * MINIMAP_SCALE_Y
-  ctx.fillStyle = "#FF0000"
-  ctx.beginPath()
-  ctx.arc(playerMinimapX, playerMinimapY, 3, 0, Math.PI * 2)
-  ctx.fill()
+  ctx.fillStyle = "#00FF00"
+  ctx.fillRect(
+    canvasWidth - minimapSize - minimapPadding + player.position.x * minimapScaleX - 2,
+    minimapPadding + player.position.y * minimapScaleY - 2,
+    4,
+    4
+  )
+
+  // Campo de visión de la cámara
+  ctx.strokeStyle = "#FFFF00"
+  ctx.lineWidth = 1
+  ctx.strokeRect(
+    canvasWidth - minimapSize - minimapPadding + cameraX * minimapScaleX,
+    minimapPadding + cameraY * minimapScaleY,
+    canvasWidth * minimapScaleX,
+    canvasHeight * minimapScaleY
+  )
 } 

@@ -47,13 +47,24 @@ export const useInputHandlers = (gameStateRef: React.MutableRefObject<GameState 
     const mouseX = e.clientX - rect.left
     const mouseY = e.clientY - rect.top
     
+    // Get current canvas dimensions
+    const canvasWidth = canvas.width
+    const canvasHeight = canvas.height
+    
+    // Scale mouse coordinates to match the game world
+    const scaleX = canvasWidth / rect.width
+    const scaleY = canvasHeight / rect.height
+    
+    const scaledMouseX = mouseX * scaleX
+    const scaledMouseY = mouseY * scaleY
+    
     const { player } = gameStateRef.current
-    const cameraX = Math.max(0, Math.min(MAP_WIDTH - CANVAS_WIDTH, player.position.x - CANVAS_WIDTH / 2))
-    const cameraY = Math.max(0, Math.min(MAP_HEIGHT - CANVAS_HEIGHT, player.position.y - CANVAS_HEIGHT / 2))
+    const cameraX = Math.max(0, Math.min(MAP_WIDTH - canvasWidth, player.position.x - canvasWidth / 2))
+    const cameraY = Math.max(0, Math.min(MAP_HEIGHT - canvasHeight, player.position.y - canvasHeight / 2))
     
     gameStateRef.current.mousePosition = { 
-      x: mouseX + cameraX,
-      y: mouseY + cameraY
+      x: scaledMouseX + cameraX,
+      y: scaledMouseY + cameraY
     }
   }, [gameStateRef])
 
