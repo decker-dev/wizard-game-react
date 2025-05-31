@@ -18,9 +18,18 @@ export const useAssetLoader = () => {
     'zombie-health-50': null,
     'zombie-health-80': null,
     'zombie-health-100': null,
-    'diablo-health-30': null,
-    'diablo-health-50': null,
-    'diablo-health-100': null
+    'N_S': null,
+    'N_W_L': null,
+    'N_W_R': null,
+    'S_S': null,
+    'S_W_L': null,
+    'S_W_R': null,
+    'E_S': null,
+    'E_W_L': null,
+    'E_W_R': null,
+    'O_S': null,
+    'O_W_L': null,
+    'O_W_R': null
   })
 
   const floorTextureRef = useRef<HTMLImageElement | null>(null)
@@ -57,20 +66,43 @@ export const useAssetLoader = () => {
 
       playerSpritesRef.current = playerSprites
 
-      // Cargar sprites de zombies
-      const zombieSprites = [
+      // Cargar sprites de zombies normales
+      const normalZombieSprites = [
         'zombie-health-30',
         'zombie-health-50',
         'zombie-health-80',
-        'zombie-health-100',
-        'diablo-health-30',
-        'diablo-health-50',
-        'diablo-health-100'
+        'zombie-health-100'
       ]
 
-      for (const spriteName of zombieSprites) {
+      for (const spriteName of normalZombieSprites) {
         const img = new Image()
         img.src = `/new-sprites/${spriteName}.png`
+        await new Promise((resolve, reject) => {
+          img.onload = resolve
+          img.onerror = reject
+        })
+        zombieSpritesRef.current[spriteName] = img
+      }
+
+      // Cargar sprites del mago
+      const mageSprites = [
+        'N_S',
+        'N_W_L',
+        'N_W_R',
+        'S_S',
+        'S_W_L',
+        'S_W_R',
+        'E_S',
+        'E_W_L',
+        'E_W_R',
+        'O_S',
+        'O_W_L',
+        'O_W_R'
+      ]
+
+      for (const spriteName of mageSprites) {
+        const img = new Image()
+        img.src = `/mage/${spriteName}.png`
         await new Promise((resolve, reject) => {
           img.onload = resolve
           img.onerror = reject

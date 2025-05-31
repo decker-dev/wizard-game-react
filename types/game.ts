@@ -54,6 +54,10 @@ export interface Zombie {
   type: 'normal' | 'shooter'
   lastShotTime?: number
   sprite?: HTMLImageElement | null
+  direction: 'N' | 'S' | 'E' | 'O'
+  isMoving: boolean
+  animationFrame: 'L' | 'R' | 'S'
+  lastAnimationTime: number
 }
 
 export interface Obstacle {
