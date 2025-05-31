@@ -10,7 +10,7 @@ export async function getTopScores(): Promise<LeaderboardEntry[]> {
       .from('leaderboard')
       .select('*')
       .order('score', { ascending: false })
-      .limit(10)
+      .limit(3)
 
     if (error) {
       console.error('Error fetching top scores:', error)
