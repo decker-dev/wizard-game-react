@@ -19,16 +19,22 @@ export const render = (
   ctx: CanvasRenderingContext2D,
   gameState: GameState,
   zombieSprites: { [key: string]: HTMLImageElement | null },
-  waveMessage: string
+  waveMessage: string,
+  floorTexture?: HTMLImageElement | null
 ) => {
   const { player } = gameState
 
   const cameraX = Math.max(0, Math.min(MAP_WIDTH - CANVAS_WIDTH, player.position.x - CANVAS_WIDTH / 2))
   const cameraY = Math.max(0, Math.min(MAP_HEIGHT - CANVAS_HEIGHT, player.position.y - CANVAS_HEIGHT / 2))
 
-  // Clear canvas with background color
-  ctx.fillStyle = "#c2b280"
-  ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
+  // Render floor texture or fallback to solid color
+  if (floorTexture) {
+    renderFloorTexture(ctx, floorTexture, cameraX, cameraY)
+  } else {
+    // Fallback: Clear canvas with background color
+    ctx.fillStyle = "#c2b280"
+    ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
+  }
 
   // Render obstacles
   gameState.obstacles.forEach((obs) => {
@@ -249,4 +255,37 @@ const renderMinimap = (
   ctx.beginPath()
   ctx.arc(playerMinimapX, playerMinimapY, 3, 0, Math.PI * 2)
   ctx.fill()
+}
+
+const renderFloorTexture = (
+  ctx: CanvasRenderingContext2D,
+  floorTexture: HTMLImageElement,
+  cameraX: number,
+  cameraY: number
+) => {
+  // Get texture dimensions
+  const textureWidth = floorTexture.width
+  const textureHeight = floorTexture.height
+
+  // Calculate starting positions for tiling
+  const startX = Math.floor(cameraX / textureWidth) * textureWidth - cameraX
+  const startY = Math.floor(cameraY / textureHeight) * textureHeight - cameraY
+
+  // Calculate how many tiles we need to cover the screen
+  const tilesX = Math.ceil((CANVAS_WIDTH - startX) / textureWidth) + 1
+  const tilesY = Math.ceil((CANVAS_HEIGHT - startY) / textureHeight) + 1
+
+  // Render the tiled texture
+  for (let x = 0; x < tilesX; x++) {
+    for (let y = 0; y < tilesY; y++) {
+      const drawX = startX + x * textureWidth
+      const drawY = startY + y * textureHeight
+
+      // Only draw if the tile is visible on screen
+      if (drawX < CANVAS_WIDTH && drawY < CANVAS_HEIGHT &&
+        drawX + textureWidth > 0 && drawY + textureHeight > 0) {
+        ctx.drawImage(floorTexture, drawX, drawY, textureWidth, textureHeight)
+      }
+    }
+  }
 } 

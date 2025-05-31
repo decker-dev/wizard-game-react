@@ -10,6 +10,7 @@ import { render } from '@/game/Renderer'
 interface GameCanvasProps {
   gameState: GameState | null
   zombieSprites: {[key: string]: HTMLImageElement | null}
+  floorTexture?: HTMLImageElement | null
   waveMessage: string
   startNextWave: () => void
   setScore: (score: number) => void
@@ -23,6 +24,7 @@ interface GameCanvasProps {
 export const GameCanvas: React.FC<GameCanvasProps> = ({
   gameState,
   zombieSprites,
+  floorTexture,
   waveMessage,
   startNextWave,
   setScore,
@@ -49,12 +51,12 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
     if (canvas) {
       const ctx = canvas.getContext("2d")
       if (ctx) {
-        render(ctx, gameState, zombieSprites, waveMessage)
+        render(ctx, gameState, zombieSprites, waveMessage, floorTexture)
       }
     }
 
     animationFrameRef.current = requestAnimationFrame(gameLoop)
-  }, [gameState, zombieSprites, waveMessage, startNextWave, setScore, setPlayerHealth, setGameOver, setPlayerCoins])
+  }, [gameState, zombieSprites, floorTexture, waveMessage, startNextWave, setScore, setPlayerHealth, setGameOver, setPlayerCoins])
 
   useEffect(() => {
     if (gameState && !gameState.gameOver && !gameState.gameWon) {

@@ -23,6 +23,8 @@ export const useAssetLoader = () => {
     'diablo-health-100': null
   })
 
+  const floorTextureRef = useRef<HTMLImageElement | null>(null)
+
   const loadAssets = useCallback(async (): Promise<{
     playerSprites: {
       N: HTMLImageElement | null
@@ -30,7 +32,8 @@ export const useAssetLoader = () => {
       E: HTMLImageElement | null
       W: HTMLImageElement | null
     },
-    zombieSprites: { [key: string]: HTMLImageElement | null }
+    zombieSprites: { [key: string]: HTMLImageElement | null },
+    floorTexture: HTMLImageElement | null
   }> => {
     try {
       // Cargar sprites direccionales del jugador
@@ -75,9 +78,19 @@ export const useAssetLoader = () => {
         zombieSpritesRef.current[spriteName] = img
       }
 
+      // Cargar textura del piso
+      const floorTexture = new Image()
+      floorTexture.src = '/floor-texture.png'
+      await new Promise((resolve, reject) => {
+        floorTexture.onload = resolve
+        floorTexture.onerror = reject
+      })
+      floorTextureRef.current = floorTexture
+
       return {
         playerSprites,
-        zombieSprites: zombieSpritesRef.current
+        zombieSprites: zombieSpritesRef.current,
+        floorTexture
       }
     } catch (error) {
       console.error("Failed to load game assets:", error)
@@ -88,6 +101,7 @@ export const useAssetLoader = () => {
   return {
     playerSpritesRef,
     zombieSpritesRef,
+    floorTextureRef,
     loadAssets
   }
 } 

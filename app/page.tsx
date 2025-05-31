@@ -14,7 +14,7 @@ type GameScreen = 'home' | 'playing' | 'gameOver'
 
 export default function BoxheadGame() {
   const { gameStateRef, initializeGameState, resetGameState, startNextWave } = useGameState()
-  const { loadAssets, zombieSpritesRef, playerSpritesRef } = useAssetLoader()
+  const { loadAssets, zombieSpritesRef, playerSpritesRef, floorTextureRef } = useAssetLoader()
   const { 
     topScores, 
     allScores, 
@@ -177,6 +177,7 @@ export default function BoxheadGame() {
         <GameCanvas
           gameState={gameStateRef.current}
           zombieSprites={zombieSpritesRef.current}
+          floorTexture={floorTextureRef.current}
           waveMessage={waveMessage}
           startNextWave={handleStartNextWave}
           setScore={setScore}
