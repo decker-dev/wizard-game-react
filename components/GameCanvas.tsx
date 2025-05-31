@@ -91,7 +91,7 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
       ref={canvasRef}
       width={CANVAS_WIDTH}
       height={CANVAS_HEIGHT}
-      className="border-4 border-black bg-gray-300"
+      className="border-4 border-orange-500/50 bg-gray-300 rounded-lg shadow-lg hover:border-orange-500/70 transition-colors"
     />
   )
 } 

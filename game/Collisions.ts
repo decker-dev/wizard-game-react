@@ -78,7 +78,7 @@ export const checkCollisions = (
           z.position.y = Math.max(z.height / 2, Math.min(MAP_HEIGHT - z.height / 2, z.position.y))
 
           projectiles.splice(i, 1)
-          z.health -= 25
+          z.health -= player.upgrades.weaponDamage
           if (z.health <= 0) {
             // Recompensar monedas según el tipo de zombie
             const coinsEarned = z.type === 'shooter' ? COIN_REWARD_SHOOTER_ZOMBIE : COIN_REWARD_NORMAL_ZOMBIE

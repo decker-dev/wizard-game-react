@@ -3,6 +3,13 @@ export interface Vector2 {
   y: number
 }
 
+export interface PlayerUpgrades {
+  weaponDamage: number
+  maxHealth: number
+  weaponLevel: number
+  healthLevel: number
+}
+
 export interface Player {
   position: Vector2
   collisionRadius: number
@@ -10,11 +17,13 @@ export interface Player {
   height: number
   speed: number
   health: number
+  maxHealth: number
   angle: number
   sprite: HTMLImageElement | null
   lastDamageTime: number
   lastMovementDirection: Vector2
   coins: number
+  upgrades: PlayerUpgrades
 }
 
 export interface Projectile {
@@ -60,6 +69,7 @@ export interface GameState {
   keys: { [key: string]: boolean }
   mousePosition: Vector2
   waveTransitioning: boolean
+  showMarketplace: boolean
 }
 
 export interface LeaderboardEntry {

@@ -28,8 +28,18 @@ export const FIREBALL_DAMAGE = 50;
 export const SHOOTER_FIRE_RATE = 2000;
 
 // Coin rewards
-export const COIN_REWARD_NORMAL_ZOMBIE = 2;
-export const COIN_REWARD_SHOOTER_ZOMBIE = 5;
+export const COIN_REWARD_NORMAL_ZOMBIE = 3;
+export const COIN_REWARD_SHOOTER_ZOMBIE = 7;
+
+// Marketplace & Upgrades - Precios base que escalan
+export const WEAPON_UPGRADE_BASE_COST = 6;
+export const HEALTH_UPGRADE_BASE_COST = 5;
+export const UPGRADE_COST_MULTIPLIER = 1.8; // Cada nivel cuesta 80% más
+export const BASE_WEAPON_DAMAGE = 25;
+export const WEAPON_DAMAGE_INCREASE = 12;
+export const BASE_MAX_HEALTH = 100;
+export const HEALTH_INCREASE = 20;
+export const MAX_UPGRADE_LEVEL = 5;
 
 // Combat constants
 export const KNOCKBACK_FORCE = 50;
