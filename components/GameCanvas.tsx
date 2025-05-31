@@ -21,6 +21,9 @@ interface GameCanvasProps {
   setGameOver: (gameOver: boolean) => void
   onMouseMove: (e: MouseEvent) => void
   onMouseClick: (e: MouseEvent) => void
+  playZombieDeath: (zombieType: 'normal' | 'shooter') => void
+  playPlayerShoot: () => void
+  playPlayerHit: () => void
 }
 
 export const GameCanvas: React.FC<GameCanvasProps> = ({
@@ -34,7 +37,10 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
   setPlayerCoins,
   setGameOver,
   onMouseMove,
-  onMouseClick
+  onMouseClick,
+  playZombieDeath,
+  playPlayerShoot,
+  playPlayerHit
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -105,7 +111,7 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
       updateZombies(gameState)
       updateProjectiles(gameState)
       gameState.coinParticles = updateCoinParticles(gameState.coinParticles)
-      checkCollisions(gameState, startNextWave, setScore, setPlayerHealth, setGameOver, setPlayerCoins)
+      checkCollisions(gameState, startNextWave, setScore, setPlayerHealth, setGameOver, setPlayerCoins, playZombieDeath, playPlayerHit)
     }
 
     const canvas = canvasRef.current
@@ -117,7 +123,7 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
     }
 
     animationFrameRef.current = requestAnimationFrame(gameLoop)
-  }, [gameState, zombieSprites, floorTexture, waveMessage, startNextWave, setScore, setPlayerHealth, setGameOver, setPlayerCoins, canvasDimensions])
+  }, [gameState, zombieSprites, floorTexture, waveMessage, startNextWave, setScore, setPlayerHealth, setGameOver, setPlayerCoins, canvasDimensions, playZombieDeath, playPlayerHit])
 
   useEffect(() => {
     if (gameState && !gameState.gameOver && !gameState.gameWon) {

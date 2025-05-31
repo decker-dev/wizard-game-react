@@ -18,7 +18,9 @@ export const checkCollisions = (
   setScore: (score: number) => void,
   setPlayerHealth: (health: number) => void,
   setGameOver: (gameOver: boolean) => void,
-  setPlayerCoins?: (coins: number) => void
+  setPlayerCoins?: (coins: number) => void,
+  playZombieDeath?: (zombieType: 'normal' | 'shooter') => void,
+  playPlayerHit?: () => void
 ) => {
   const { projectiles, zombies, player, zombiesSpawnedThisWave, zombiesToSpawnThisWave } = gameState
 
@@ -44,6 +46,12 @@ export const checkCollisions = (
         projectiles.splice(i, 1)
         player.health -= FIREBALL_DAMAGE
         setPlayerHealth(player.health)
+        
+        // Reproducir sonido de jugador herido
+        if (playPlayerHit) {
+          playPlayerHit()
+        }
+        
         if (player.health <= 0) {
           gameState.gameOver = true
           setGameOver(true)
@@ -81,6 +89,11 @@ export const checkCollisions = (
           projectiles.splice(i, 1)
           z.health -= player.upgrades.weaponDamage
           if (z.health <= 0) {
+            // Reproducir sonido de muerte de zombie según su tipo
+            if (playZombieDeath) {
+              playZombieDeath(z.type)
+            }
+            
             // Recompensar monedas según el tipo de zombie
             const coinsEarned = z.type === 'shooter' ? COIN_REWARD_SHOOTER_ZOMBIE : COIN_REWARD_NORMAL_ZOMBIE
             player.coins += coinsEarned
@@ -123,6 +136,12 @@ export const checkCollisions = (
         player.health -= ZOMBIE_DAMAGE
         player.lastDamageTime = now
         setPlayerHealth(player.health)
+        
+        // Reproducir sonido de jugador herido
+        if (playPlayerHit) {
+          playPlayerHit()
+        }
+        
         if (player.health <= 0) {
           gameState.gameOver = true
           setGameOver(true)

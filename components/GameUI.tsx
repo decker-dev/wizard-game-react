@@ -1,5 +1,4 @@
 import React from 'react'
-import { MAX_WAVES } from '@/constants/game'
 import { Player } from '@/types/game'
 import { CoinIcon } from './CoinIcon'
 
@@ -44,7 +43,8 @@ export const GameUI: React.FC<GameUIProps> = ({
             
             <div className="bg-black/40 border border-orange-500/20 rounded p-3 hover:border-orange-500/40 transition-colors">
               <div className="text-orange-400 text-sm">WAVE</div>
-              <div className="text-2xl font-bold">{currentWave} / {MAX_WAVES}</div>
+              <div className="text-2xl font-bold">{currentWave}</div>
+              <div className="text-xs text-gray-400">∞ Infinite</div>
             </div>
             
             <div className="bg-black/40 border border-orange-500/20 rounded p-3 hover:border-orange-500/40 transition-colors">

@@ -9,7 +9,20 @@ import {
   SHOOTER_FIRE_RATE,
   FIREBALL_SPEED,
   MAP_WIDTH,
-  MAP_HEIGHT
+  MAP_HEIGHT,
+  ZOMBIE_HEALTH_INCREASE_PER_WAVE,
+  ZOMBIE_SPEED_INCREASE_PER_WAVE,
+  SHOOTER_SPAWN_CHANCE_INCREASE,
+  MAX_SHOOTER_SPAWN_CHANCE,
+  FIREBALL_SPEED_INCREASE_PER_WAVE,
+  SHOOTER_FIRE_RATE_IMPROVEMENT_PER_WAVE,
+  FIREBALL_SIZE_INCREASE_PER_WAVE,
+  EXPONENTIAL_SCALING_INTERVAL,
+  EXPONENTIAL_HEALTH_MULTIPLIER,
+  EXPONENTIAL_SPEED_MULTIPLIER,
+  MAX_ZOMBIE_SPEED,
+  MAX_FIREBALL_SPEED,
+  MIN_SHOOTER_FIRE_RATE
 } from '@/constants/game'
 import { normalize, getEntityRect, checkAABBCollision, distance } from '@/utils/math'
 
@@ -18,11 +31,32 @@ export const createZombie = (
   y: number, 
   currentWave: number
 ): Zombie => {
+  // Calcular multiplicador exponencial para waves altas
+  const exponentialBonus = Math.floor(currentWave / EXPONENTIAL_SCALING_INTERVAL)
+  const healthMultiplier = Math.pow(EXPONENTIAL_HEALTH_MULTIPLIER, exponentialBonus)
+  const speedMultiplier = Math.pow(EXPONENTIAL_SPEED_MULTIPLIER, exponentialBonus)
+  
+  // Calcular probabilidad de shooter que aumenta con cada wave
+  const shooterChance = Math.min(
+    0.1 + (currentWave - 1) * SHOOTER_SPAWN_CHANCE_INCREASE,
+    MAX_SHOOTER_SPAWN_CHANCE
+  )
+  
   // Determinar si crear un zombie normal o shooter (desde wave 2)
-  const isShooter = currentWave >= 2 && Math.random() < 0.2 // 20% de probabilidad de shooter
+  const isShooter = currentWave >= 2 && Math.random() < shooterChance
   const zombieType = isShooter ? 'shooter' : 'normal'
-  const zombieHealth = isShooter ? ZOMBIE_SHOOTER_HEALTH : (INITIAL_ZOMBIE_HEALTH + currentWave * 5)
-  const zombieSpeed = isShooter ? ZOMBIE_SHOOTER_SPEED : (ZOMBIE_SPEED_BASE + currentWave * 0.05)
+  
+  // Escalado progresivo de salud con boost exponencial
+  const baseHealth = isShooter 
+    ? ZOMBIE_SHOOTER_HEALTH + currentWave * ZOMBIE_HEALTH_INCREASE_PER_WAVE * 1.5
+    : INITIAL_ZOMBIE_HEALTH + currentWave * ZOMBIE_HEALTH_INCREASE_PER_WAVE
+  const zombieHealth = Math.floor(baseHealth * healthMultiplier)
+  
+  // Escalado progresivo de velocidad con boost exponencial y límite
+  const baseSpeed = isShooter 
+    ? ZOMBIE_SHOOTER_SPEED + currentWave * ZOMBIE_SPEED_INCREASE_PER_WAVE * 0.8
+    : ZOMBIE_SPEED_BASE + currentWave * ZOMBIE_SPEED_INCREASE_PER_WAVE
+  const zombieSpeed = Math.min(baseSpeed * speedMultiplier, MAX_ZOMBIE_SPEED)
 
   return {
     id: `zombie-${Date.now()}-${Math.random()}`,
@@ -74,7 +108,7 @@ export const spawnZombie = (gameState: GameState): boolean => {
 }
 
 export const updateZombies = (gameState: GameState) => {
-  const { zombies, player, obstacles, waveTransitioning, projectiles } = gameState
+  const { zombies, player, obstacles, waveTransitioning, projectiles, currentWave } = gameState
   
   if (waveTransitioning) return
 
@@ -106,22 +140,34 @@ export const updateZombies = (gameState: GameState) => {
         direction.y = 0
       }
 
-      // Disparar si ha pasado suficiente tiempo
+      // Disparar si ha pasado suficiente tiempo - mejora con las waves
       const now = Date.now()
-      if (now - (zombie.lastShotTime || 0) > SHOOTER_FIRE_RATE) {
+      const improvedFireRate = Math.max(
+        MIN_SHOOTER_FIRE_RATE, // Mínimo tiempo entre disparos
+        SHOOTER_FIRE_RATE - (currentWave * SHOOTER_FIRE_RATE_IMPROVEMENT_PER_WAVE)
+      )
+      
+      if (now - (zombie.lastShotTime || 0) > improvedFireRate) {
         const fireballDirection = normalize({
           x: player.position.x - zombie.position.x,
           y: player.position.y - zombie.position.y
         })
         
+        // Velocidad de fireball escalable con límite
+        const baseFireballSpeed = FIREBALL_SPEED + (currentWave * FIREBALL_SPEED_INCREASE_PER_WAVE)
+        const scaledFireballSpeed = Math.min(baseFireballSpeed, MAX_FIREBALL_SPEED)
+        
+        // Tamaño de fireball escalable
+        const fireballSize = 6 + (currentWave * FIREBALL_SIZE_INCREASE_PER_WAVE)
+        
         projectiles.push({
           position: { ...zombie.position },
           velocity: {
-            x: fireballDirection.x * FIREBALL_SPEED,
-            y: fireballDirection.y * FIREBALL_SPEED
+            x: fireballDirection.x * scaledFireballSpeed,
+            y: fireballDirection.y * scaledFireballSpeed
           },
-          radius: 6,
-          speed: FIREBALL_SPEED,
+          radius: fireballSize,
+          speed: scaledFireballSpeed,
           isFireball: true
         })
         zombie.lastShotTime = now

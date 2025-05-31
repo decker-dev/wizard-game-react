@@ -57,8 +57,28 @@ export const SPREAD_INCREASE = 0.15; // +0.15 radianes de dispersión por proyec
 export const KNOCKBACK_FORCE = 50;
 export const INVULNERABILITY_TIME = 1000;
 
-// Game progression
-export const MAX_WAVES = 5;
+// Game progression - Waves are now infinite!
+// export const MAX_WAVES = 5; // Removed - waves are now infinite
+export const BASE_ZOMBIES_PER_WAVE = 5
+export const ZOMBIES_INCREASE_PER_WAVE = 3
+export const ZOMBIE_HEALTH_INCREASE_PER_WAVE = 5
+export const ZOMBIE_SPEED_INCREASE_PER_WAVE = 0.05
+export const SHOOTER_SPAWN_CHANCE_INCREASE = 0.02 // Aumenta 2% cada wave
+export const MAX_SHOOTER_SPAWN_CHANCE = 0.6 // Máximo 60% de shooters
+export const FIREBALL_SPEED_INCREASE_PER_WAVE = 0.1
+export const SHOOTER_FIRE_RATE_IMPROVEMENT_PER_WAVE = 50 // Reducir tiempo entre disparos
+export const FIREBALL_SIZE_INCREASE_PER_WAVE = 0.1 // Aumentar tamaño de fireballs
+
+// Escalado exponencial para waves muy altas (cada 10 waves)
+export const EXPONENTIAL_SCALING_INTERVAL = 10
+export const EXPONENTIAL_HEALTH_MULTIPLIER = 1.5
+export const EXPONENTIAL_SPEED_MULTIPLIER = 1.2
+export const EXPONENTIAL_SPAWN_MULTIPLIER = 1.3
+
+// Límites máximos para evitar que el juego sea imposible
+export const MAX_ZOMBIE_SPEED = 3.0
+export const MAX_FIREBALL_SPEED = 8.0
+export const MIN_SHOOTER_FIRE_RATE = 300 // ms
 
 // Minimap constants
 export const MINIMAP_SIZE = 80;

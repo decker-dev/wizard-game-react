@@ -5,6 +5,7 @@ import { useGameState } from '@/hooks/useGameState'
 import { useAssetLoader } from '@/hooks/useAssetLoader'
 import { useInputHandlers } from '@/hooks/useInputHandlers'
 import { useLeaderboard } from '@/hooks/useLeaderboard'
+import { useGameAudio } from '@/hooks/useGameAudio'
 import { GameCanvas } from '@/components/GameCanvas'
 import { GameUI } from '@/components/GameUI'
 import { HomeScreen } from '@/components/HomeScreen'
@@ -33,6 +34,7 @@ export default function BoxheadGame() {
     isSubmitting, 
     submitScore 
   } = useLeaderboard()
+  const { playZombieDeath, playPlayerShoot, playPlayerHit } = useGameAudio()
   
   const [currentScreen, setCurrentScreen] = useState<GameScreen>('home')
   const [score, setScore] = useState(0)
@@ -47,7 +49,7 @@ export default function BoxheadGame() {
 
   const canvasRef = useRef<HTMLCanvasElement>(null)
   
-  const { handleKeyDown, handleKeyUp, handleMouseMove, handleMouseClick } = useInputHandlers(gameStateRef)
+  const { handleKeyDown, handleKeyUp, handleMouseMove, handleMouseClick } = useInputHandlers(gameStateRef, playPlayerShoot)
 
   const handleStartNextWave = useCallback(() => {
     startNextWave(setCurrentWave, setWaveMessage, setGameWon)
@@ -265,15 +267,18 @@ export default function BoxheadGame() {
               gameState={gameStateRef.current}
               zombieSprites={zombieSpritesRef.current}
               floorTexture={floorTextureRef.current}
-                  waveMessage={waveMessage}
-                  startNextWave={handleStartNextWave}
-                  setScore={setScore}
-                  setPlayerHealth={setPlayerHealth}
-                  setPlayerCoins={setPlayerCoins}
-                  setGameOver={setGameOver}
-                  onMouseMove={handleMouseMoveWrapper}
-                  onMouseClick={handleMouseClick}
-                />
+              waveMessage={waveMessage}
+              startNextWave={handleStartNextWave}
+              setScore={setScore}
+              setPlayerHealth={setPlayerHealth}
+              setPlayerCoins={setPlayerCoins}
+              setGameOver={setGameOver}
+              onMouseMove={handleMouseMoveWrapper}
+              onMouseClick={handleMouseClick}
+              playZombieDeath={playZombieDeath}
+              playPlayerShoot={playPlayerShoot}
+              playPlayerHit={playPlayerHit}
+            />
           </div>
 
           {/* Game Over/Won Overlay */}

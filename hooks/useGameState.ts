@@ -1,14 +1,17 @@
 import { useCallback, useRef } from 'react'
 import { GameState } from '@/types/game'
 import { 
-  MAX_WAVES, 
   WEAPON_DAMAGE_INCREASE, 
   HEALTH_INCREASE, 
   MAX_UPGRADE_LEVEL,
   PROJECTILE_COUNT_INCREASE,
   PROJECTILE_SIZE_INCREASE,
   FIRE_RATE_IMPROVEMENT,
-  SPREAD_INCREASE
+  SPREAD_INCREASE,
+  BASE_ZOMBIES_PER_WAVE,
+  ZOMBIES_INCREASE_PER_WAVE,
+  EXPONENTIAL_SCALING_INTERVAL,
+  EXPONENTIAL_SPAWN_MULTIPLIER
 } from '@/constants/game'
 import { getWeaponUpgradeCost, getHealthUpgradeCost } from '@/utils/marketplace'
 import { obstaclesData } from '@/data/obstacles'
@@ -78,13 +81,8 @@ export const useGameState = () => {
     gameStateRef.current.currentWave++
     setCurrentWave(gameStateRef.current.currentWave)
 
-    if (gameStateRef.current.currentWave > MAX_WAVES) {
-      gameStateRef.current.gameWon = true
-      setGameWon(true)
-      setWaveMessage(`You survived all ${MAX_WAVES} waves! YOU WIN!`)
-      gameStateRef.current.waveTransitioning = false
-      return
-    }
+    // Waves are now infinite! No more victory condition by waves
+    // Victory only comes from player death or manual quit
 
     // Mostrar marketplace antes de las waves 2+ (después de completar la primera wave)
     if (gameStateRef.current.currentWave >= 2) {
@@ -94,8 +92,11 @@ export const useGameState = () => {
       return
     }
 
-    // Configurar la wave (para la primera wave)
-    gameStateRef.current.zombiesToSpawnThisWave = 5 + gameStateRef.current.currentWave * 3
+    // Configurar la wave con escalado progresivo
+    const exponentialBonus = Math.floor(gameStateRef.current.currentWave / EXPONENTIAL_SCALING_INTERVAL)
+    const spawnMultiplier = Math.pow(EXPONENTIAL_SPAWN_MULTIPLIER, exponentialBonus)
+    const baseZombies = BASE_ZOMBIES_PER_WAVE + (gameStateRef.current.currentWave * ZOMBIES_INCREASE_PER_WAVE)
+    gameStateRef.current.zombiesToSpawnThisWave = Math.floor(baseZombies * spawnMultiplier)
     gameStateRef.current.zombiesRemainingInWave = gameStateRef.current.zombiesToSpawnThisWave
     gameStateRef.current.zombiesSpawnedThisWave = 0
     gameStateRef.current.zombies = []
@@ -117,8 +118,11 @@ export const useGameState = () => {
     gameStateRef.current.showMarketplace = false
     gameStateRef.current.waveTransitioning = true
 
-    // Configurar la wave
-    gameStateRef.current.zombiesToSpawnThisWave = 5 + gameStateRef.current.currentWave * 3
+    // Configurar la wave con escalado progresivo
+    const exponentialBonus = Math.floor(gameStateRef.current.currentWave / EXPONENTIAL_SCALING_INTERVAL)
+    const spawnMultiplier = Math.pow(EXPONENTIAL_SPAWN_MULTIPLIER, exponentialBonus)
+    const baseZombies = BASE_ZOMBIES_PER_WAVE + (gameStateRef.current.currentWave * ZOMBIES_INCREASE_PER_WAVE)
+    gameStateRef.current.zombiesToSpawnThisWave = Math.floor(baseZombies * spawnMultiplier)
     gameStateRef.current.zombiesRemainingInWave = gameStateRef.current.zombiesToSpawnThisWave
     gameStateRef.current.zombiesSpawnedThisWave = 0
     gameStateRef.current.zombies = []

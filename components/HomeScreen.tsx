@@ -59,7 +59,6 @@ export function HomeScreen({
       }, 
       icon: '🎮' 
     },
-    { id: 'leaderboard', label: 'LEADERBOARD', action: () => playSelect(), icon: '🏆' },
     { 
       id: 'settings', 
       label: 'SETTINGS', 
@@ -188,7 +187,7 @@ export function HomeScreen({
           <div className="space-y-6 text-white text-center">
             <div className="space-y-2">
               <h3 className="text-xl font-bold text-orange-300">Game Development</h3>
-              <p className="text-gray-300">Game Jam Paisanos Team</p>
+              <p className="text-gray-300">Lauti, Alejo, Decker</p>
             </div>
             <div className="space-y-2">
               <h3 className="text-xl font-bold text-orange-300">Art & Design</h3>
@@ -198,13 +197,9 @@ export function HomeScreen({
               <h3 className="text-xl font-bold text-orange-300">Programming</h3>
               <p className="text-gray-300">React + TypeScript + Canvas</p>
             </div>
-            <div className="space-y-2">
-              <h3 className="text-xl font-bold text-orange-300">Inspiration</h3>
-              <p className="text-gray-300">Call of Duty: Black Ops 2 Zombies</p>
-            </div>
             <div className="pt-4 border-t border-gray-600">
-              <p className="text-gray-400">Made with ❤️ for Game Jam</p>
-              <p className="text-gray-500 text-sm mt-2">© 2024 Game Jam Paisanos</p>
+              <p className="text-gray-400">Hackaton</p>
+              <p className="text-gray-500 text-sm mt-2">© 2025 Game Jam Paisanos</p>
             </div>
           </div>
           <button
@@ -353,13 +348,6 @@ export function HomeScreen({
             </p>
             <p className="text-gray-400 font-mono text-xs">
               Press ENTER to select
-            </p>
-          </div>
-
-          {/* Footer */}
-          <div className="text-center">
-            <p className="text-gray-500 font-mono text-sm">
-              Hecho con ❤️ para Game Jam Paisanos
             </p>
           </div>
         </div>

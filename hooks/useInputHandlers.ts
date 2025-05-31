@@ -2,7 +2,10 @@ import { useCallback, useRef } from 'react'
 import { GameState } from '@/types/game'
 import { PROJECTILE_SPEED, CANVAS_WIDTH, CANVAS_HEIGHT, MAP_WIDTH, MAP_HEIGHT } from '@/constants/game'
 
-export const useInputHandlers = (gameStateRef: React.MutableRefObject<GameState | null>) => {
+export const useInputHandlers = (
+  gameStateRef: React.MutableRefObject<GameState | null>,
+  playPlayerShoot?: () => void
+) => {
   const lastShotTimeRef = useRef<number>(0)
 
   const handleKeyDown = useCallback((e: KeyboardEvent, isLoading: boolean, waveTransitioning: boolean) => {
@@ -23,6 +26,11 @@ export const useInputHandlers = (gameStateRef: React.MutableRefObject<GameState 
         
         // Usar el fire rate personalizado del player
         if (now - lastShotTimeRef.current > player.upgrades.fireRate) {
+          // Reproducir sonido de disparo
+          if (playPlayerShoot) {
+            playPlayerShoot()
+          }
+          
           const baseDirection = { ...player.lastMovementDirection }
           const projectileCount = player.upgrades.projectileCount
           const spread = player.upgrades.spread
@@ -72,7 +80,7 @@ export const useInputHandlers = (gameStateRef: React.MutableRefObject<GameState 
         }
       }
     }
-  }, [gameStateRef])
+  }, [gameStateRef, playPlayerShoot])
 
   const handleKeyUp = useCallback((e: KeyboardEvent) => {
     if (!gameStateRef.current) return
