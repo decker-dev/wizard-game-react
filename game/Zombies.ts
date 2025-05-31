@@ -126,17 +126,14 @@ export const updateZombies = (gameState: GameState) => {
       y: player.position.y - zombie.position.y
     })
 
-    // Actualizar dirección del mago basada en movimiento
-    if (zombie.type === 'shooter') {
-      // Determinar dirección para el mago
-      const absX = Math.abs(direction.x)
-      const absY = Math.abs(direction.y)
+    // Actualizar dirección basada en movimiento (para ambos tipos)
+    const absX = Math.abs(direction.x)
+    const absY = Math.abs(direction.y)
 
-      if (absX > absY) {
-        zombie.direction = direction.x > 0 ? 'E' : 'O'
-      } else {
-        zombie.direction = direction.y > 0 ? 'S' : 'N'
-      }
+    if (absX > absY) {
+      zombie.direction = direction.x > 0 ? 'E' : 'O'
+    } else {
+      zombie.direction = direction.y > 0 ? 'S' : 'N'
     }
 
     // Movimiento diferente según el tipo
@@ -160,16 +157,8 @@ export const updateZombies = (gameState: GameState) => {
         zombie.isMoving = false
       }
 
-      // Manejar animación de caminar para el mago
-      const now = Date.now()
-      if (zombie.isMoving && now - zombie.lastAnimationTime > 300) { // Cambiar frame cada 300ms
-        zombie.animationFrame = zombie.animationFrame === 'L' ? 'R' : 'L'
-        zombie.lastAnimationTime = now
-      } else if (!zombie.isMoving) {
-        zombie.animationFrame = 'S' // Standing frame when not moving
-      }
-
       // Disparar si ha pasado suficiente tiempo - mejora con las waves
+      const now = Date.now()
       const improvedFireRate = Math.max(
         MIN_SHOOTER_FIRE_RATE, // Mínimo tiempo entre disparos
         SHOOTER_FIRE_RATE - (currentWave * SHOOTER_FIRE_RATE_IMPROVEMENT_PER_WAVE)
@@ -205,6 +194,15 @@ export const updateZombies = (gameState: GameState) => {
       zombie.isMoving = true
     }
 
+    // Manejar animación de caminar (para ambos tipos)
+    const now = Date.now()
+    if (zombie.isMoving && now - zombie.lastAnimationTime > 300) { // Cambiar frame cada 300ms
+      zombie.animationFrame = zombie.animationFrame === 'L' ? 'R' : 'L'
+      zombie.lastAnimationTime = now
+    } else if (!zombie.isMoving) {
+      zombie.animationFrame = 'S' // Standing frame when not moving
+    }
+
     zombie.position.x += direction.x * zombie.speed
     let zombieRect = getEntityRect(zombie)
     let collidedX = false
@@ -229,31 +227,21 @@ export const updateZombies = (gameState: GameState) => {
 }
 
 export const getZombieSprite = (zombie: Zombie, zombieSprites: { [key: string]: HTMLImageElement | null }) => {
-  const healthPercentage = (zombie.health / zombie.maxHealth) * 100
+  const direction = zombie.direction
+  const frameType = zombie.isMoving ? 'W' : 'S' // W for walking, S for standing
+  const animFrame = zombie.isMoving ? zombie.animationFrame : 'S'
+
+  // Construir nombre del sprite: direction_frameType_animFrame
+  let spriteName = `${direction}_${frameType}`
+  if (zombie.isMoving && animFrame !== 'S') {
+    spriteName += `_${animFrame}`
+  }
 
   if (zombie.type === 'shooter') {
     // Usar sprites del mago para shooters
-    const direction = zombie.direction
-    const frameType = zombie.isMoving ? 'W' : 'S' // W for walking, S for standing
-    const animFrame = zombie.isMoving ? zombie.animationFrame : 'S'
-
-    // Construir nombre del sprite: direction_frameType_animFrame
-    let spriteName = `${direction}_${frameType}`
-    if (zombie.isMoving && animFrame !== 'S') {
-      spriteName += `_${animFrame}`
-    }
-
-    return zombieSprites[spriteName] || zombieSprites['S_S'] // fallback to south standing
+    return zombieSprites[`mage_${spriteName}`] || zombieSprites['mage_S_S'] // fallback to mage south standing
   } else {
-    // Usar sprites de zombie para normales
-    if (healthPercentage <= 30) {
-      return zombieSprites['zombie-health-30']
-    } else if (healthPercentage <= 50) {
-      return zombieSprites['zombie-health-50']
-    } else if (healthPercentage <= 80) {
-      return zombieSprites['zombie-health-80']
-    } else {
-      return zombieSprites['zombie-health-100']
-    }
+    // Usar sprites del zombie para normales
+    return zombieSprites[`zombie_${spriteName}`] || zombieSprites['zombie_S_S'] // fallback to zombie south standing
   }
 } 
