@@ -46,12 +46,12 @@ export const checkCollisions = (
         projectiles.splice(i, 1)
         player.health -= FIREBALL_DAMAGE
         setPlayerHealth(player.health)
-        
+
         // Reproducir sonido de jugador herido
         if (playPlayerHit) {
           playPlayerHit()
         }
-        
+
         if (player.health <= 0) {
           gameState.gameOver = true
           setGameOver(true)
@@ -78,9 +78,30 @@ export const checkCollisions = (
             y: p.velocity.y
           })
 
+          // Guardar posición original para verificar colisiones
+          const originalX = z.position.x
+          const originalY = z.position.y
+
           // Aplicar empuje al zombie
           z.position.x += knockbackDirection.x * KNOCKBACK_FORCE
           z.position.y += knockbackDirection.y * KNOCKBACK_FORCE
+
+          // Verificar colisión con obstáculos después del knockback
+          const zombieRectAfterKnockback = getEntityRect(z)
+          let collisionDetected = false
+
+          for (const obstacle of gameState.obstacles) {
+            if (checkAABBCollision(zombieRectAfterKnockback, obstacle)) {
+              collisionDetected = true
+              break
+            }
+          }
+
+          // Si hay colisión con obstáculos, revertir el knockback
+          if (collisionDetected) {
+            z.position.x = originalX
+            z.position.y = originalY
+          }
 
           // Asegurar que el zombie no salga del mapa
           z.position.x = Math.max(z.width / 2, Math.min(MAP_WIDTH - z.width / 2, z.position.x))
@@ -93,18 +114,18 @@ export const checkCollisions = (
             if (playZombieDeath) {
               playZombieDeath(z.type)
             }
-            
+
             // Recompensar monedas según el tipo de zombie
             const coinsEarned = z.type === 'shooter' ? COIN_REWARD_SHOOTER_ZOMBIE : COIN_REWARD_NORMAL_ZOMBIE
             player.coins += coinsEarned
             if (setPlayerCoins) {
               setPlayerCoins(player.coins)
             }
-            
+
             // Crear partículas de monedas en la posición del zombie muerto
             const coinParticle = createCoinParticle(z.position.x, z.position.y, coinsEarned)
             gameState.coinParticles.push(coinParticle)
-            
+
             zombies.splice(j, 1)
             gameState.score++
             setScore(gameState.score)
@@ -136,12 +157,12 @@ export const checkCollisions = (
         player.health -= ZOMBIE_DAMAGE
         player.lastDamageTime = now
         setPlayerHealth(player.health)
-        
+
         // Reproducir sonido de jugador herido
         if (playPlayerHit) {
           playPlayerHit()
         }
-        
+
         if (player.health <= 0) {
           gameState.gameOver = true
           setGameOver(true)

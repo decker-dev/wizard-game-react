@@ -224,6 +224,57 @@ export const updateZombies = (gameState: GameState) => {
       }
     }
   })
+
+  // Verificar colisiones entre zombies para evitar superposición
+  for (let i = 0; i < zombies.length; i++) {
+    for (let j = i + 1; j < zombies.length; j++) {
+      const zombie1 = zombies[i]
+      const zombie2 = zombies[j]
+
+      const rect1 = getEntityRect(zombie1)
+      const rect2 = getEntityRect(zombie2)
+
+      if (checkAABBCollision(rect1, rect2)) {
+        // Calcular dirección de separación
+        const separationDirection = normalize({
+          x: zombie2.position.x - zombie1.position.x,
+          y: zombie2.position.y - zombie1.position.y
+        })
+
+        // Si están exactamente en la misma posición, usar dirección aleatoria
+        if (separationDirection.x === 0 && separationDirection.y === 0) {
+          const angle = Math.random() * Math.PI * 2
+          separationDirection.x = Math.cos(angle)
+          separationDirection.y = Math.sin(angle)
+        }
+
+        // Separar los zombies
+        const separationForce = 5
+        zombie1.position.x -= separationDirection.x * separationForce
+        zombie1.position.y -= separationDirection.y * separationForce
+        zombie2.position.x += separationDirection.x * separationForce
+        zombie2.position.y += separationDirection.y * separationForce
+
+        // Verificar que no salgan del mapa ni colisionen con obstáculos
+        for (const zombie of [zombie1, zombie2]) {
+          // Límites del mapa
+          zombie.position.x = Math.max(zombie.width / 2, Math.min(MAP_WIDTH - zombie.width / 2, zombie.position.x))
+          zombie.position.y = Math.max(zombie.height / 2, Math.min(MAP_HEIGHT - zombie.height / 2, zombie.position.y))
+
+          // Verificar colisión con obstáculos
+          const zombieRect = getEntityRect(zombie)
+          for (const obs of obstacles) {
+            if (checkAABBCollision(zombieRect, obs)) {
+              // Si colisiona con obstáculo, mover en dirección opuesta
+              zombie.position.x += separationDirection.x * separationForce * (zombie === zombie1 ? 1 : -1)
+              zombie.position.y += separationDirection.y * separationForce * (zombie === zombie1 ? 1 : -1)
+              break
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 export const getZombieSprite = (zombie: Zombie, zombieSprites: { [key: string]: HTMLImageElement | null }) => {
