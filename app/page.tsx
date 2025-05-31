@@ -173,6 +173,7 @@ export default function BoxheadGame() {
       }
     }
   }, [handleKeyDownWrapper, handleKeyUp, currentScreen])
+  
 
   // Home Screen
   if (currentScreen === 'home') {
