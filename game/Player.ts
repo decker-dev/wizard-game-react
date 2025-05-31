@@ -12,7 +12,8 @@ export const createInitialPlayer = (playerSprite: HTMLImageElement | null): Play
   angle: 0,
   sprite: playerSprite,
   lastDamageTime: 0,
-  lastMovementDirection: { x: 1, y: 0 }
+  lastMovementDirection: { x: 1, y: 0 },
+  coins: 0
 })
 
 export const updatePlayer = (gameState: GameState) => {

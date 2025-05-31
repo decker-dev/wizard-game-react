@@ -5,7 +5,9 @@ import {
   FIREBALL_DAMAGE,
   INVULNERABILITY_TIME,
   MAP_WIDTH,
-  MAP_HEIGHT
+  MAP_HEIGHT,
+  COIN_REWARD_NORMAL_ZOMBIE,
+  COIN_REWARD_SHOOTER_ZOMBIE
 } from '@/constants/game'
 import { checkAABBCollision, getEntityRect, normalize } from '@/utils/math'
 
@@ -14,7 +16,8 @@ export const checkCollisions = (
   startNextWave: () => void,
   setScore: (score: number) => void,
   setPlayerHealth: (health: number) => void,
-  setGameOver: (gameOver: boolean) => void
+  setGameOver: (gameOver: boolean) => void,
+  setPlayerCoins?: (coins: number) => void
 ) => {
   const { projectiles, zombies, player, zombiesSpawnedThisWave, zombiesToSpawnThisWave } = gameState
 
@@ -77,6 +80,13 @@ export const checkCollisions = (
           projectiles.splice(i, 1)
           z.health -= 25
           if (z.health <= 0) {
+            // Recompensar monedas según el tipo de zombie
+            const coinsEarned = z.type === 'shooter' ? COIN_REWARD_SHOOTER_ZOMBIE : COIN_REWARD_NORMAL_ZOMBIE
+            player.coins += coinsEarned
+            if (setPlayerCoins) {
+              setPlayerCoins(player.coins)
+            }
+            
             zombies.splice(j, 1)
             gameState.score++
             setScore(gameState.score)

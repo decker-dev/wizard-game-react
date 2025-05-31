@@ -27,6 +27,10 @@ export const FIREBALL_SPEED = 5;
 export const FIREBALL_DAMAGE = 50;
 export const SHOOTER_FIRE_RATE = 2000;
 
+// Coin rewards
+export const COIN_REWARD_NORMAL_ZOMBIE = 2;
+export const COIN_REWARD_SHOOTER_ZOMBIE = 5;
+
 // Combat constants
 export const KNOCKBACK_FORCE = 50;
 export const INVULNERABILITY_TIME = 1000;

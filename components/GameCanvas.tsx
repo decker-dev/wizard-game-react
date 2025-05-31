@@ -14,6 +14,7 @@ interface GameCanvasProps {
   startNextWave: () => void
   setScore: (score: number) => void
   setPlayerHealth: (health: number) => void
+  setPlayerCoins: (coins: number) => void
   setGameOver: (gameOver: boolean) => void
   onMouseMove: (e: MouseEvent) => void
   onMouseClick: (e: MouseEvent) => void
@@ -26,6 +27,7 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
   startNextWave,
   setScore,
   setPlayerHealth,
+  setPlayerCoins,
   setGameOver,
   onMouseMove,
   onMouseClick
@@ -40,7 +42,7 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
       updatePlayer(gameState)
       updateZombies(gameState)
       updateProjectiles(gameState)
-      checkCollisions(gameState, startNextWave, setScore, setPlayerHealth, setGameOver)
+      checkCollisions(gameState, startNextWave, setScore, setPlayerHealth, setGameOver, setPlayerCoins)
     }
 
     const canvas = canvasRef.current
@@ -52,7 +54,7 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
     }
 
     animationFrameRef.current = requestAnimationFrame(gameLoop)
-  }, [gameState, zombieSprites, waveMessage, startNextWave, setScore, setPlayerHealth, setGameOver])
+  }, [gameState, zombieSprites, waveMessage, startNextWave, setScore, setPlayerHealth, setGameOver, setPlayerCoins])
 
   useEffect(() => {
     if (gameState && !gameState.gameOver && !gameState.gameWon) {
