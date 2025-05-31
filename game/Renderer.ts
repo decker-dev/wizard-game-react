@@ -1,10 +1,10 @@
 import { GameState } from '@/types/game'
-import { 
-  CANVAS_WIDTH, 
-  CANVAS_HEIGHT, 
-  MAP_WIDTH, 
-  MAP_HEIGHT, 
-  PLAYER_SPRITE_WIDTH, 
+import {
+  CANVAS_WIDTH,
+  CANVAS_HEIGHT,
+  MAP_WIDTH,
+  MAP_HEIGHT,
+  PLAYER_SPRITE_WIDTH,
   PLAYER_SPRITE_HEIGHT,
   INVULNERABILITY_TIME,
   MINIMAP_SIZE,
@@ -13,23 +13,30 @@ import {
   MINIMAP_SCALE_Y
 } from '@/constants/game'
 import { getZombieSprite } from './Zombies'
+import { getPlayerSprite } from './Player'
 
 export const render = (
   ctx: CanvasRenderingContext2D,
   gameState: GameState,
-  zombieSprites: {[key: string]: HTMLImageElement | null},
+  zombieSprites: { [key: string]: HTMLImageElement | null },
   waveMessage: string,
   canvasWidth: number = CANVAS_WIDTH,
-  canvasHeight: number = CANVAS_HEIGHT
+  canvasHeight: number = CANVAS_HEIGHT,
+  floorTexture?: HTMLImageElement | null
 ) => {
   const { player } = gameState
 
   const cameraX = Math.max(0, Math.min(MAP_WIDTH - canvasWidth, player.position.x - canvasWidth / 2))
   const cameraY = Math.max(0, Math.min(MAP_HEIGHT - canvasHeight, player.position.y - canvasHeight / 2))
 
-  // Clear canvas with background color
-  ctx.fillStyle = "#c2b280"
-  ctx.fillRect(0, 0, canvasWidth, canvasHeight)
+  // Render floor texture or fallback to solid color
+  if (floorTexture) {
+    renderFloorTexture(ctx, floorTexture, cameraX, cameraY)
+  } else {
+    // Fallback: Clear canvas with background color
+    ctx.fillStyle = "#c2b280"
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight)
+  }
 
   // Render obstacles
   gameState.obstacles.forEach((obs) => {
@@ -53,19 +60,18 @@ export const render = (
   })
 
   // Render player
-  if (player.sprite) {
+  const currentPlayerSprite = getPlayerSprite(player)
+  if (currentPlayerSprite) {
     ctx.save()
     const now = Date.now()
     const isInvulnerable = now - player.lastDamageTime < INVULNERABILITY_TIME
     if (isInvulnerable) {
       ctx.globalAlpha = 0.5 + Math.sin(now * 0.01) * 0.3
     }
-    ctx.translate(player.position.x - cameraX, player.position.y - cameraY)
-    ctx.rotate(player.angle + Math.PI / 2)
     ctx.drawImage(
-      player.sprite,
-      -PLAYER_SPRITE_WIDTH / 2,
-      -PLAYER_SPRITE_HEIGHT / 2,
+      currentPlayerSprite,
+      player.position.x - cameraX - PLAYER_SPRITE_WIDTH / 2,
+      player.position.y - cameraY - PLAYER_SPRITE_HEIGHT / 2,
       PLAYER_SPRITE_WIDTH,
       PLAYER_SPRITE_HEIGHT
     )
@@ -122,7 +128,7 @@ export const render = (
       screenY - z.height <= canvasHeight
     ) {
       const zombieSprite = getZombieSprite(z, zombieSprites)
-      
+
       if (zombieSprite) {
         // Renderizar el sprite del zombie
         ctx.drawImage(
@@ -252,4 +258,37 @@ const renderMinimap = (
     canvasWidth * minimapScaleX,
     canvasHeight * minimapScaleY
   )
+}
+
+const renderFloorTexture = (
+  ctx: CanvasRenderingContext2D,
+  floorTexture: HTMLImageElement,
+  cameraX: number,
+  cameraY: number
+) => {
+  // Get texture dimensions
+  const textureWidth = floorTexture.width
+  const textureHeight = floorTexture.height
+
+  // Calculate starting positions for tiling
+  const startX = Math.floor(cameraX / textureWidth) * textureWidth - cameraX
+  const startY = Math.floor(cameraY / textureHeight) * textureHeight - cameraY
+
+  // Calculate how many tiles we need to cover the screen
+  const tilesX = Math.ceil((CANVAS_WIDTH - startX) / textureWidth) + 1
+  const tilesY = Math.ceil((CANVAS_HEIGHT - startY) / textureHeight) + 1
+
+  // Render the tiled texture
+  for (let x = 0; x < tilesX; x++) {
+    for (let y = 0; y < tilesY; y++) {
+      const drawX = startX + x * textureWidth
+      const drawY = startY + y * textureHeight
+
+      // Only draw if the tile is visible on screen
+      if (drawX < CANVAS_WIDTH && drawY < CANVAS_HEIGHT &&
+        drawX + textureWidth > 0 && drawY + textureHeight > 0) {
+        ctx.drawImage(floorTexture, drawX, drawY, textureWidth, textureHeight)
+      }
+    }
+  }
 } 

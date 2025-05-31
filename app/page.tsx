@@ -15,16 +15,16 @@ import { FloatingParticles } from '@/components/FloatingParticles'
 type GameScreen = 'home' | 'playing' | 'gameOver'
 
 export default function BoxheadGame() {
-  const { 
-    gameStateRef, 
-    initializeGameState, 
-    resetGameState, 
-    startNextWave, 
-    continueFromMarketplace, 
-    upgradeWeapon, 
-    upgradeHealth 
+  const {
+    gameStateRef,
+    initializeGameState,
+    resetGameState,
+    startNextWave,
+    continueFromMarketplace,
+    upgradeWeapon,
+    upgradeHealth
   } = useGameState()
-  const { loadAssets, zombieSpritesRef, playerImageRef } = useAssetLoader()
+  const { loadAssets, zombieSpritesRef, playerSpritesRef, floorTextureRef } = useAssetLoader()
   const { 
     topScores, 
     allScores, 
@@ -66,11 +66,8 @@ export default function BoxheadGame() {
     setCurrentScreen('playing')
     
     try {
-      const { playerSprite } = await loadAssets()
-      const gameState = initializeGameState(playerSprite)
-      if (gameState) {
-        gameState.player.sprite = playerSprite
-      }
+      const { playerSprites } = await loadAssets()
+      const gameState = initializeGameState(playerSprites)
       
       // Reset all game state
       setScore(0)
@@ -99,10 +96,7 @@ export default function BoxheadGame() {
   }, [])
 
   const resetGame = useCallback(() => {
-    const gameState = resetGameState(playerImageRef.current)
-    if (gameState && playerImageRef.current) {
-      gameState.player.sprite = playerImageRef.current
-    }
+    const gameState = resetGameState(playerSpritesRef.current)
     setScore(0)
     setCurrentWave(0)
     setPlayerHealth(100)
@@ -112,7 +106,7 @@ export default function BoxheadGame() {
     setWaveMessage("")
     setShowScoreModal(false)
     handleStartNextWave()
-  }, [resetGameState, playerImageRef, handleStartNextWave])
+  }, [resetGameState, playerSpritesRef, handleStartNextWave])
 
   const handleScoreSubmit = useCallback(async (scoreData: any) => {
     const success = await submitScore(scoreData)
@@ -190,10 +184,10 @@ export default function BoxheadGame() {
             <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-red-500/10 rounded-full blur-3xl animate-pulse"></div>
             <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
           </div>
-          
+
           {/* Grid overlay */}
           <div className="absolute inset-0 bg-[linear-gradient(rgba(255,140,0,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,140,0,0.1)_1px,transparent_1px)] bg-[size:20px_20px]"></div>
-          
+
           {/* Floating particles */}
           <FloatingParticles />
         </div>
@@ -207,7 +201,7 @@ export default function BoxheadGame() {
             <div className="text-gray-300 font-mono text-xl mb-6">
               Cargando assets del juego...
             </div>
-            
+
             {/* Loading animation */}
             <div className="flex justify-center space-x-2">
               {[...Array(5)].map((_, i) => (
@@ -241,10 +235,10 @@ export default function BoxheadGame() {
           <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-red-500/10 rounded-full blur-3xl animate-pulse"></div>
           <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
         </div>
-        
+
         {/* Grid overlay */}
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,140,0,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,140,0,0.1)_1px,transparent_1px)] bg-[size:20px_20px]"></div>
-        
+
         {/* Floating particles */}
         <FloatingParticles />
       </div>
@@ -262,24 +256,24 @@ export default function BoxheadGame() {
           onReturnHome={returnToHome}
           player={gameStateRef.current?.player}
         />
-        
+
         <div className="relative shadow-2xl">
           {/* Game Canvas Container with apocalyptic styling */}
           <div className="bg-black/40 backdrop-blur-sm border border-orange-500/50 rounded-lg p-4 hover:border-orange-500/70 transition-colors">
             <GameCanvas
               gameState={gameStateRef.current}
               zombieSprites={zombieSpritesRef.current}
-              waveMessage={waveMessage}
-              startNextWave={handleStartNextWave}
-              setScore={setScore}
-              setPlayerHealth={setPlayerHealth}
-              setPlayerCoins={setPlayerCoins}
-              setGameOver={setGameOver}
-              onMouseMove={handleMouseMoveWrapper}
-              onMouseClick={handleMouseClick}
-            />
-          </div>
-          
+              floorTexture={floorTextureRef.current}
+          waveMessage={waveMessage}
+          startNextWave={handleStartNextWave}
+          setScore={setScore}
+          setPlayerHealth={setPlayerHealth}
+          setPlayerCoins={setPlayerCoins}
+          setGameOver={setGameOver}
+          onMouseMove={handleMouseMoveWrapper}
+          onMouseClick={handleMouseClick}
+        /></div>
+
           {/* Game Over/Won Overlay */}
           {(gameOver || gameWon) && (
             <div className="absolute inset-0 bg-black/90 backdrop-blur-sm flex flex-col items-center justify-center rounded-lg border border-orange-500/50">
@@ -292,7 +286,7 @@ export default function BoxheadGame() {
                     ¡Defendiste exitosamente contra todas las waves de zombies!
                   </p>
                 )}
-                
+
                 {/* Stats Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                   <div className="bg-black/40 border border-orange-500/20 rounded p-4">
@@ -308,7 +302,7 @@ export default function BoxheadGame() {
                     <div className="text-3xl font-bold text-white font-mono">{currentWave}</div>
                   </div>
                 </div>
-                
+
                 {!showScoreModal && (
                   <div className="flex gap-4 justify-center">
                     <button

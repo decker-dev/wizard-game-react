@@ -19,7 +19,12 @@ export interface Player {
   health: number
   maxHealth: number
   angle: number
-  sprite: HTMLImageElement | null
+  sprites: {
+    N: HTMLImageElement | null
+    S: HTMLImageElement | null
+    E: HTMLImageElement | null
+    W: HTMLImageElement | null
+  }
   lastDamageTime: number
   lastMovementDirection: Vector2
   coins: number

@@ -12,8 +12,13 @@ import { createInitialPlayer } from '@/game/Player'
 
 export const useGameState = () => {
   const createInitialGameState = useCallback(
-    (playerSprite: HTMLImageElement | null): GameState => ({
-      player: createInitialPlayer(playerSprite),
+    (playerSprites: {
+      N: HTMLImageElement | null
+      S: HTMLImageElement | null
+      E: HTMLImageElement | null
+      W: HTMLImageElement | null
+    }): GameState => ({
+      player: createInitialPlayer(playerSprites),
       projectiles: [],
       zombies: [],
       obstacles: obstaclesData,
@@ -34,13 +39,23 @@ export const useGameState = () => {
 
   const gameStateRef = useRef<GameState | null>(null)
 
-  const initializeGameState = useCallback((playerSprite: HTMLImageElement | null) => {
-    gameStateRef.current = createInitialGameState(playerSprite)
+  const initializeGameState = useCallback((playerSprites: {
+    N: HTMLImageElement | null
+    S: HTMLImageElement | null
+    E: HTMLImageElement | null
+    W: HTMLImageElement | null
+  }) => {
+    gameStateRef.current = createInitialGameState(playerSprites)
     return gameStateRef.current
   }, [createInitialGameState])
 
-  const resetGameState = useCallback((playerSprite: HTMLImageElement | null) => {
-    gameStateRef.current = createInitialGameState(playerSprite)
+  const resetGameState = useCallback((playerSprites: {
+    N: HTMLImageElement | null
+    S: HTMLImageElement | null
+    E: HTMLImageElement | null
+    W: HTMLImageElement | null
+  }) => {
+    gameStateRef.current = createInitialGameState(playerSprites)
     return gameStateRef.current
   }, [createInitialGameState])
 
@@ -49,11 +64,11 @@ export const useGameState = () => {
     setWaveMessage: (message: string) => void,
     setGameWon: (won: boolean) => void
   ) => {
-    if (!gameStateRef.current || gameStateRef.current.waveTransitioning || 
-        gameStateRef.current.gameWon || gameStateRef.current.gameOver) {
+    if (!gameStateRef.current || gameStateRef.current.waveTransitioning ||
+      gameStateRef.current.gameWon || gameStateRef.current.gameOver) {
       return
     }
-    
+
     gameStateRef.current.waveTransitioning = true
     gameStateRef.current.currentWave++
     setCurrentWave(gameStateRef.current.currentWave)
