@@ -264,15 +264,15 @@ export default function BoxheadGame() {
               gameState={gameStateRef.current}
               zombieSprites={zombieSpritesRef.current}
               floorTexture={floorTextureRef.current}
-          waveMessage={waveMessage}
-          startNextWave={handleStartNextWave}
-          setScore={setScore}
-          setPlayerHealth={setPlayerHealth}
-          setPlayerCoins={setPlayerCoins}
-          setGameOver={setGameOver}
-          onMouseMove={handleMouseMoveWrapper}
-          onMouseClick={handleMouseClick}
-        /></div>
+              waveMessage={waveMessage}
+              startNextWave={handleStartNextWave}
+              setScore={setScore}
+              setPlayerHealth={setPlayerHealth}
+              setPlayerCoins={setPlayerCoins}
+              setGameOver={setGameOver}
+              onMouseMove={handleMouseMoveWrapper}
+              onMouseClick={handleMouseClick}
+            /></div>
 
           {/* Game Over/Won Overlay */}
           {(gameOver || gameWon) && (

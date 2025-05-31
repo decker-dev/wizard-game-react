@@ -53,3 +53,6 @@ export const MINIMAP_SIZE = 80;
 export const MINIMAP_PADDING = 10;
 export const MINIMAP_SCALE_X = MINIMAP_SIZE / MAP_WIDTH;
 export const MINIMAP_SCALE_Y = MINIMAP_SIZE / MAP_HEIGHT;
+
+// Wall rendering constants
+export const WALL_BLOCK_SIZE = 32; // Tamaño de cada bloque individual de pared
