@@ -7,6 +7,7 @@ import {
   PLAYER_SPRITE_WIDTH,
   PLAYER_SPRITE_HEIGHT,
   INVULNERABILITY_TIME,
+  WALL_BLOCK_SIZE
 } from '@/constants/game'
 import { getZombieSprite } from './Zombies'
 import { getPlayerSprite } from './Player'
@@ -45,13 +46,8 @@ export const render = (
       screenY + obs.height >= 0 &&
       screenY <= canvasHeight
     ) {
-      ctx.fillStyle = "#808080"
-      ctx.fillRect(screenX, screenY, obs.width, obs.height)
-      ctx.strokeStyle = "#000000"
-      ctx.lineWidth = 2
-      ctx.strokeRect(screenX, screenY, obs.width, obs.height)
-      ctx.fillStyle = "rgba(0,0,0,0.2)"
-      ctx.fillRect(screenX + 5, screenY + 5, obs.width, obs.height)
+      // Renderizar muros con bloques grises
+      renderWallBlocks(ctx, screenX, screenY, obs.width, obs.height)
     }
   })
 
@@ -285,6 +281,47 @@ const renderFloorTexture = (
         drawX + textureWidth > 0 && drawY + textureHeight > 0) {
         ctx.drawImage(floorTexture, drawX, drawY, textureWidth, textureHeight)
       }
+    }
+  }
+}
+
+const renderWallBlocks = (
+  ctx: CanvasRenderingContext2D,
+  screenX: number,
+  screenY: number,
+  width: number,
+  height: number
+) => {
+  // Calcular cuántos bloques necesitamos
+  const blocksX = Math.ceil(width / WALL_BLOCK_SIZE)
+  const blocksY = Math.ceil(height / WALL_BLOCK_SIZE)
+
+  // Renderizar cada bloque individualmente
+  for (let bx = 0; bx < blocksX; bx++) {
+    for (let by = 0; by < blocksY; by++) {
+      const blockX = screenX + bx * WALL_BLOCK_SIZE
+      const blockY = screenY + by * WALL_BLOCK_SIZE
+      const blockWidth = Math.min(WALL_BLOCK_SIZE, width - bx * WALL_BLOCK_SIZE)
+      const blockHeight = Math.min(WALL_BLOCK_SIZE, height - by * WALL_BLOCK_SIZE)
+
+      // Renderizar el bloque base con color gris
+      ctx.fillStyle = "#808080" // Gris base
+      ctx.fillRect(blockX, blockY, blockWidth, blockHeight)
+
+      // Agregar efecto 3D - sombra en la parte inferior y derecha
+      ctx.fillStyle = "rgba(0,0,0,0.4)"
+      ctx.fillRect(blockX + 2, blockY + blockHeight - 3, blockWidth - 2, 3) // Sombra inferior
+      ctx.fillRect(blockX + blockWidth - 3, blockY + 2, 3, blockHeight - 2) // Sombra derecha
+
+      // Agregar highlight en la parte superior e izquierda
+      ctx.fillStyle = "rgba(255,255,255,0.3)"
+      ctx.fillRect(blockX, blockY, blockWidth, 2) // Highlight superior
+      ctx.fillRect(blockX, blockY, 2, blockHeight) // Highlight izquierdo
+
+      // Borde del bloque
+      ctx.strokeStyle = "rgba(0,0,0,0.6)"
+      ctx.lineWidth = 1
+      ctx.strokeRect(blockX, blockY, blockWidth, blockHeight)
     }
   }
 } 
