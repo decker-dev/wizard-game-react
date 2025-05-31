@@ -26,7 +26,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({ isVisible, onClose }) =>
         <div className="mb-6">
           <div className="bg-white p-4 rounded-lg inline-block">
             <img 
-              src="/qr.png" 
+              src="/qr.jpeg" 
               alt="QR Code para acceder al juego" 
               className="w-48 h-48 object-contain"
             />
