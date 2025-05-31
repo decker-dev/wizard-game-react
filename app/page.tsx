@@ -16,6 +16,7 @@ interface Player {
   health: number
   angle: number
   sprite: HTMLImageElement | null
+  lastDamageTime: number
 }
 
 interface Projectile {
@@ -61,6 +62,8 @@ interface GameState {
 
 const CANVAS_WIDTH = 800
 const CANVAS_HEIGHT = 600
+const MAP_WIDTH = 2000  // Mapa más grande que el canvas
+const MAP_HEIGHT = 1500
 const PLAYER_SPEED = 3
 const PROJECTILE_SPEED = 10
 const ZOMBIE_SPEED_BASE = 0.7 // Base speed for zombies
@@ -73,13 +76,28 @@ const ZOMBIE_HEIGHT = 30
 const INITIAL_ZOMBIE_HEALTH = 30
 const MAX_WAVES = 5
 
+const ZOMBIE_DAMAGE = 30
+const INVULNERABILITY_TIME = 1000
+
 const obstaclesData: Obstacle[] = [
-  { x: 100, y: 100, width: 80, height: 80 }, // Top-left
-  { x: CANVAS_WIDTH - 180, y: 100, width: 80, height: 80 }, // Top-right
-  { x: 100, y: CANVAS_HEIGHT - 180, width: 80, height: 80 }, // Bottom-left
-  { x: CANVAS_WIDTH - 180, y: CANVAS_HEIGHT - 180, width: 80, height: 80 }, // Bottom-right
-  { x: CANVAS_WIDTH / 2 - 40, y: CANVAS_HEIGHT / 2 - 40, width: 80, height: 80 }, // Center
+  // Esquinas
+  { x: 150, y: 150, width: 100, height: 100 },
+  { x: MAP_WIDTH - 250, y: 150, width: 100, height: 100 },
+  { x: 150, y: MAP_HEIGHT - 250, width: 100, height: 100 },
+  { x: MAP_WIDTH - 250, y: MAP_HEIGHT - 250, width: 100, height: 100 },
+  // Centro
+  { x: MAP_WIDTH / 2 - 50, y: MAP_HEIGHT / 2 - 50, width: 100, height: 100 },
+  // Obstáculos adicionales distribuidos
+  { x: MAP_WIDTH / 4 - 50, y: MAP_HEIGHT / 2 - 50, width: 100, height: 100 },
+  { x: (MAP_WIDTH / 4) * 3 - 50, y: MAP_HEIGHT / 2 - 50, width: 100, height: 100 },
+  { x: MAP_WIDTH / 2 - 50, y: MAP_HEIGHT / 4 - 50, width: 100, height: 100 },
+  { x: MAP_WIDTH / 2 - 50, y: (MAP_HEIGHT / 4) * 3 - 50, width: 100, height: 100 },
 ]
+
+const MINIMAP_SIZE = 80 // Tamaño del minimapa
+const MINIMAP_PADDING = 10 // Padding desde las esquinas
+const MINIMAP_SCALE_X = MINIMAP_SIZE / MAP_WIDTH
+const MINIMAP_SCALE_Y = MINIMAP_SIZE / MAP_HEIGHT
 
 export default function BoxheadGame() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -88,8 +106,7 @@ export default function BoxheadGame() {
 
   const initialPlayerState = useCallback(
     (): Player => ({
-      // Corrected Starting Position: Clear of obstacles
-      position: { x: 70, y: 70 }, // Changed from CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2
+      position: { x: 70, y: 70 },
       collisionRadius: PLAYER_COLLISION_RADIUS,
       width: PLAYER_SPRITE_WIDTH * 0.8,
       height: PLAYER_SPRITE_HEIGHT * 0.8,
@@ -97,6 +114,7 @@ export default function BoxheadGame() {
       health: 100,
       angle: 0,
       sprite: playerImageRef.current,
+      lastDamageTime: 0
     }),
     [],
   )
@@ -115,7 +133,7 @@ export default function BoxheadGame() {
       gameOver: false,
       gameWon: false,
       keys: {},
-      mousePosition: { x: 70, y: 0 }, // Initial mouse aim direction
+      mousePosition: { x: 70, y: 0 },
       waveTransitioning: false,
     }),
     [initialPlayerState],
@@ -194,7 +212,17 @@ export default function BoxheadGame() {
     const canvas = canvasRef.current
     if (!canvas) return
     const rect = canvas.getBoundingClientRect()
-    gameStateRef.current.mousePosition = { x: e.clientX - rect.left, y: e.clientY - rect.top }
+    const mouseX = e.clientX - rect.left
+    const mouseY = e.clientY - rect.top
+    
+    const { player } = gameStateRef.current
+    const cameraX = Math.max(0, Math.min(MAP_WIDTH - CANVAS_WIDTH, player.position.x - CANVAS_WIDTH / 2))
+    const cameraY = Math.max(0, Math.min(MAP_HEIGHT - CANVAS_HEIGHT, player.position.y - CANVAS_HEIGHT / 2))
+    
+    gameStateRef.current.mousePosition = { 
+      x: mouseX + cameraX,
+      y: mouseY + cameraY
+    }
   }, [])
   const handleMouseClick = useCallback(
     (e: MouseEvent) => {
@@ -208,7 +236,10 @@ export default function BoxheadGame() {
       const { player, mousePosition } = gameStateRef.current
       const now = Date.now()
       if (now - lastShotTimeRef.current > 250) {
-        const direction = normalize({ x: mousePosition.x - player.position.x, y: mousePosition.y - player.position.y })
+        const direction = normalize({
+          x: mousePosition.x - player.position.x,
+          y: mousePosition.y - player.position.y
+        })
         gameStateRef.current.projectiles.push({
           position: { ...player.position },
           velocity: { x: direction.x * PROJECTILE_SPEED, y: direction.y * PROJECTILE_SPEED },
@@ -240,35 +271,31 @@ export default function BoxheadGame() {
       dy = (dy / mag) * speed
     }
 
-    // Try moving X first
     player.position.x += dx
     let playerRect = getEntityRect(player)
     let collidedX = false
     for (const obs of obstacles) {
       if (checkAABBCollision(playerRect, obs)) {
-        player.position.x = oldPos.x // Revert X move
+        player.position.x = oldPos.x
         collidedX = true
         break
       }
     }
 
-    // Try moving Y
     player.position.y += dy
-    playerRect = getEntityRect(player) // Update rect with new Y
+    playerRect = getEntityRect(player)
     let collidedY = false
     for (const obs of obstacles) {
       if (checkAABBCollision(playerRect, obs)) {
-        player.position.y = oldPos.y // Revert Y move
+        player.position.y = oldPos.y
         collidedY = true
-        // If X also collided, player might be stuck in a corner, ensure X is also reverted.
         if (collidedX) player.position.x = oldPos.x
         break
       }
     }
 
-    // Final clamping to canvas bounds
-    player.position.x = Math.max(width / 2, Math.min(CANVAS_WIDTH - width / 2, player.position.x))
-    player.position.y = Math.max(height / 2, Math.min(CANVAS_HEIGHT - height / 2, player.position.y))
+    player.position.x = Math.max(width / 2, Math.min(MAP_WIDTH - width / 2, player.position.x))
+    player.position.y = Math.max(height / 2, Math.min(MAP_HEIGHT - height / 2, player.position.y))
 
     const angleDx = mousePosition.x - player.position.x
     const angleDy = mousePosition.y - player.position.y
@@ -281,7 +308,7 @@ export default function BoxheadGame() {
       const p = projectiles[i]
       p.position.x += p.velocity.x
       p.position.y += p.velocity.y
-      if (p.position.x < 0 || p.position.x > CANVAS_WIDTH || p.position.y < 0 || p.position.y > CANVAS_HEIGHT) {
+      if (p.position.x < 0 || p.position.x > MAP_WIDTH || p.position.y < 0 || p.position.y > MAP_HEIGHT) {
         projectiles.splice(i, 1)
         continue
       }
@@ -317,20 +344,20 @@ export default function BoxheadGame() {
       let x, y
       switch (side) {
         case 0:
-          x = Math.random() * CANVAS_WIDTH
+          x = Math.random() * MAP_WIDTH
           y = -ZOMBIE_HEIGHT
           break
         case 1:
-          x = CANVAS_WIDTH + ZOMBIE_WIDTH
-          y = Math.random() * CANVAS_HEIGHT
+          x = MAP_WIDTH + ZOMBIE_WIDTH
+          y = Math.random() * MAP_HEIGHT
           break
         case 2:
-          x = Math.random() * CANVAS_WIDTH
-          y = CANVAS_HEIGHT + ZOMBIE_HEIGHT
+          x = Math.random() * MAP_WIDTH
+          y = MAP_HEIGHT + ZOMBIE_HEIGHT
           break
         default:
           x = -ZOMBIE_WIDTH
-          y = Math.random() * CANVAS_HEIGHT
+          y = Math.random() * MAP_HEIGHT
           break
       }
       const zombieHealth = INITIAL_ZOMBIE_HEALTH + currentWave * 5
@@ -366,11 +393,11 @@ export default function BoxheadGame() {
       }
 
       zombie.position.y += direction.y * zombie.speed
-      zombieRect = getEntityRect(zombie) // Update rect with new Y
+      zombieRect = getEntityRect(zombie)
       for (const obs of obstacles) {
         if (checkAABBCollision(zombieRect, obs)) {
           zombie.position.y = oldPos.y
-          if (collidedX) zombie.position.x = oldPos.x // Also revert X if it was reverted
+          if (collidedX) zombie.position.x = oldPos.x
           break
         }
       }
@@ -397,7 +424,6 @@ export default function BoxheadGame() {
             zombies.splice(j, 1)
             gameStateRef.current.score++
             setScore(gameStateRef.current.score)
-            // gameStateRef.current.zombiesRemainingInWave--; // Not strictly needed if using spawned count and length
             if (zombiesSpawnedThisWave >= zombiesToSpawnThisWave && zombies.length === 0) {
               startNextWave()
             }
@@ -406,26 +432,31 @@ export default function BoxheadGame() {
         }
       }
     }
-    const playerRectForZombieCollision = {
-      x: player.position.x - player.collisionRadius,
-      y: player.position.y - player.collisionRadius,
-      width: player.collisionRadius * 2,
-      height: player.collisionRadius * 2,
-    }
-    for (let i = zombies.length - 1; i >= 0; i--) {
-      const z = zombies[i]
-      const zombieRect = getEntityRect(z)
-      if (checkAABBCollision(playerRectForZombieCollision, zombieRect)) {
-        // zombies.splice(i, 1); // Zombie is NOT destroyed on contact, it damages player
-        player.health -= 10 // Reduced damage from zombie collision
-        setPlayerHealth(player.health)
-        if (player.health <= 0) {
-          gameStateRef.current.gameOver = true
-          setGameOver(true)
+
+    const now = Date.now()
+    const canTakeDamage = now - player.lastDamageTime >= INVULNERABILITY_TIME
+
+    if (canTakeDamage) {
+      const playerRectForZombieCollision = {
+        x: player.position.x - player.collisionRadius,
+        y: player.position.y - player.collisionRadius,
+        width: player.collisionRadius * 2,
+        height: player.collisionRadius * 2,
+      }
+
+      for (let i = zombies.length - 1; i >= 0; i--) {
+        const z = zombies[i]
+        const zombieRect = getEntityRect(z)
+        if (checkAABBCollision(playerRectForZombieCollision, zombieRect)) {
+          player.health -= ZOMBIE_DAMAGE
+          player.lastDamageTime = now
+          setPlayerHealth(player.health)
+          if (player.health <= 0) {
+            gameStateRef.current.gameOver = true
+            setGameOver(true)
+          }
+          break
         }
-        // Add a small knockback or temporary invulnerability for player if desired
-        // For now, zombie passes through player after damage or gets stuck
-        // A better approach would be to resolve zombie/player collision like obstacles
       }
     }
   }, [startNextWave, getEntityRect, checkAABBCollision])
@@ -436,81 +467,196 @@ export default function BoxheadGame() {
     const ctx = canvas.getContext("2d")
     if (!ctx) return
 
-    ctx.fillStyle = "#c2b280" // Tan background
+    const { player } = gameStateRef.current
+
+    const cameraX = Math.max(0, Math.min(MAP_WIDTH - CANVAS_WIDTH, player.position.x - CANVAS_WIDTH / 2))
+    const cameraY = Math.max(0, Math.min(MAP_HEIGHT - CANVAS_HEIGHT, player.position.y - CANVAS_HEIGHT / 2))
+
+    ctx.fillStyle = "#c2b280"
     ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
 
     gameStateRef.current.obstacles.forEach((obs) => {
-      ctx.fillStyle = "#808080"
-      ctx.fillRect(obs.x, obs.y, obs.width, obs.height)
-      ctx.strokeStyle = "#000000"
-      ctx.lineWidth = 2
-      ctx.strokeRect(obs.x, obs.y, obs.width, obs.height)
-      ctx.fillStyle = "rgba(0,0,0,0.2)"
-      ctx.fillRect(obs.x + 5, obs.y + 5, obs.width, obs.height)
+      const screenX = obs.x - cameraX
+      const screenY = obs.y - cameraY
+
+      if (
+        screenX + obs.width >= 0 &&
+        screenX <= CANVAS_WIDTH &&
+        screenY + obs.height >= 0 &&
+        screenY <= CANVAS_HEIGHT
+      ) {
+        ctx.fillStyle = "#808080"
+        ctx.fillRect(screenX, screenY, obs.width, obs.height)
+        ctx.strokeStyle = "#000000"
+        ctx.lineWidth = 2
+        ctx.strokeRect(screenX, screenY, obs.width, obs.height)
+        ctx.fillStyle = "rgba(0,0,0,0.2)"
+        ctx.fillRect(screenX + 5, screenY + 5, obs.width, obs.height)
+      }
     })
 
-    const { player } = gameStateRef.current
     if (player.sprite) {
       ctx.save()
-      ctx.translate(player.position.x, player.position.y)
+      const now = Date.now()
+      const isInvulnerable = now - player.lastDamageTime < INVULNERABILITY_TIME
+      if (isInvulnerable) {
+        ctx.globalAlpha = 0.5 + Math.sin(now * 0.01) * 0.3
+      }
+      ctx.translate(player.position.x - cameraX, player.position.y - cameraY)
       ctx.rotate(player.angle + Math.PI / 2)
       ctx.drawImage(
         player.sprite,
         -PLAYER_SPRITE_WIDTH / 2,
         -PLAYER_SPRITE_HEIGHT / 2,
         PLAYER_SPRITE_WIDTH,
-        PLAYER_SPRITE_HEIGHT,
+        PLAYER_SPRITE_HEIGHT
       )
       ctx.restore()
+      ctx.globalAlpha = 1.0
     }
 
+    const playerScreenX = player.position.x - cameraX
+    const playerScreenY = player.position.y - cameraY
     const playerHealthBarWidth = PLAYER_SPRITE_WIDTH
     const playerHealthBarHeight = 6
     ctx.fillStyle = "rgba(255,0,0,0.5)"
     ctx.fillRect(
-      player.position.x - playerHealthBarWidth / 2,
-      player.position.y - PLAYER_SPRITE_HEIGHT / 2 - 15,
+      playerScreenX - playerHealthBarWidth / 2,
+      playerScreenY - PLAYER_SPRITE_HEIGHT / 2 - 15,
       playerHealthBarWidth,
-      playerHealthBarHeight,
+      playerHealthBarHeight
     )
     ctx.fillStyle = "rgba(0,255,0,0.8)"
     ctx.fillRect(
-      player.position.x - playerHealthBarWidth / 2,
-      player.position.y - PLAYER_SPRITE_HEIGHT / 2 - 15,
+      playerScreenX - playerHealthBarWidth / 2,
+      playerScreenY - PLAYER_SPRITE_HEIGHT / 2 - 15,
       playerHealthBarWidth * Math.max(0, player.health / 100),
-      playerHealthBarHeight,
+      playerHealthBarHeight
     )
 
     ctx.fillStyle = "#FFFF00"
     gameStateRef.current.projectiles.forEach((p) => {
-      ctx.beginPath()
-      ctx.arc(p.position.x, p.position.y, p.radius, 0, Math.PI * 2)
-      ctx.fill()
+      const screenX = p.position.x - cameraX
+      const screenY = p.position.y - cameraY
+      if (
+        screenX >= 0 &&
+        screenX <= CANVAS_WIDTH &&
+        screenY >= 0 &&
+        screenY <= CANVAS_HEIGHT
+      ) {
+        ctx.beginPath()
+        ctx.arc(screenX, screenY, p.radius, 0, Math.PI * 2)
+        ctx.fill()
+      }
     })
 
     gameStateRef.current.zombies.forEach((z) => {
-      ctx.fillStyle = "#2E8B57" // Sea green
-      ctx.fillRect(z.position.x - z.width / 2, z.position.y - z.height / 2, z.width, z.height)
-      const healthBarWidth = z.width * 0.8
-      const healthBarHeight = 5
-      ctx.fillStyle = "rgba(255,0,0,0.5)"
-      ctx.fillRect(z.position.x - healthBarWidth / 2, z.position.y - z.height / 2 - 10, healthBarWidth, healthBarHeight)
-      ctx.fillStyle = "rgba(0,255,0,0.8)"
+      const screenX = z.position.x - cameraX
+      const screenY = z.position.y - cameraY
+
+      if (
+        screenX + z.width >= 0 &&
+        screenX - z.width <= CANVAS_WIDTH &&
+        screenY + z.height >= 0 &&
+        screenY - z.height <= CANVAS_HEIGHT
+      ) {
+        ctx.fillStyle = "#2E8B57"
+        ctx.fillRect(screenX - z.width / 2, screenY - z.height / 2, z.width, z.height)
+        const healthBarWidth = z.width * 0.8
+        const healthBarHeight = 5
+        ctx.fillStyle = "rgba(255,0,0,0.5)"
+        ctx.fillRect(
+          screenX - healthBarWidth / 2,
+          screenY - z.height / 2 - 10,
+          healthBarWidth,
+          healthBarHeight
+        )
+        ctx.fillStyle = "rgba(0,255,0,0.8)"
+        ctx.fillRect(
+          screenX - healthBarWidth / 2,
+          screenY - z.height / 2 - 10,
+          healthBarWidth * Math.max(0, z.health / z.maxHealth),
+          healthBarHeight
+        )
+      }
+    })
+
+    // Renderizar el minimapa
+    // Fondo del minimapa
+    ctx.fillStyle = "rgba(0, 0, 0, 0.5)"
+    ctx.fillRect(
+      CANVAS_WIDTH - MINIMAP_SIZE - MINIMAP_PADDING,
+      MINIMAP_PADDING,
+      MINIMAP_SIZE,
+      MINIMAP_SIZE
+    )
+
+    // Borde del minimapa
+    ctx.strokeStyle = "#FFFFFF"
+    ctx.lineWidth = 2
+    ctx.strokeRect(
+      CANVAS_WIDTH - MINIMAP_SIZE - MINIMAP_PADDING,
+      MINIMAP_PADDING,
+      MINIMAP_SIZE,
+      MINIMAP_SIZE
+    )
+
+    // Área visible en el minimapa
+    const visibleAreaX = (cameraX / MAP_WIDTH) * MINIMAP_SIZE
+    const visibleAreaY = (cameraY / MAP_HEIGHT) * MINIMAP_SIZE
+    const visibleAreaWidth = (CANVAS_WIDTH / MAP_WIDTH) * MINIMAP_SIZE
+    const visibleAreaHeight = (CANVAS_HEIGHT / MAP_HEIGHT) * MINIMAP_SIZE
+
+    ctx.strokeStyle = "#FFFF00"
+    ctx.strokeRect(
+      CANVAS_WIDTH - MINIMAP_SIZE - MINIMAP_PADDING + visibleAreaX,
+      MINIMAP_PADDING + visibleAreaY,
+      visibleAreaWidth,
+      visibleAreaHeight
+    )
+
+    // Obstáculos en el minimapa
+    gameStateRef.current.obstacles.forEach((obs) => {
+      const minimapX = CANVAS_WIDTH - MINIMAP_SIZE - MINIMAP_PADDING + obs.x * MINIMAP_SCALE_X
+      const minimapY = MINIMAP_PADDING + obs.y * MINIMAP_SCALE_Y
+      ctx.fillStyle = "#808080"
       ctx.fillRect(
-        z.position.x - healthBarWidth / 2,
-        z.position.y - z.height / 2 - 10,
-        healthBarWidth * Math.max(0, z.health / z.maxHealth),
-        healthBarHeight,
+        minimapX,
+        minimapY,
+        obs.width * MINIMAP_SCALE_X,
+        obs.height * MINIMAP_SCALE_Y
       )
     })
 
+    // Zombies en el minimapa
+    gameStateRef.current.zombies.forEach((z) => {
+      const minimapX = CANVAS_WIDTH - MINIMAP_SIZE - MINIMAP_PADDING + z.position.x * MINIMAP_SCALE_X
+      const minimapY = MINIMAP_PADDING + z.position.y * MINIMAP_SCALE_Y
+      ctx.fillStyle = "#2E8B57"
+      ctx.fillRect(
+        minimapX - 2,
+        minimapY - 2,
+        4,
+        4
+      )
+    })
+
+    // Jugador en el minimapa
+    const playerMinimapX = CANVAS_WIDTH - MINIMAP_SIZE - MINIMAP_PADDING + player.position.x * MINIMAP_SCALE_X
+    const playerMinimapY = MINIMAP_PADDING + player.position.y * MINIMAP_SCALE_Y
+    ctx.fillStyle = "#FF0000"
+    ctx.beginPath()
+    ctx.arc(playerMinimapX, playerMinimapY, 3, 0, Math.PI * 2)
+    ctx.fill()
+
+    // Mensajes de wave
     if (waveMessage) {
       ctx.fillStyle = "rgba(0, 0, 0, 0.7)"
       ctx.fillRect(CANVAS_WIDTH / 4, CANVAS_HEIGHT / 3, CANVAS_WIDTH / 2, CANVAS_HEIGHT / 4)
       ctx.font = "bold 24px Arial"
       ctx.fillStyle = "#FFFFFF"
       ctx.textAlign = "center"
-      ctx.fillText(waveMessage, CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 - 10) // Adjusted text position
+      ctx.fillText(waveMessage, CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 - 10)
       if (gameStateRef.current.waveTransitioning && !gameStateRef.current.gameWon && !gameStateRef.current.gameOver) {
         ctx.font = "16px Arial"
         ctx.fillText("Prepare yourself!", CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 + 20)
@@ -539,16 +685,13 @@ export default function BoxheadGame() {
         gameStateRef.current.player.sprite = img
       }
       setIsLoading(false)
-      // startNextWave is called here, after isLoading is false
-      // This ensures the game loop (dependent on isLoading) can start
-      // and then wave transition logic proceeds.
       startNextWave()
     }
     img.onerror = () => {
       console.error("Failed to load player sprite.")
       setIsLoading(false)
     }
-  }, [startNextWave]) // startNextWave is stable
+  }, [startNextWave])
 
   useEffect(() => {
     if (!isLoading) {
@@ -590,9 +733,9 @@ export default function BoxheadGame() {
       gameStateRef.current.player.sprite = playerImageRef.current
     }
     setScore(0)
-    setCurrentWave(0) // Will be incremented by startNextWave
-    setPlayerHealth(100) // Make sure React state for health is also reset
-    gameStateRef.current.player.health = 100 // And the ref state
+    setCurrentWave(0)
+    setPlayerHealth(100)
+    gameStateRef.current.player.health = 100
     setGameOver(false)
     setGameWon(false)
     setWaveMessage("")
