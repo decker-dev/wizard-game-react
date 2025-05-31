@@ -17,6 +17,7 @@ interface Player {
   angle: number
   sprite: HTMLImageElement | null
   lastDamageTime: number
+  lastMovementDirection: Vector2
 }
 
 interface Projectile {
@@ -89,6 +90,8 @@ const FIREBALL_SPEED = 5          // Velocidad de las bolas de fuego
 const FIREBALL_DAMAGE = 50        // Daño de las bolas de fuego
 const SHOOTER_FIRE_RATE = 2000    // Dispara cada 2 segundos
 
+const KNOCKBACK_FORCE = 50
+
 const obstaclesData: Obstacle[] = [
   // Esquinas
   { x: 150, y: 150, width: 100, height: 100 },
@@ -143,7 +146,8 @@ export default function BoxheadGame() {
       health: 100,
       angle: 0,
       sprite: playerImageRef.current,
-      lastDamageTime: 0
+      lastDamageTime: 0,
+      lastMovementDirection: { x: 1, y: 0 }
     }),
     [],
   )
@@ -233,10 +237,35 @@ export default function BoxheadGame() {
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     gameStateRef.current.keys[e.key.toLowerCase()] = true
-  }, [])
+    
+    if (e.key === ' ' || e.key === 'Spacebar') {
+      e.preventDefault()
+      if (
+        !gameStateRef.current.gameOver &&
+        !gameStateRef.current.gameWon &&
+        !isLoading &&
+        !gameStateRef.current.waveTransitioning
+      ) {
+        const { player } = gameStateRef.current
+        const now = Date.now()
+        if (now - lastShotTimeRef.current > 250) {
+          const direction = { ...player.lastMovementDirection }
+          gameStateRef.current.projectiles.push({
+            position: { ...player.position },
+            velocity: { x: direction.x * PROJECTILE_SPEED, y: direction.y * PROJECTILE_SPEED },
+            radius: 4,
+            speed: PROJECTILE_SPEED,
+          })
+          lastShotTimeRef.current = now
+        }
+      }
+    }
+  }, [isLoading])
+
   const handleKeyUp = useCallback((e: KeyboardEvent) => {
     gameStateRef.current.keys[e.key.toLowerCase()] = false
   }, [])
+
   const handleMouseMove = useCallback((e: MouseEvent) => {
     const canvas = canvasRef.current
     if (!canvas) return
@@ -253,32 +282,12 @@ export default function BoxheadGame() {
       y: mouseY + cameraY
     }
   }, [])
+
   const handleMouseClick = useCallback(
     (e: MouseEvent) => {
-      if (
-        gameStateRef.current.gameOver ||
-        gameStateRef.current.gameWon ||
-        isLoading ||
-        gameStateRef.current.waveTransitioning
-      )
-        return
-      const { player, mousePosition } = gameStateRef.current
-      const now = Date.now()
-      if (now - lastShotTimeRef.current > 250) {
-        const direction = normalize({
-          x: mousePosition.x - player.position.x,
-          y: mousePosition.y - player.position.y
-        })
-        gameStateRef.current.projectiles.push({
-          position: { ...player.position },
-          velocity: { x: direction.x * PROJECTILE_SPEED, y: direction.y * PROJECTILE_SPEED },
-          radius: 4,
-          speed: PROJECTILE_SPEED,
-        })
-        lastShotTimeRef.current = now
-      }
+      // Ya no disparamos con click
     },
-    [isLoading],
+    [],
   )
 
   const updatePlayer = useCallback(() => {
@@ -294,10 +303,21 @@ export default function BoxheadGame() {
     if (keys["a"] || keys["arrowleft"]) dx -= speed
     if (keys["d"] || keys["arrowright"]) dx += speed
 
-    if (dx !== 0 && dy !== 0) {
+    // Actualizar la última dirección de movimiento si hay movimiento
+    if (dx !== 0 || dy !== 0) {
+      if (dx !== 0 && dy !== 0) {
+        const mag = Math.sqrt(dx * dx + dy * dy)
+        dx = (dx / mag) * speed
+        dy = (dy / mag) * speed
+      }
+      
+      // Normalizar y guardar la dirección de movimiento
       const mag = Math.sqrt(dx * dx + dy * dy)
-      dx = (dx / mag) * speed
-      dy = (dy / mag) * speed
+      if (mag > 0) {
+        player.lastMovementDirection = { x: dx / mag, y: dy / mag }
+        // Actualizar el ángulo del sprite basado en la dirección de movimiento
+        player.angle = Math.atan2(dy, dx)
+      }
     }
 
     player.position.x += dx
@@ -317,7 +337,6 @@ export default function BoxheadGame() {
     for (const obs of obstacles) {
       if (checkAABBCollision(playerRect, obs)) {
         player.position.y = oldPos.y
-        collidedY = true
         if (collidedX) player.position.x = oldPos.x
         break
       }
@@ -326,9 +345,10 @@ export default function BoxheadGame() {
     player.position.x = Math.max(width / 2, Math.min(MAP_WIDTH - width / 2, player.position.x))
     player.position.y = Math.max(height / 2, Math.min(MAP_HEIGHT - height / 2, player.position.y))
 
-    const angleDx = mousePosition.x - player.position.x
-    const angleDy = mousePosition.y - player.position.y
-    player.angle = Math.atan2(angleDy, angleDx)
+    // Ya no usamos el mouse para el ángulo del sprite
+    // const angleDx = mousePosition.x - player.position.x
+    // const angleDy = mousePosition.y - player.position.y
+    // player.angle = Math.atan2(angleDy, angleDx)
   }, [getEntityRect, checkAABBCollision])
 
   const updateProjectiles = useCallback(() => {
@@ -532,6 +552,20 @@ export default function BoxheadGame() {
             height: p.radius * 2,
           }
           if (checkAABBCollision(projectileRect, zombieRect)) {
+            // Calcular dirección del empuje
+            const knockbackDirection = normalize({
+              x: p.velocity.x,
+              y: p.velocity.y
+            })
+            
+            // Aplicar empuje al zombie
+            z.position.x += knockbackDirection.x * KNOCKBACK_FORCE
+            z.position.y += knockbackDirection.y * KNOCKBACK_FORCE
+            
+            // Asegurar que el zombie no salga del mapa
+            z.position.x = Math.max(z.width / 2, Math.min(MAP_WIDTH - z.width / 2, z.position.x))
+            z.position.y = Math.max(z.height / 2, Math.min(MAP_HEIGHT - z.height / 2, z.position.y))
+            
             projectiles.splice(i, 1)
             z.health -= 25
             if (z.health <= 0) {
@@ -975,7 +1009,7 @@ export default function BoxheadGame() {
         )}
       </div>
       <div className="mt-4 text-gray-300 text-center max-w-lg">
-        <p className="text-sm">WASD/Arrows to Move. Mouse to Aim. Click to Shoot. Survive the zombie onslaught!</p>
+        <p className="text-sm">WASD/Arrows to Move. SPACEBAR to Shoot in movement direction. Survive the zombie onslaught!</p>
       </div>
     </div>
   )
