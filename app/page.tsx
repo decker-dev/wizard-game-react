@@ -9,7 +9,7 @@ import { GameUI } from '@/components/GameUI'
 
 export default function BoxheadGame() {
   const { gameStateRef, initializeGameState, resetGameState, startNextWave } = useGameState()
-  const { loadAssets, zombieSpritesRef } = useAssetLoader()
+  const { loadAssets, zombieSpritesRef, playerImageRef } = useAssetLoader()
   
   const [score, setScore] = useState(0)
   const [currentWave, setCurrentWave] = useState(0)
@@ -37,10 +37,9 @@ export default function BoxheadGame() {
   }, [handleKeyDown, isLoading, gameStateRef])
 
   const resetGame = useCallback(() => {
-    const gameState = resetGameState(null)
-    if (gameState && gameState.player.sprite) {
-      gameState.player.sprite = zombieSpritesRef.current ? 
-        Object.values(zombieSpritesRef.current).find(sprite => sprite !== null) || null : null
+    const gameState = resetGameState(playerImageRef.current)
+    if (gameState && playerImageRef.current) {
+      gameState.player.sprite = playerImageRef.current
     }
     setScore(0)
     setCurrentWave(0)
@@ -49,7 +48,7 @@ export default function BoxheadGame() {
     setGameWon(false)
     setWaveMessage("")
     handleStartNextWave()
-  }, [resetGameState, zombieSpritesRef, handleStartNextWave])
+  }, [resetGameState, playerImageRef, handleStartNextWave])
 
   useEffect(() => {
     const loadGameAssets = async () => {
@@ -111,6 +110,22 @@ export default function BoxheadGame() {
           onMouseMove={handleMouseMoveWrapper}
           onMouseClick={handleMouseClick}
         />
+        
+        {/* Game Over/Won Overlay */}
+        {(gameOver || gameWon) && (
+          <div className="absolute inset-0 bg-black bg-opacity-80 flex flex-col items-center justify-center text-white">
+            <h2 className="text-5xl font-bold mb-6">{gameWon ? "YOU WIN!" : "GAME OVER!"}</h2>
+            {gameWon && <p className="text-2xl mb-4">You successfully defended against all zombie waves!</p>}
+            <p className="text-2xl mb-4">Zombies Killed: {score}</p>
+            <p className="text-2xl mb-6">Survived to Wave: {currentWave}</p>
+            <button
+              onClick={resetGame}
+              className="px-8 py-4 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg text-xl transition-colors"
+            >
+              Play Again
+            </button>
+          </div>
+        )}
       </div>
     </div>
   )

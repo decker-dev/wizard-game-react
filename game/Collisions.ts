@@ -1,8 +1,8 @@
 import { GameState } from '@/types/game'
-import { 
-  KNOCKBACK_FORCE, 
-  ZOMBIE_DAMAGE, 
-  FIREBALL_DAMAGE, 
+import {
+  KNOCKBACK_FORCE,
+  ZOMBIE_DAMAGE,
+  FIREBALL_DAMAGE,
   INVULNERABILITY_TIME,
   MAP_WIDTH,
   MAP_HEIGHT
@@ -17,11 +17,11 @@ export const checkCollisions = (
   setGameOver: (gameOver: boolean) => void
 ) => {
   const { projectiles, zombies, player, zombiesSpawnedThisWave, zombiesToSpawnThisWave } = gameState
-  
+
   // Revisar colisiones de proyectiles con zombies y jugador
   for (let i = projectiles.length - 1; i >= 0; i--) {
     const p = projectiles[i]
-    
+
     // Si es una bola de fuego, revisar colisión con el jugador
     if (p.isFireball) {
       const projectileRect = {
@@ -65,15 +65,15 @@ export const checkCollisions = (
             x: p.velocity.x,
             y: p.velocity.y
           })
-          
+
           // Aplicar empuje al zombie
           z.position.x += knockbackDirection.x * KNOCKBACK_FORCE
           z.position.y += knockbackDirection.y * KNOCKBACK_FORCE
-          
+
           // Asegurar que el zombie no salga del mapa
           z.position.x = Math.max(z.width / 2, Math.min(MAP_WIDTH - z.width / 2, z.position.x))
           z.position.y = Math.max(z.height / 2, Math.min(MAP_HEIGHT - z.height / 2, z.position.y))
-          
+
           projectiles.splice(i, 1)
           z.health -= 25
           if (z.health <= 0) {
