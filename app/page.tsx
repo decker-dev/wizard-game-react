@@ -24,6 +24,7 @@ interface Projectile {
   velocity: Vector2
   radius: number
   speed: number
+  isFireball?: boolean
 }
 
 interface Zombie {
@@ -34,6 +35,8 @@ interface Zombie {
   speed: number
   health: number
   maxHealth: number
+  type: 'normal' | 'shooter'
+  lastShotTime?: number
 }
 
 interface Obstacle {
@@ -79,6 +82,12 @@ const MAX_WAVES = 5
 const ZOMBIE_DAMAGE = 30
 const INVULNERABILITY_TIME = 1000
 
+const ZOMBIE_SHOOTER_SPEED = 0.4  // Más lento que los zombies normales
+const ZOMBIE_SHOOTER_HEALTH = 50   // Más resistente
+const FIREBALL_SPEED = 5          // Velocidad de las bolas de fuego
+const FIREBALL_DAMAGE = 50        // Daño de las bolas de fuego
+const SHOOTER_FIRE_RATE = 2000    // Dispara cada 2 segundos
+
 const obstaclesData: Obstacle[] = [
   // Esquinas
   { x: 150, y: 150, width: 100, height: 100 },
@@ -92,6 +101,16 @@ const obstaclesData: Obstacle[] = [
   { x: (MAP_WIDTH / 4) * 3 - 50, y: MAP_HEIGHT / 2 - 50, width: 100, height: 100 },
   { x: MAP_WIDTH / 2 - 50, y: MAP_HEIGHT / 4 - 50, width: 100, height: 100 },
   { x: MAP_WIDTH / 2 - 50, y: (MAP_HEIGHT / 4) * 3 - 50, width: 100, height: 100 },
+  // Nuevos obstáculos
+  { x: MAP_WIDTH / 3 - 50, y: MAP_HEIGHT / 3 - 50, width: 80, height: 80 },
+  { x: (MAP_WIDTH / 3) * 2 - 50, y: MAP_HEIGHT / 3 - 50, width: 80, height: 80 },
+  { x: MAP_WIDTH / 3 - 50, y: (MAP_HEIGHT / 3) * 2 - 50, width: 80, height: 80 },
+  { x: (MAP_WIDTH / 3) * 2 - 50, y: (MAP_HEIGHT / 3) * 2 - 50, width: 80, height: 80 },
+  // Obstáculos adicionales en forma de cruz
+  { x: MAP_WIDTH / 2 - 250, y: MAP_HEIGHT / 2 - 40, width: 200, height: 80 },
+  { x: MAP_WIDTH / 2 + 50, y: MAP_HEIGHT / 2 - 40, width: 200, height: 80 },
+  { x: MAP_WIDTH / 2 - 40, y: MAP_HEIGHT / 2 - 250, width: 80, height: 200 },
+  { x: MAP_WIDTH / 2 - 40, y: MAP_HEIGHT / 2 + 50, width: 80, height: 200 },
 ]
 
 const MINIMAP_SIZE = 80 // Tamaño del minimapa
@@ -336,6 +355,7 @@ export default function BoxheadGame() {
       zombiesSpawnedThisWave,
       zombiesToSpawnThisWave,
       currentWave,
+      projectiles
     } = gameStateRef.current
     if (waveTransitioning) return
 
@@ -360,8 +380,13 @@ export default function BoxheadGame() {
           y = Math.random() * MAP_HEIGHT
           break
       }
-      const zombieHealth = INITIAL_ZOMBIE_HEALTH + currentWave * 5
-      const zombieSpeed = ZOMBIE_SPEED_BASE + currentWave * 0.05
+
+      // Determinar si crear un zombie normal o shooter (desde wave 2)
+      const isShooter = currentWave >= 2 && Math.random() < 0.2 // 20% de probabilidad de shooter
+      const zombieType = isShooter ? 'shooter' : 'normal'
+      const zombieHealth = isShooter ? ZOMBIE_SHOOTER_HEALTH : (INITIAL_ZOMBIE_HEALTH + currentWave * 5)
+      const zombieSpeed = isShooter ? ZOMBIE_SHOOTER_SPEED : (ZOMBIE_SPEED_BASE + currentWave * 0.05)
+
       zombies.push({
         id: `zombie-${Date.now()}-${Math.random()}`,
         position: { x, y },
@@ -370,6 +395,8 @@ export default function BoxheadGame() {
         speed: zombieSpeed,
         health: zombieHealth,
         maxHealth: zombieHealth,
+        type: zombieType,
+        lastShotTime: Date.now()
       })
       gameStateRef.current.zombiesSpawnedThisWave++
     }
@@ -378,8 +405,51 @@ export default function BoxheadGame() {
       const oldPos = { ...zombie.position }
       const direction = normalize({
         x: player.position.x - zombie.position.x,
-        y: player.position.y - zombie.position.y,
+        y: player.position.y - zombie.position.y
       })
+
+      // Movimiento diferente según el tipo
+      if (zombie.type === 'shooter') {
+        // Los shooters mantienen distancia
+        const distanceToPlayer = Math.sqrt(
+          Math.pow(player.position.x - zombie.position.x, 2) +
+          Math.pow(player.position.y - zombie.position.y, 2)
+        )
+        
+        if (distanceToPlayer < 300) {
+          // Alejarse del jugador
+          direction.x *= -1
+          direction.y *= -1
+        } else if (distanceToPlayer > 400) {
+          // Acercarse al jugador
+          // Ya tenemos la dirección correcta
+        } else {
+          // Mantener posición y disparar
+          direction.x = 0
+          direction.y = 0
+        }
+
+        // Disparar si ha pasado suficiente tiempo
+        const now = Date.now()
+        if (now - (zombie.lastShotTime || 0) > SHOOTER_FIRE_RATE) {
+          const fireballDirection = normalize({
+            x: player.position.x - zombie.position.x,
+            y: player.position.y - zombie.position.y
+          })
+          
+          projectiles.push({
+            position: { ...zombie.position },
+            velocity: {
+              x: fireballDirection.x * FIREBALL_SPEED,
+              y: fireballDirection.y * FIREBALL_SPEED
+            },
+            radius: 6,
+            speed: FIREBALL_SPEED,
+            isFireball: true
+          })
+          zombie.lastShotTime = now
+        }
+      }
 
       zombie.position.x += direction.x * zombie.speed
       let zombieRect = getEntityRect(zombie)
@@ -406,29 +476,61 @@ export default function BoxheadGame() {
 
   const checkCollisions = useCallback(() => {
     const { projectiles, zombies, player, zombiesSpawnedThisWave, zombiesToSpawnThisWave } = gameStateRef.current
+    
+    // Revisar colisiones de proyectiles con zombies y jugador
     for (let i = projectiles.length - 1; i >= 0; i--) {
       const p = projectiles[i]
-      for (let j = zombies.length - 1; j >= 0; j--) {
-        const z = zombies[j]
-        const zombieRect = getEntityRect(z)
+      
+      // Si es una bola de fuego, revisar colisión con el jugador
+      if (p.isFireball) {
         const projectileRect = {
           x: p.position.x - p.radius,
           y: p.position.y - p.radius,
           width: p.radius * 2,
           height: p.radius * 2,
         }
-        if (checkAABBCollision(projectileRect, zombieRect)) {
+        const playerRect = {
+          x: player.position.x - player.collisionRadius,
+          y: player.position.y - player.collisionRadius,
+          width: player.collisionRadius * 2,
+          height: player.collisionRadius * 2,
+        }
+        if (checkAABBCollision(projectileRect, playerRect)) {
           projectiles.splice(i, 1)
-          z.health -= 25
-          if (z.health <= 0) {
-            zombies.splice(j, 1)
-            gameStateRef.current.score++
-            setScore(gameStateRef.current.score)
-            if (zombiesSpawnedThisWave >= zombiesToSpawnThisWave && zombies.length === 0) {
-              startNextWave()
-            }
+          player.health -= FIREBALL_DAMAGE
+          setPlayerHealth(player.health)
+          if (player.health <= 0) {
+            gameStateRef.current.gameOver = true
+            setGameOver(true)
           }
-          break
+          continue
+        }
+      }
+
+      // Revisar colisión con zombies (solo para proyectiles del jugador)
+      if (!p.isFireball) {
+        for (let j = zombies.length - 1; j >= 0; j--) {
+          const z = zombies[j]
+          const zombieRect = getEntityRect(z)
+          const projectileRect = {
+            x: p.position.x - p.radius,
+            y: p.position.y - p.radius,
+            width: p.radius * 2,
+            height: p.radius * 2,
+          }
+          if (checkAABBCollision(projectileRect, zombieRect)) {
+            projectiles.splice(i, 1)
+            z.health -= 25
+            if (z.health <= 0) {
+              zombies.splice(j, 1)
+              gameStateRef.current.score++
+              setScore(gameStateRef.current.score)
+              if (zombiesSpawnedThisWave >= zombiesToSpawnThisWave && zombies.length === 0) {
+                startNextWave()
+              }
+            }
+            break
+          }
         }
       }
     }
@@ -544,6 +646,7 @@ export default function BoxheadGame() {
         screenY >= 0 &&
         screenY <= CANVAS_HEIGHT
       ) {
+        ctx.fillStyle = p.isFireball ? '#FF4400' : '#FFFF00'
         ctx.beginPath()
         ctx.arc(screenX, screenY, p.radius, 0, Math.PI * 2)
         ctx.fill()
@@ -560,8 +663,11 @@ export default function BoxheadGame() {
         screenY + z.height >= 0 &&
         screenY - z.height <= CANVAS_HEIGHT
       ) {
-        ctx.fillStyle = "#2E8B57"
+        // Color diferente según el tipo
+        ctx.fillStyle = z.type === 'shooter' ? '#FF4444' : '#2E8B57'
         ctx.fillRect(screenX - z.width / 2, screenY - z.height / 2, z.width, z.height)
+
+        // Barra de vida
         const healthBarWidth = z.width * 0.8
         const healthBarHeight = 5
         ctx.fillStyle = "rgba(255,0,0,0.5)"
@@ -632,7 +738,7 @@ export default function BoxheadGame() {
     gameStateRef.current.zombies.forEach((z) => {
       const minimapX = CANVAS_WIDTH - MINIMAP_SIZE - MINIMAP_PADDING + z.position.x * MINIMAP_SCALE_X
       const minimapY = MINIMAP_PADDING + z.position.y * MINIMAP_SCALE_Y
-      ctx.fillStyle = "#2E8B57"
+      ctx.fillStyle = z.type === 'shooter' ? '#FF4444' : '#2E8B57'
       ctx.fillRect(
         minimapX - 2,
         minimapY - 2,
