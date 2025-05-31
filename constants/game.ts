@@ -5,7 +5,7 @@ export const MAP_WIDTH = 2000;
 export const MAP_HEIGHT = 1500;
 
 // Player constants
-export const PLAYER_SPEED = 10;
+export const PLAYER_SPEED = 3;
 export const PLAYER_SPRITE_WIDTH = 36;
 export const PLAYER_SPRITE_HEIGHT = 36;
 export const PLAYER_COLLISION_RADIUS = 15;
