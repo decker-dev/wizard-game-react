@@ -11,6 +11,7 @@ interface GameUIProps {
   gameWon: boolean
   onResetGame: () => void
   onReturnHome?: () => void
+  onShare?: () => void
   player?: Player
 }
 
@@ -23,6 +24,7 @@ export const GameUI: React.FC<GameUIProps> = ({
   gameWon,
   onResetGame,
   onReturnHome,
+  onShare,
   player
 }) => {
   return (
@@ -66,15 +68,26 @@ export const GameUI: React.FC<GameUIProps> = ({
             </div>
           </div>
           
-          {/* Return Home Button */}
-          {onReturnHome && (
-            <div className="mt-4">
-              <button
-                onClick={onReturnHome}
-                className="px-6 py-2 bg-red-600/80 hover:bg-red-600 border border-red-500/50 text-white text-sm font-mono rounded transition-all duration-200 transform hover:scale-105 hover:border-red-500"
-              >
-                🏠 VOLVER AL INICIO
-              </button>
+          {/* Action Buttons */}
+          {(onReturnHome || onShare) && (
+            <div className="mt-4 flex gap-3 justify-center">
+              {onReturnHome && (
+                <button
+                  onClick={onReturnHome}
+                  className="px-6 py-2 bg-red-600/80 hover:bg-red-600 border border-red-500/50 text-white text-sm font-mono rounded transition-all duration-200 transform hover:scale-105 hover:border-red-500"
+                >
+                  🏠 VOLVER AL INICIO
+                </button>
+              )}
+              
+              {onShare && (
+                <button
+                  onClick={onShare}
+                  className="px-6 py-2 bg-blue-600/80 hover:bg-blue-600 border border-blue-500/50 text-white text-sm font-mono rounded transition-all duration-200 transform hover:scale-105 hover:border-blue-500"
+                >
+                  📱 COMPARTIR
+                </button>
+              )}
             </div>
           )}
         </div>

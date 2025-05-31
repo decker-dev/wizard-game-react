@@ -13,6 +13,7 @@ import { ScoreSubmissionModal } from '@/components/ScoreSubmissionModal'
 import { Marketplace } from '@/components/Marketplace'
 import { FloatingParticles } from '@/components/FloatingParticles'
 import { CoinIcon } from '@/components/CoinIcon'
+import { ShareModal } from '@/components/ShareModal'
 import useHandheldDetector from "@/hooks/useHandheldDetector"
 
 type GameScreen = 'home' | 'playing' | 'gameOver'
@@ -47,6 +48,7 @@ export default function BoxheadGame() {
   const [isLoading, setIsLoading] = useState(false)
   const [waveMessage, setWaveMessage] = useState("")
   const [showScoreModal, setShowScoreModal] = useState(false)
+  const [showShareModal, setShowShareModal] = useState(false)
 
   const isMobile = useHandheldDetector()
 
@@ -266,6 +268,7 @@ export default function BoxheadGame() {
           gameWon={gameWon}
           onResetGame={resetGame}
           onReturnHome={returnToHome}
+          onShare={() => setShowShareModal(true)}
           player={gameStateRef.current?.player}
         />
 
@@ -362,6 +365,12 @@ export default function BoxheadGame() {
             onContinue={handleContinueFromMarketplace}
           />
         )}
+
+        {/* Share Modal */}
+        <ShareModal
+          isVisible={showShareModal}
+          onClose={() => setShowShareModal(false)}
+        />
       </div>
 
       {/* Corner decorative elements - Same as HomeScreen */}
