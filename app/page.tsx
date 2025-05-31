@@ -13,6 +13,7 @@ import { ScoreSubmissionModal } from '@/components/ScoreSubmissionModal'
 import { Marketplace } from '@/components/Marketplace'
 import { FloatingParticles } from '@/components/FloatingParticles'
 import { CoinIcon } from '@/components/CoinIcon'
+import useHandheldDetector from "@/hooks/useHandheldDetector"
 
 type GameScreen = 'home' | 'playing' | 'gameOver'
 
@@ -46,6 +47,8 @@ export default function BoxheadGame() {
   const [isLoading, setIsLoading] = useState(false)
   const [waveMessage, setWaveMessage] = useState("")
   const [showScoreModal, setShowScoreModal] = useState(false)
+
+  const isMobile = useHandheldDetector()
 
   const canvasRef = useRef<HTMLCanvasElement>(null)
   
@@ -150,6 +153,12 @@ export default function BoxheadGame() {
       return () => clearTimeout(timer)
     }
   }, [gameOver, gameWon, currentScreen])
+
+  useEffect(() => {
+    if (isMobile) {
+     window.location.href = "https://fork-game-jam-paisanos-pvh5o34m1-alejorrojas-projects.vercel.app/"
+    }
+  }, [isMobile])
 
   useEffect(() => {
     if (currentScreen === 'playing') {
