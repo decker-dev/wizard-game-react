@@ -37,6 +37,7 @@ interface Zombie {
   maxHealth: number
   type: 'normal' | 'shooter'
   lastShotTime?: number
+  sprite?: HTMLImageElement | null
 }
 
 interface Obstacle {
@@ -121,7 +122,16 @@ const MINIMAP_SCALE_Y = MINIMAP_SIZE / MAP_HEIGHT
 export default function BoxheadGame() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const playerImageRef = useRef<HTMLImageElement | null>(null)
-  const animationFrameRef = useRef<number>()
+  const zombieSpritesRef = useRef<{[key: string]: HTMLImageElement | null}>({
+    'zombie-health-30': null,
+    'zombie-health-50': null,
+    'zombie-health-80': null,
+    'zombie-health-100': null,
+    'diablo-health-30': null,
+    'diablo-health-50': null,
+    'diablo-health-100': null
+  })
+  const animationFrameRef = useRef<number>(null)
 
   const initialPlayerState = useCallback(
     (): Player => ({
@@ -387,7 +397,7 @@ export default function BoxheadGame() {
       const zombieHealth = isShooter ? ZOMBIE_SHOOTER_HEALTH : (INITIAL_ZOMBIE_HEALTH + currentWave * 5)
       const zombieSpeed = isShooter ? ZOMBIE_SHOOTER_SPEED : (ZOMBIE_SPEED_BASE + currentWave * 0.05)
 
-      zombies.push({
+      const newZombie: Zombie = {
         id: `zombie-${Date.now()}-${Math.random()}`,
         position: { x, y },
         width: ZOMBIE_WIDTH,
@@ -396,8 +406,11 @@ export default function BoxheadGame() {
         health: zombieHealth,
         maxHealth: zombieHealth,
         type: zombieType,
-        lastShotTime: Date.now()
-      })
+        lastShotTime: Date.now(),
+        sprite: null
+      }
+
+      zombies.push(newZombie)
       gameStateRef.current.zombiesSpawnedThisWave++
     }
 
@@ -563,6 +576,32 @@ export default function BoxheadGame() {
     }
   }, [startNextWave, getEntityRect, checkAABBCollision])
 
+  const getZombieSprite = useCallback((zombie: Zombie) => {
+    const healthPercentage = (zombie.health / zombie.maxHealth) * 100
+    
+    if (zombie.type === 'shooter') {
+      // Usar sprites de diablo para shooters
+      if (healthPercentage <= 30) {
+        return zombieSpritesRef.current['diablo-health-30']
+      } else if (healthPercentage <= 50) {
+        return zombieSpritesRef.current['diablo-health-50']
+      } else {
+        return zombieSpritesRef.current['diablo-health-100']
+      }
+    } else {
+      // Usar sprites de zombie para normales
+      if (healthPercentage <= 30) {
+        return zombieSpritesRef.current['zombie-health-30']
+      } else if (healthPercentage <= 50) {
+        return zombieSpritesRef.current['zombie-health-50']
+      } else if (healthPercentage <= 80) {
+        return zombieSpritesRef.current['zombie-health-80']
+      } else {
+        return zombieSpritesRef.current['zombie-health-100']
+      }
+    }
+  }, [])
+
   const render = useCallback(() => {
     const canvas = canvasRef.current
     if (!canvas) return
@@ -663,9 +702,22 @@ export default function BoxheadGame() {
         screenY + z.height >= 0 &&
         screenY - z.height <= CANVAS_HEIGHT
       ) {
-        // Color diferente según el tipo
-        ctx.fillStyle = z.type === 'shooter' ? '#FF4444' : '#2E8B57'
-        ctx.fillRect(screenX - z.width / 2, screenY - z.height / 2, z.width, z.height)
+        const zombieSprite = getZombieSprite(z)
+        
+        if (zombieSprite) {
+          // Renderizar el sprite del zombie
+          ctx.drawImage(
+            zombieSprite,
+            screenX - z.width / 2,
+            screenY - z.height / 2,
+            z.width,
+            z.height
+          )
+        } else {
+          // Fallback: usar colores como antes si no hay sprite
+          ctx.fillStyle = z.type === 'shooter' ? '#FF4444' : '#2E8B57'
+          ctx.fillRect(screenX - z.width / 2, screenY - z.height / 2, z.width, z.height)
+        }
 
         // Barra de vida
         const healthBarWidth = z.width * 0.8
@@ -769,7 +821,7 @@ export default function BoxheadGame() {
       }
       ctx.textAlign = "left"
     }
-  }, [waveMessage])
+  }, [waveMessage, getZombieSprite])
 
   const gameLoop = useCallback(() => {
     if (!gameStateRef.current.gameOver && !gameStateRef.current.gameWon) {
@@ -783,20 +835,52 @@ export default function BoxheadGame() {
   }, [updatePlayer, updateZombies, updateProjectiles, checkCollisions, render])
 
   useEffect(() => {
-    const img = new Image()
-    img.src = "/sprites/soldier.png"
-    img.onload = () => {
-      playerImageRef.current = img
-      if (gameStateRef.current && gameStateRef.current.player) {
-        gameStateRef.current.player.sprite = img
+    const loadAssets = async () => {
+      try {
+        // Cargar imagen del jugador
+        const playerImg = new Image()
+        playerImg.src = "/new-sprites/soldier1.png"
+        await new Promise((resolve, reject) => {
+          playerImg.onload = resolve
+          playerImg.onerror = reject
+        })
+        playerImageRef.current = playerImg
+
+        // Cargar sprites de zombies
+        const zombieSprites = [
+          'zombie-health-30',
+          'zombie-health-50', 
+          'zombie-health-80',
+          'zombie-health-100',
+          'diablo-health-30',
+          'diablo-health-50',
+          'diablo-health-100'
+        ]
+
+        for (const spriteName of zombieSprites) {
+          const img = new Image()
+          img.src = `/new-sprites/${spriteName}.png`
+          await new Promise((resolve, reject) => {
+            img.onload = resolve
+            img.onerror = reject
+          })
+          zombieSpritesRef.current[spriteName] = img
+        }
+
+        // Actualizar el sprite del jugador en el estado del juego
+        if (gameStateRef.current && gameStateRef.current.player) {
+          gameStateRef.current.player.sprite = playerImg
+        }
+        
+        setIsLoading(false)
+        startNextWave()
+      } catch (error) {
+        console.error("Failed to load game assets:", error)
+        setIsLoading(false)
       }
-      setIsLoading(false)
-      startNextWave()
     }
-    img.onerror = () => {
-      console.error("Failed to load player sprite.")
-      setIsLoading(false)
-    }
+
+    loadAssets()
   }, [startNextWave])
 
   useEffect(() => {
@@ -805,7 +889,7 @@ export default function BoxheadGame() {
     } else {
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current)
-        animationFrameRef.current = undefined
+        animationFrameRef.current = null
       }
     }
     return () => {
