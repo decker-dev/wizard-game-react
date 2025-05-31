@@ -1,8 +1,19 @@
 import { useRef, useCallback } from 'react'
 
 export const useAssetLoader = () => {
-  const playerImageRef = useRef<HTMLImageElement | null>(null)
-  const zombieSpritesRef = useRef<{[key: string]: HTMLImageElement | null}>({
+  const playerSpritesRef = useRef<{
+    N: HTMLImageElement | null
+    S: HTMLImageElement | null
+    E: HTMLImageElement | null
+    W: HTMLImageElement | null
+  }>({
+    N: null,
+    S: null,
+    E: null,
+    W: null
+  })
+
+  const zombieSpritesRef = useRef<{ [key: string]: HTMLImageElement | null }>({
     'zombie-health-30': null,
     'zombie-health-50': null,
     'zombie-health-80': null,
@@ -13,23 +24,40 @@ export const useAssetLoader = () => {
   })
 
   const loadAssets = useCallback(async (): Promise<{
-    playerSprite: HTMLImageElement,
-    zombieSprites: {[key: string]: HTMLImageElement | null}
+    playerSprites: {
+      N: HTMLImageElement | null
+      S: HTMLImageElement | null
+      E: HTMLImageElement | null
+      W: HTMLImageElement | null
+    },
+    zombieSprites: { [key: string]: HTMLImageElement | null }
   }> => {
     try {
-      // Cargar imagen del jugador
-      const playerImg = new Image()
-      playerImg.src = "/new-sprites/soldier1.png"
-      await new Promise((resolve, reject) => {
-        playerImg.onload = resolve
-        playerImg.onerror = reject
-      })
-      playerImageRef.current = playerImg
+      // Cargar sprites direccionales del jugador
+      const playerDirections = ['N', 'S', 'E', 'W'] as const
+      const playerSprites = {
+        N: null as HTMLImageElement | null,
+        S: null as HTMLImageElement | null,
+        E: null as HTMLImageElement | null,
+        W: null as HTMLImageElement | null
+      }
+
+      for (const direction of playerDirections) {
+        const img = new Image()
+        img.src = `/soldier/${direction}.png`
+        await new Promise((resolve, reject) => {
+          img.onload = resolve
+          img.onerror = reject
+        })
+        playerSprites[direction] = img
+      }
+
+      playerSpritesRef.current = playerSprites
 
       // Cargar sprites de zombies
       const zombieSprites = [
         'zombie-health-30',
-        'zombie-health-50', 
+        'zombie-health-50',
         'zombie-health-80',
         'zombie-health-100',
         'diablo-health-30',
@@ -48,7 +76,7 @@ export const useAssetLoader = () => {
       }
 
       return {
-        playerSprite: playerImg,
+        playerSprites,
         zombieSprites: zombieSpritesRef.current
       }
     } catch (error) {
@@ -58,7 +86,7 @@ export const useAssetLoader = () => {
   }, [])
 
   return {
-    playerImageRef,
+    playerSpritesRef,
     zombieSpritesRef,
     loadAssets
   }

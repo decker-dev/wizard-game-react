@@ -11,7 +11,12 @@ export interface Player {
   speed: number
   health: number
   angle: number
-  sprite: HTMLImageElement | null
+  sprites: {
+    N: HTMLImageElement | null
+    S: HTMLImageElement | null
+    E: HTMLImageElement | null
+    W: HTMLImageElement | null
+  }
   lastDamageTime: number
   lastMovementDirection: Vector2
   coins: number
@@ -60,18 +65,4 @@ export interface GameState {
   keys: { [key: string]: boolean }
   mousePosition: Vector2
   waveTransitioning: boolean
-}
-
-export interface LeaderboardEntry {
-  id: string
-  player_name: string
-  score: number
-  waves_survived: number
-  created_at: string
-}
-
-export interface ScoreSubmission {
-  player_name: string
-  score: number
-  waves_survived: number
 } 

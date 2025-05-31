@@ -2,7 +2,12 @@ import { Player, GameState } from '@/types/game'
 import { PLAYER_SPEED, PLAYER_SPRITE_WIDTH, PLAYER_SPRITE_HEIGHT, PLAYER_COLLISION_RADIUS, MAP_WIDTH, MAP_HEIGHT } from '@/constants/game'
 import { getEntityRect, checkAABBCollision } from '@/utils/math'
 
-export const createInitialPlayer = (playerSprite: HTMLImageElement | null): Player => ({
+export const createInitialPlayer = (playerSprites: {
+  N: HTMLImageElement | null
+  S: HTMLImageElement | null
+  E: HTMLImageElement | null
+  W: HTMLImageElement | null
+}): Player => ({
   position: { x: 70, y: 70 },
   collisionRadius: PLAYER_COLLISION_RADIUS,
   width: PLAYER_SPRITE_WIDTH * 0.8,
@@ -10,7 +15,7 @@ export const createInitialPlayer = (playerSprite: HTMLImageElement | null): Play
   speed: PLAYER_SPEED,
   health: 100,
   angle: 0,
-  sprite: playerSprite,
+  sprites: playerSprites,
   lastDamageTime: 0,
   lastMovementDirection: { x: 1, y: 0 },
   coins: 0
@@ -36,7 +41,7 @@ export const updatePlayer = (gameState: GameState) => {
       dx = (dx / mag) * speed
       dy = (dy / mag) * speed
     }
-    
+
     // Normalizar y guardar la dirección de movimiento
     const mag = Math.sqrt(dx * dx + dy * dy)
     if (mag > 0) {
@@ -69,4 +74,21 @@ export const updatePlayer = (gameState: GameState) => {
 
   player.position.x = Math.max(width / 2, Math.min(MAP_WIDTH - width / 2, player.position.x))
   player.position.y = Math.max(height / 2, Math.min(MAP_HEIGHT - height / 2, player.position.y))
+}
+
+export const getPlayerSprite = (player: Player): HTMLImageElement | null => {
+  const { lastMovementDirection } = player
+  const { x, y } = lastMovementDirection
+
+  // Determinar la dirección principal basada en el vector de movimiento
+  const absX = Math.abs(x)
+  const absY = Math.abs(y)
+
+  if (absX > absY) {
+    // Movimiento horizontal predominante
+    return x > 0 ? player.sprites.E : player.sprites.W
+  } else {
+    // Movimiento vertical predominante
+    return y > 0 ? player.sprites.S : player.sprites.N
+  }
 } 

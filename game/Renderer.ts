@@ -1,10 +1,10 @@
 import { GameState } from '@/types/game'
-import { 
-  CANVAS_WIDTH, 
-  CANVAS_HEIGHT, 
-  MAP_WIDTH, 
-  MAP_HEIGHT, 
-  PLAYER_SPRITE_WIDTH, 
+import {
+  CANVAS_WIDTH,
+  CANVAS_HEIGHT,
+  MAP_WIDTH,
+  MAP_HEIGHT,
+  PLAYER_SPRITE_WIDTH,
   PLAYER_SPRITE_HEIGHT,
   INVULNERABILITY_TIME,
   MINIMAP_SIZE,
@@ -13,11 +13,12 @@ import {
   MINIMAP_SCALE_Y
 } from '@/constants/game'
 import { getZombieSprite } from './Zombies'
+import { getPlayerSprite } from './Player'
 
 export const render = (
   ctx: CanvasRenderingContext2D,
   gameState: GameState,
-  zombieSprites: {[key: string]: HTMLImageElement | null},
+  zombieSprites: { [key: string]: HTMLImageElement | null },
   waveMessage: string
 ) => {
   const { player } = gameState
@@ -51,19 +52,18 @@ export const render = (
   })
 
   // Render player
-  if (player.sprite) {
+  const currentPlayerSprite = getPlayerSprite(player)
+  if (currentPlayerSprite) {
     ctx.save()
     const now = Date.now()
     const isInvulnerable = now - player.lastDamageTime < INVULNERABILITY_TIME
     if (isInvulnerable) {
       ctx.globalAlpha = 0.5 + Math.sin(now * 0.01) * 0.3
     }
-    ctx.translate(player.position.x - cameraX, player.position.y - cameraY)
-    ctx.rotate(player.angle + Math.PI / 2)
     ctx.drawImage(
-      player.sprite,
-      -PLAYER_SPRITE_WIDTH / 2,
-      -PLAYER_SPRITE_HEIGHT / 2,
+      currentPlayerSprite,
+      player.position.x - cameraX - PLAYER_SPRITE_WIDTH / 2,
+      player.position.y - cameraY - PLAYER_SPRITE_HEIGHT / 2,
       PLAYER_SPRITE_WIDTH,
       PLAYER_SPRITE_HEIGHT
     )
@@ -120,7 +120,7 @@ export const render = (
       screenY - z.height <= CANVAS_HEIGHT
     ) {
       const zombieSprite = getZombieSprite(z, zombieSprites)
-      
+
       if (zombieSprite) {
         // Renderizar el sprite del zombie
         ctx.drawImage(

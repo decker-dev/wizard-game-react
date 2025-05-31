@@ -14,7 +14,7 @@ type GameScreen = 'home' | 'playing' | 'gameOver'
 
 export default function BoxheadGame() {
   const { gameStateRef, initializeGameState, resetGameState, startNextWave } = useGameState()
-  const { loadAssets, zombieSpritesRef, playerImageRef } = useAssetLoader()
+  const { loadAssets, zombieSpritesRef, playerSpritesRef } = useAssetLoader()
   const { 
     topScores, 
     allScores, 
@@ -56,11 +56,8 @@ export default function BoxheadGame() {
     setCurrentScreen('playing')
     
     try {
-      const { playerSprite } = await loadAssets()
-      const gameState = initializeGameState(playerSprite)
-      if (gameState) {
-        gameState.player.sprite = playerSprite
-      }
+      const { playerSprites } = await loadAssets()
+      const gameState = initializeGameState(playerSprites)
       
       // Reset all game state
       setScore(0)
@@ -89,10 +86,7 @@ export default function BoxheadGame() {
   }, [])
 
   const resetGame = useCallback(() => {
-    const gameState = resetGameState(playerImageRef.current)
-    if (gameState && playerImageRef.current) {
-      gameState.player.sprite = playerImageRef.current
-    }
+    const gameState = resetGameState(playerSpritesRef.current)
     setScore(0)
     setCurrentWave(0)
     setPlayerHealth(100)
@@ -102,7 +96,7 @@ export default function BoxheadGame() {
     setWaveMessage("")
     setShowScoreModal(false)
     handleStartNextWave()
-  }, [resetGameState, playerImageRef, handleStartNextWave])
+  }, [resetGameState, playerSpritesRef, handleStartNextWave])
 
   const handleScoreSubmit = useCallback(async (scoreData: any) => {
     const success = await submitScore(scoreData)
