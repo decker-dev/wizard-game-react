@@ -5,29 +5,29 @@ import { checkAABBCollision } from '@/utils/math'
 export const createProjectile = (
   position: { x: number; y: number },
   direction: { x: number; y: number },
-  isFireball: boolean = false
+  isMagicBolt: boolean = false
 ): Projectile => ({
   position: { ...position },
   velocity: { x: direction.x * PROJECTILE_SPEED, y: direction.y * PROJECTILE_SPEED },
-  radius: isFireball ? 6 : 4,
+  radius: isMagicBolt ? 6 : 4,
   speed: PROJECTILE_SPEED,
-  isFireball
+  isMagicBolt
 })
 
 export const updateProjectiles = (gameState: GameState) => {
   const { projectiles, obstacles } = gameState
-  
+
   for (let i = projectiles.length - 1; i >= 0; i--) {
     const p = projectiles[i]
     p.position.x += p.velocity.x
     p.position.y += p.velocity.y
-    
+
     // Remove projectiles that go off-screen
     if (p.position.x < 0 || p.position.x > MAP_WIDTH || p.position.y < 0 || p.position.y > MAP_HEIGHT) {
       projectiles.splice(i, 1)
       continue
     }
-    
+
     // Check collision with obstacles
     const projectileRect = {
       x: p.position.x - p.radius,
@@ -35,7 +35,7 @@ export const updateProjectiles = (gameState: GameState) => {
       width: p.radius * 2,
       height: p.radius * 2,
     }
-    
+
     for (const obs of obstacles) {
       if (checkAABBCollision(projectileRect, obs)) {
         projectiles.splice(i, 1)

@@ -4,16 +4,22 @@ import { PROJECTILE_SPEED, CANVAS_WIDTH, CANVAS_HEIGHT, MAP_WIDTH, MAP_HEIGHT } 
 
 export const useInputHandlers = (
   gameStateRef: React.MutableRefObject<GameState | null>,
-  playPlayerShoot?: () => void
+  playPlayerCast?: () => void
 ) => {
-  const lastShotTimeRef = useRef<number>(0)
+  const lastCastTimeRef = useRef<number>(0)
 
   const handleKeyDown = useCallback((e: KeyboardEvent, isLoading: boolean, waveTransitioning: boolean) => {
     if (!gameStateRef.current) return
-    
+
     gameStateRef.current.keys[e.key.toLowerCase()] = true
-    
+
     if (e.key === ' ' || e.key === 'Spacebar') {
+      console.log('Spacebar pressed! Game state:', {
+        gameOver: gameStateRef.current.gameOver,
+        gameWon: gameStateRef.current.gameWon,
+        isLoading,
+        waveTransitioning
+      })
       e.preventDefault()
       if (
         !gameStateRef.current.gameOver &&
@@ -23,64 +29,76 @@ export const useInputHandlers = (
       ) {
         const { player } = gameStateRef.current
         const now = Date.now()
-        
-        // Usar el fire rate personalizado del player
-        if (now - lastShotTimeRef.current > player.upgrades.fireRate) {
-          // Reproducir sonido de disparo
-          if (playPlayerShoot) {
-            playPlayerShoot()
+
+        // Usar el cast rate personalizado del player
+        if (now - lastCastTimeRef.current > player.upgrades.castRate) {
+          console.log('Casting spell! Cast rate:', player.upgrades.castRate, 'Time since last cast:', now - lastCastTimeRef.current)
+
+          // Reproducir sonido de lanzamiento de hechizo
+          if (playPlayerCast) {
+            playPlayerCast()
           }
-          
+
           const baseDirection = { ...player.lastMovementDirection }
           const projectileCount = player.upgrades.projectileCount
           const spread = player.upgrades.spread
           const projectileSize = player.upgrades.projectileSize
-          
+
+          console.log('Spell parameters:', { baseDirection, projectileCount, spread, projectileSize })
+
           if (projectileCount === 1) {
-            // Disparo simple
-            gameStateRef.current.projectiles.push({
+            // Hechizo simple
+            const newProjectile = {
               position: { ...player.position },
               velocity: { x: baseDirection.x * PROJECTILE_SPEED, y: baseDirection.y * PROJECTILE_SPEED },
               radius: 4 * projectileSize,
               speed: PROJECTILE_SPEED,
-            })
+              isMagicBolt: false // Player spells are not magic bolts (those are enemy projectiles)
+            }
+            gameStateRef.current.projectiles.push(newProjectile)
+            console.log('Created spell projectile:', newProjectile)
           } else {
-            // Múltiples proyectiles con dispersión
+            // Múltiples hechizos con dispersión
             const baseAngle = Math.atan2(baseDirection.y, baseDirection.x)
-            
+
             for (let i = 0; i < projectileCount; i++) {
               // Calcular ángulo de dispersión más uniforme
               let angleOffset = 0
-              
+
               if (projectileCount === 2) {
-                // Para 2 proyectiles: -spread/2 y +spread/2
+                // Para 2 hechizos: -spread/2 y +spread/2
                 angleOffset = (i - 0.5) * spread
               } else {
-                // Para 3+ proyectiles: distribuir uniformemente
+                // Para 3+ hechizos: distribuir uniformemente
                 angleOffset = (i - (projectileCount - 1) / 2) * (spread / (projectileCount - 1))
               }
-              
+
               const finalAngle = baseAngle + angleOffset
-              
+
               const direction = {
                 x: Math.cos(finalAngle),
                 y: Math.sin(finalAngle)
               }
-              
-              gameStateRef.current.projectiles.push({
+
+              const newProjectile = {
                 position: { ...player.position },
                 velocity: { x: direction.x * PROJECTILE_SPEED, y: direction.y * PROJECTILE_SPEED },
                 radius: 4 * projectileSize,
                 speed: PROJECTILE_SPEED,
-              })
+                isMagicBolt: false // Player spells are not magic bolts
+              }
+              gameStateRef.current.projectiles.push(newProjectile)
+              console.log('Created multi-spell projectile:', i, newProjectile)
             }
           }
-          
-          lastShotTimeRef.current = now
+
+          lastCastTimeRef.current = now
+        } else {
+          console.log('Cast rate limit not met. Time since last cast:', now - lastCastTimeRef.current, 'Required:', player.upgrades.castRate)
         }
       }
     }
-  }, [gameStateRef, playPlayerShoot])
+  }, [gameStateRef, playPlayerCast])
 
   const handleKeyUp = useCallback((e: KeyboardEvent) => {
     if (!gameStateRef.current) return
@@ -89,28 +107,28 @@ export const useInputHandlers = (
 
   const handleMouseMove = useCallback((e: MouseEvent, canvasRef: React.RefObject<HTMLCanvasElement | null>) => {
     if (!gameStateRef.current || !canvasRef.current) return
-    
+
     const canvas = canvasRef.current
     const rect = canvas.getBoundingClientRect()
     const mouseX = e.clientX - rect.left
     const mouseY = e.clientY - rect.top
-    
+
     // Get current canvas dimensions
     const canvasWidth = canvas.width
     const canvasHeight = canvas.height
-    
+
     // Scale mouse coordinates to match the game world
     const scaleX = canvasWidth / rect.width
     const scaleY = canvasHeight / rect.height
-    
+
     const scaledMouseX = mouseX * scaleX
     const scaledMouseY = mouseY * scaleY
-    
+
     const { player } = gameStateRef.current
     const cameraX = Math.max(0, Math.min(MAP_WIDTH - canvasWidth, player.position.x - canvasWidth / 2))
     const cameraY = Math.max(0, Math.min(MAP_HEIGHT - canvasHeight, player.position.y - canvasHeight / 2))
-    
-    gameStateRef.current.mousePosition = { 
+
+    gameStateRef.current.mousePosition = {
       x: scaledMouseX + cameraX,
       y: scaledMouseY + cameraY
     }
