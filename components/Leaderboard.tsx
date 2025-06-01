@@ -100,7 +100,7 @@ export function Leaderboard({ topScores, allScores, totalGamesPlayed, isLoading 
                       : position === 2
                       ? 'bg-gray-600 border border-gray-500'
                       : position === 3
-                      ? 'bg-purple-900 border border-purple-600'
+                      ? 'bg-orange-900 border border-orange-600'
                       : 'bg-gray-700 border border-gray-600'
                   }`}
                 >
