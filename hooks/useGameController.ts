@@ -24,9 +24,11 @@ export function useGameController(autoStart: boolean = false) {
   const {
     topScores,
     allScores,
+    totalGamesPlayed,
     isLoading: isLoadingScores,
     isSubmitting,
-    submitScore
+    submitScore,
+    recordNewGame
   } = useLeaderboard()
   const { playZombieDeath, playPlayerShoot, playPlayerHit } = useGameAudio()
 
@@ -72,13 +74,16 @@ export function useGameController(autoStart: boolean = false) {
       const { playerSprites } = await loadAssets()
       const gameState = initializeGameState(playerSprites)
 
+      // Registrar nueva partida iniciada
+      await recordNewGame()
+
       setGameReady()
       handleStartNextWave()
     } catch (error) {
       console.error("Failed to load game assets:", error)
       navigateToHome()
     }
-  }, [loadAssets, initializeGameState, handleStartNextWave, navigateToGame, setGameReady, navigateToHome])
+  }, [loadAssets, initializeGameState, handleStartNextWave, navigateToGame, setGameReady, navigateToHome, recordNewGame])
 
   // Auto-start game when needed (for /game route)
   useEffect(() => {
@@ -87,11 +92,15 @@ export function useGameController(autoStart: boolean = false) {
     }
   }, [autoStart, startGame, screenState.currentScreen])
 
-  const resetGame = useCallback(() => {
+  const resetGame = useCallback(async () => {
     const gameState = resetGameState(playerSpritesRef.current)
     resetScreenState()
+
+    // Registrar nueva partida iniciada (reinicio cuenta como nueva partida)
+    await recordNewGame()
+
     handleStartNextWave()
-  }, [resetGameState, playerSpritesRef, resetScreenState, handleStartNextWave])
+  }, [resetGameState, playerSpritesRef, resetScreenState, handleStartNextWave, recordNewGame])
 
   // Score handling
   const handleScoreSubmit = useCallback(async (scoreData: any) => {
@@ -141,6 +150,7 @@ export function useGameController(autoStart: boolean = false) {
     // Leaderboard
     topScores,
     allScores,
+    totalGamesPlayed,
     isLoadingScores,
     isSubmitting,
 

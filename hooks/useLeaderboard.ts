@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from 'react'
 import { LeaderboardEntry, ScoreSubmission } from '@/types/game'
-import { getTopScores, getAllScores, saveScore, getScoreRank } from '@/utils/leaderboard'
+import { getTopScores, getAllScores, saveScore, getScoreRank, recordGameStarted, getTotalGamesPlayed } from '@/utils/leaderboard'
 
 export function useLeaderboard() {
   const [topScores, setTopScores] = useState<LeaderboardEntry[]>([])
   const [allScores, setAllScores] = useState<LeaderboardEntry[]>([])
+  const [totalGamesPlayed, setTotalGamesPlayed] = useState<number>(0)
   const [isLoading, setIsLoading] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -34,6 +35,16 @@ export function useLeaderboard() {
     }
   }, [])
 
+  // Cargar total de partidas jugadas
+  const loadTotalGamesPlayed = useCallback(async () => {
+    try {
+      const total = await getTotalGamesPlayed()
+      setTotalGamesPlayed(total)
+    } catch (error) {
+      console.error('Error loading total games played:', error)
+    }
+  }, [])
+
   // Enviar nuevo score
   const submitScore = useCallback(async (scoreData: ScoreSubmission): Promise<boolean> => {
     setIsSubmitting(true)
@@ -53,6 +64,21 @@ export function useLeaderboard() {
     }
   }, [loadTopScores, loadAllScores])
 
+  // Registrar nueva partida iniciada
+  const recordNewGame = useCallback(async (): Promise<boolean> => {
+    try {
+      const success = await recordGameStarted()
+      if (success) {
+        // Actualizar el contador local
+        await loadTotalGamesPlayed()
+      }
+      return success
+    } catch (error) {
+      console.error('Error recording new game:', error)
+      return false
+    }
+  }, [loadTotalGamesPlayed])
+
   // Obtener ranking de un score
   const getRankForScore = useCallback(async (score: number): Promise<number> => {
     try {
@@ -63,20 +89,24 @@ export function useLeaderboard() {
     }
   }, [])
 
-  // Cargar scores iniciales
+  // Cargar datos iniciales
   useEffect(() => {
     loadTopScores()
     loadAllScores()
-  }, [loadTopScores, loadAllScores])
+    loadTotalGamesPlayed()
+  }, [loadTopScores, loadAllScores, loadTotalGamesPlayed])
 
   return {
     topScores,
     allScores,
+    totalGamesPlayed,
     isLoading,
     isSubmitting,
     loadTopScores,
     loadAllScores,
+    loadTotalGamesPlayed,
     submitScore,
+    recordNewGame,
     getRankForScore
   }
 } 

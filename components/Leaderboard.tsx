@@ -1,13 +1,14 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { LeaderboardEntry } from '@/types/game'
 
 interface LeaderboardProps {
   topScores: LeaderboardEntry[]
   allScores: LeaderboardEntry[]
+  totalGamesPlayed: number
   isLoading: boolean
 }
 
-export function Leaderboard({ topScores, allScores, isLoading }: LeaderboardProps) {
+export function Leaderboard({ topScores, allScores, totalGamesPlayed, isLoading }: LeaderboardProps) {
   const [activeTab, setActiveTab] = useState<'top' | 'all'>('top')
 
   const formatDate = (dateString: string) => {
@@ -140,7 +141,7 @@ export function Leaderboard({ topScores, allScores, isLoading }: LeaderboardProp
           <div className="grid grid-cols-3 gap-4 text-center">
             <div>
               <div className="text-gray-400 text-sm">Total Partidas</div>
-              <div className="text-white font-bold">{allScores.length}</div>
+              <div className="text-white font-bold">{totalGamesPlayed}</div>
             </div>
             <div>
               <div className="text-gray-400 text-sm">Mejor Score</div>

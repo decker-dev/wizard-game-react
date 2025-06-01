@@ -9,6 +9,7 @@ interface HomeScreenProps {
   onStartGame: () => void
   topScores: LeaderboardEntry[]
   allScores: LeaderboardEntry[]
+  totalGamesPlayed: number
   isLoadingScores: boolean
 }
 
@@ -16,6 +17,7 @@ export function HomeScreen({
   onStartGame, 
   topScores, 
   allScores, 
+  totalGamesPlayed,
   isLoadingScores 
 }: HomeScreenProps) {
   const [currentMenuItem, setCurrentMenuItem] = useState(0)
@@ -231,6 +233,7 @@ export function HomeScreen({
             <Leaderboard 
               topScores={topScores}
               allScores={allScores}
+              totalGamesPlayed={totalGamesPlayed}
               isLoading={isLoadingScores}
             />
           </div>
