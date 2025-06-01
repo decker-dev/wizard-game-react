@@ -1,0 +1,19 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://game.decker.sh/sitemap.xml
+
+# Crawl delay for politeness
+Crawl-delay: 1
+
+# Block access to admin or sensitive areas (if any)
+Disallow: /api/
+Disallow: /_next/
+Disallow: /admin/
+
+# Allow all game-related content
+Allow: /game
+Allow: /credits
+Allow: /leaderboard
+Allow: /public/ 
