@@ -260,18 +260,7 @@ export default function BoxheadGame() {
 
       {/* Game Content */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-4">
-        <GameUI
-          score={score}
-          currentWave={currentWave}
-          playerHealth={playerHealth}
-          playerCoins={playerCoins}
-          gameOver={gameOver}
-          gameWon={gameWon}
-          onResetGame={resetGame}
-          onReturnHome={returnToHome}
-          onShare={() => setShowShareModal(true)}
-          player={gameStateRef.current?.player}
-        />
+
 
         <div className="relative shadow-2xl">
           {/* Game Canvas Container with apocalyptic styling */}
@@ -346,6 +335,19 @@ export default function BoxheadGame() {
             </div>
           )}
         </div>
+
+        <GameUI
+          score={score}
+          currentWave={currentWave}
+          playerHealth={playerHealth}
+          playerCoins={playerCoins}
+          gameOver={gameOver}
+          gameWon={gameWon}
+          onResetGame={resetGame}
+          onReturnHome={returnToHome}
+          onShare={() => setShowShareModal(true)}
+          player={gameStateRef.current?.player}
+        /> 
 
         {/* Score Submission Modal */}
         <ScoreSubmissionModal
