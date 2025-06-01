@@ -94,64 +94,85 @@ export function GameScreen({
         <FloatingParticles />
       </div>
 
-      {/* Game Content */}
-      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-4">
-        <div className="relative shadow-2xl">
-          {/* Game Canvas Container with apocalyptic styling */}
-          <div className="bg-black/40 backdrop-blur-sm border border-orange-500/50 rounded-lg p-4 hover:border-orange-500/70 transition-colors">
-            <GameCanvas
-              gameState={gameStateRef.current}
-              zombieSprites={zombieSpritesRef.current}
-              floorTexture={floorTextureRef.current}
-              waveMessage={waveMessage}
-              startNextWave={onStartNextWave}
-              setScore={setScore}
-              setPlayerHealth={setPlayerHealth}
-              setPlayerCoins={setPlayerCoins}
-              setGameOver={setGameOver}
-              onMouseMove={onMouseMove}
-              onMouseClick={onMouseClick}
-              playZombieDeath={playZombieDeath}
-              playPlayerShoot={playPlayerShoot}
-              playPlayerHit={playPlayerHit}
-            />
+      {/* Game Content with new layout */}
+      <div className="relative z-10 flex items-center justify-center min-h-screen p-4">
+        <div className="flex items-start gap-8 w-full max-w-7xl">
+          {/* Game Canvas Container - Centered */}
+          <div className="flex-1 flex flex-col items-center">
+            <div className="relative shadow-2xl">
+              {/* Game Canvas Container with apocalyptic styling */}
+              <div className="bg-black/40 backdrop-blur-sm border border-orange-500/50 rounded-lg p-4 hover:border-orange-500/70 transition-colors">
+                <GameCanvas
+                  gameState={gameStateRef.current}
+                  zombieSprites={zombieSpritesRef.current}
+                  floorTexture={floorTextureRef.current}
+                  waveMessage={waveMessage}
+                  startNextWave={onStartNextWave}
+                  setScore={setScore}
+                  setPlayerHealth={setPlayerHealth}
+                  setPlayerCoins={setPlayerCoins}
+                  setGameOver={setGameOver}
+                  onMouseMove={onMouseMove}
+                  onMouseClick={onMouseClick}
+                  playZombieDeath={playZombieDeath}
+                  playPlayerShoot={playPlayerShoot}
+                  playPlayerHit={playPlayerHit}
+                />
+              </div>
+
+              {/* Game Over/Won Overlay */}
+              {(gameOver || gameWon) && (
+                <GameOverlay
+                  gameWon={gameWon}
+                  score={score}
+                  playerCoins={playerCoins}
+                  currentWave={currentWave}
+                  showScoreModal={showScoreModal}
+                  onResetGame={onResetGame}
+                  onReturnHome={onReturnHome}
+                />
+              )}
+            </div>
+
+            {/* Game Instructions - Below the canvas */}
+            <div className="mt-4 text-center max-w-md">
+              <div className="bg-black/40 backdrop-blur-sm border border-orange-500/20 rounded-lg p-4 hover:border-orange-500/30 transition-colors">
+                <div className="text-gray-300 font-mono text-sm space-y-1">
+                  <p className="hover:text-orange-400 transition-colors">🎯 <span className="text-orange-300">WASD/Arrows</span> para moverte</p>
+                  <p className="hover:text-orange-400 transition-colors">🔫 <span className="text-orange-300">SPACEBAR</span> para disparar</p>
+                  <p className="hover:text-orange-400 transition-colors">🧟 <span className="text-orange-300">Elimina zombies</span> y sobrevive</p>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Game Over/Won Overlay */}
-          {(gameOver || gameWon) && (
-            <GameOverlay
-              gameWon={gameWon}
+          {/* Right Side Panel - GameUI in vertical layout */}
+          <div className="w-80 flex flex-col">
+            <GameUI
               score={score}
-              playerCoins={playerCoins}
               currentWave={currentWave}
-              showScoreModal={showScoreModal}
+              playerHealth={playerHealth}
+              playerCoins={playerCoins}
+              gameOver={gameOver}
+              gameWon={gameWon}
               onResetGame={onResetGame}
               onReturnHome={onReturnHome}
+              onShare={onShare}
+              player={gameStateRef.current?.player}
             />
-          )}
+          </div>
         </div>
 
-        <GameUI
-          score={score}
-          currentWave={currentWave}
-          playerHealth={playerHealth}
-          playerCoins={playerCoins}
-          gameOver={gameOver}
-          gameWon={gameWon}
-          onResetGame={onResetGame}
-          onReturnHome={onReturnHome}
-          onShare={onShare}
-          player={gameStateRef.current?.player}
-        />
-
-        {/* Marketplace */}
+        {/* Marketplace - Overlays everything when shown */}
         {gameStateRef.current?.showMarketplace && (
-          <Marketplace
-            player={gameStateRef.current.player}
-            onUpgradeWeapon={onUpgradeWeapon}
-            onUpgradeHealth={onUpgradeHealth}
-            onContinue={onContinueFromMarketplace}
-          />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <Marketplace
+              player={gameStateRef.current.player}
+              onUpgradeWeapon={onUpgradeWeapon}
+              onUpgradeHealth={onUpgradeHealth}
+              onContinue={onContinueFromMarketplace}
+            />
+          </div>
         )}
       </div>
 
