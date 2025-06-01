@@ -98,8 +98,8 @@ ESC               →  Exit fullscreen
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/your-username/zombie-apocalypse-survival.git
-cd zombie-apocalypse-survival
+git clone https://github.com/decker-dev/zombie-game-react
+cd zombie-game-react
 ```
 
 2. **Install dependencies**
@@ -207,8 +207,6 @@ bun dev              # Start development server on port 3001
 bun build            # Build application for production
 bun start            # Start production server
 
-# Code quality
-bun lint             # Run ESLint to check code
 ```
 
 ---
