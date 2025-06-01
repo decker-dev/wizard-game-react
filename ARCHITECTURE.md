@@ -13,7 +13,23 @@ El archivo `app/page.tsx` original tenía **muchas responsabilidades**:
 
 Esto resultaba en un archivo de **397 líneas** difícil de mantener y testear.
 
-## Nueva Arquitectura
+## Nueva Arquitectura con Next.js App Router
+
+### 🚀 Estructura de Rutas
+
+La aplicación ahora usa el **App Router de Next.js 13+** con rutas separadas:
+
+```
+app/
+├── page.tsx              # Página de inicio (home)
+├── game/
+│   └── page.tsx          # Página del juego
+├── settings/
+│   └── page.tsx          # Página de configuración
+├── credits/
+│   └── page.tsx          # Página de créditos
+└── layout.tsx            # Layout global
+```
 
 ### 🎯 Hooks Especializados
 
@@ -28,6 +44,7 @@ Esto resultaba en un archivo de **397 líneas** difícil de mantener y testear.
 - Combina todos los hooks existentes
 - Expone una API limpia al componente principal
 - Maneja la lógica de coordinación entre diferentes sistemas
+- **Auto-start**: Parámetro para iniciar automáticamente el juego
 
 #### `useGameEffects.ts`
 **Responsabilidad**: Manejo de efectos y eventos del lifecycle
@@ -55,19 +72,50 @@ Esto resultaba en un archivo de **397 líneas** difícil de mantener y testear.
 - Botones de acción (reiniciar, volver al inicio)
 - UI específica para el final del juego
 
-### 📱 Componente Principal Simplificado
+#### `HomeScreen.tsx` (Actualizado)
+**Responsabilidad**: Pantalla de inicio
+- Menú principal del juego
+- Navegación usando Next.js router
+- Display de leaderboard
+- Información del juego
 
-#### `app/page.tsx` (Nuevo)
-**Responsabilidades reducidas**:
-- Únicamente orchestración de alto nivel
-- Renderizado condicional basado en el estado
-- Pasaje de props a componentes especializados
-- **Solo 78 líneas** (reducción del 80%)
+### 📱 Páginas Next.js
+
+#### `app/page.tsx` (Página de Inicio)
+**Responsabilidades**:
+- Renderizado del HomeScreen
+- Navegación a otras rutas
+- Carga de datos del leaderboard
+- **Solo 30 líneas** (reducción del 92%)
+
+#### `app/game/page.tsx` (Página del Juego)
+**Responsabilidades**:
+- Control total del gameplay
+- Auto-inicio del juego
+- Manejo de modales (score, share)
+- Navegación de regreso al home
+
+#### `app/settings/page.tsx` (Página de Configuración)
+**Responsabilidades**:
+- Configuración de audio
+- Configuración de juego (dificultad, FPS)
+- Persistencia en localStorage
+- UI consistente con el tema del juego
+
+#### `app/credits/page.tsx` (Página de Créditos)
+**Responsabilidades**:
+- Información del equipo de desarrollo
+- Tecnologías utilizadas
+- Agradecimientos
+- Información del juego
 
 ## Beneficios de la Nueva Arquitectura
 
 ### ✅ Principio de Responsabilidad Única
-Cada hook y componente tiene una responsabilidad bien definida
+Cada hook, componente y página tiene una responsabilidad bien definida
+
+### ✅ Mejor SEO y Navegación
+Cada sección tiene su propia URL, mejorando la experiencia del usuario
 
 ### ✅ Mejor Testabilidad  
 Cada pieza puede ser testeada de forma aislada
@@ -82,31 +130,48 @@ Cambios en una funcionalidad específica solo afectan su módulo correspondiente
 Código más fácil de entender y navegar
 
 ### ✅ Escalabilidad
-Fácil agregar nuevas pantallas o funcionalidades
+Fácil agregar nuevas páginas o funcionalidades
 
-## Estructura de Archivos
+### ✅ Performance
+Code splitting automático de Next.js por ruta
+
+## Estructura de Archivos Actualizada
 
 ```
+app/
+├── page.tsx              # Home page (30 líneas)
+├── game/page.tsx         # Game page
+├── settings/page.tsx     # Settings page  
+├── credits/page.tsx      # Credits page
+└── layout.tsx            # Global layout
+
 hooks/
-├── useGameScreens.ts      # Estado y navegación de pantallas
-├── useGameController.ts   # Orchestador principal  
-├── useGameEffects.ts      # Efectos y lifecycle
+├── useGameScreens.ts     # Estado y navegación de pantallas
+├── useGameController.ts  # Orchestador principal  
+├── useGameEffects.ts     # Efectos y lifecycle
 └── ... (hooks existentes)
 
 components/
-├── LoadingScreen.tsx      # Pantalla de carga
-├── GameScreen.tsx         # Pantalla principal del juego
-├── GameOverlay.tsx        # Overlay de game over/won
+├── LoadingScreen.tsx     # Pantalla de carga
+├── GameScreen.tsx        # Pantalla principal del juego
+├── GameOverlay.tsx       # Overlay de game over/won
+├── HomeScreen.tsx        # Pantalla de inicio (actualizada)
 └── ... (componentes existentes)
+```
 
-app/
-└── page.tsx              # Orchestador principal (simplificado)
+## Flujo de Navegación
+
+```
+/ (home)
+├── /game          # Inicia automáticamente el juego
+├── /settings      # Configuración del juego
+└── /credits       # Información del equipo
 ```
 
 ## Flujo de Datos
 
 ```
-page.tsx
+Página Next.js
     ↓
 useGameController (orchestador)
     ↓
@@ -127,11 +192,35 @@ Componentes especializados
 - **Game***: Componentes específicos del juego
 - **on***: Props que son event handlers
 - **set***: Props que son state setters
+- **handle***: Funciones de manejo de eventos
+- **Page**: Sufijo para páginas de Next.js
+
+## Beneficios del App Router
+
+### 🚀 **Performance**
+- Code splitting automático por ruta
+- Carga solo el código necesario para cada página
+
+### 🔗 **SEO Friendly**
+- URLs amigables (`/game`, `/settings`, `/credits`)
+- Mejor indexación por motores de búsqueda
+
+### 🎯 **User Experience**
+- Navegación más intuitiva
+- URLs que se pueden compartir
+- Botón "atrás" del navegador funciona correctamente
+
+### 📱 **Mobile Friendly**
+- Navegación nativa del navegador
+- Mejor experiencia en dispositivos móviles
 
 ## Próximos Pasos Recomendados
 
-1. **Agregar TypeScript estricto** a todos los hooks nuevos
-2. **Crear tests unitarios** para cada hook y componente
-3. **Implementar React.memo** en componentes que lo necesiten
-4. **Considerar Context API** si el prop drilling se vuelve problemático
-5. **Documentar interfaces** de todos los componentes nuevos 
+1. **Agregar metadata** a cada página para mejor SEO
+2. **Implementar loading.tsx** para cada ruta
+3. **Crear error.tsx** para manejo de errores por ruta
+4. **Agregar TypeScript estricto** a todas las páginas
+5. **Crear tests** para cada página y componente
+6. **Implementar React.memo** en componentes que lo necesiten
+7. **Considerar Server Components** donde sea apropiado
+8. **Agregar PWA features** para mejor experiencia móvil 

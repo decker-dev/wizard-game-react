@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useRef, useEffect } from 'react'
 import { useGameState } from '@/hooks/useGameState'
 import { useAssetLoader } from '@/hooks/useAssetLoader'
 import { useInputHandlers } from '@/hooks/useInputHandlers'
@@ -6,7 +6,7 @@ import { useLeaderboard } from '@/hooks/useLeaderboard'
 import { useGameAudio } from '@/hooks/useGameAudio'
 import { useGameScreens } from '@/hooks/useGameScreens'
 
-export function useGameController() {
+export function useGameController(autoStart: boolean = false) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   // Core game hooks
@@ -79,6 +79,13 @@ export function useGameController() {
       navigateToHome()
     }
   }, [loadAssets, initializeGameState, handleStartNextWave, navigateToGame, setGameReady, navigateToHome])
+
+  // Auto-start game when needed (for /game route)
+  useEffect(() => {
+    if (autoStart && screenState.currentScreen === 'home') {
+      startGame()
+    }
+  }, [autoStart, startGame, screenState.currentScreen])
 
   const resetGame = useCallback(() => {
     const gameState = resetGameState(playerSpritesRef.current)
