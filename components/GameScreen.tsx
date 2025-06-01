@@ -160,17 +160,6 @@ export function GameScreen({
       <div className="absolute top-0 right-0 w-32 h-32 border-r-2 border-t-2 border-orange-500/30"></div>
       <div className="absolute bottom-0 left-0 w-32 h-32 border-l-2 border-b-2 border-orange-500/30"></div>
       <div className="absolute bottom-0 right-0 w-32 h-32 border-r-2 border-b-2 border-orange-500/30"></div>
-
-      {/* Animated HUD Elements */}
-      <div className="absolute top-4 right-4 space-y-2">
-        {[...Array(5)].map((_, i) => (
-          <div
-            key={i}
-            className={`w-8 h-2 bg-orange-500/20 rounded animate-pulse`}
-            style={{ animationDelay: `${i * 200}ms` }}
-          ></div>
-        ))}
-      </div>
     </div>
   )
 } 
