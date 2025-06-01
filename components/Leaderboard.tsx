@@ -44,7 +44,7 @@ export function Leaderboard({ topScores, allScores, totalGamesPlayed, isLoading 
           📊 Leaderboard
         </h2>
         <div className="text-center text-gray-400">
-          Cargando scores...
+          Loading scores...
         </div>
       </div>
     )
@@ -76,7 +76,7 @@ export function Leaderboard({ topScores, allScores, totalGamesPlayed, isLoading 
               : 'text-gray-300 hover:text-white'
           }`} 
         >
-          Todos los Scores
+          All Scores
         </button>
       </div>
 
@@ -84,7 +84,7 @@ export function Leaderboard({ topScores, allScores, totalGamesPlayed, isLoading 
       <div className="max-h-96 overflow-y-auto">
         {currentScores.length === 0 ? (
           <div className="text-center text-gray-400 py-8">
-            {activeTab === 'top' ? 'No hay scores aún' : 'No hay scores guardados'}
+            {activeTab === 'top' ? 'No scores yet' : 'No saved scores'}
           </div>
         ) : (
           <div className="space-y-2">
@@ -140,17 +140,17 @@ export function Leaderboard({ topScores, allScores, totalGamesPlayed, isLoading 
         <div className="mt-4 pt-4 border-t border-gray-600">
           <div className="grid grid-cols-3 gap-4 text-center">
             <div>
-              <div className="text-gray-400 text-sm">Total Partidas</div>
+              <div className="text-gray-400 text-sm">Total Games</div>
               <div className="text-white font-bold">{totalGamesPlayed}</div>
             </div>
             <div>
-              <div className="text-gray-400 text-sm">Mejor Score</div>
+              <div className="text-gray-400 text-sm">Best Score</div>
               <div className="text-yellow-400 font-bold">
                 {topScores[0]?.score?.toLocaleString() || '0'}
               </div>
             </div>
             <div>
-              <div className="text-gray-400 text-sm">Mejor Wave</div>
+              <div className="text-gray-400 text-sm">Best Wave</div>
               <div className="text-blue-400 font-bold">
                 {Math.max(...allScores.map(s => s.waves_survived)) || 0}
               </div>

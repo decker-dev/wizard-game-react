@@ -141,9 +141,9 @@ export function GameScreen({
             <div className="mt-4 text-center max-w-md">
               <div className="bg-black/40 backdrop-blur-sm border border-orange-500/20 rounded-lg p-4 hover:border-orange-500/30 transition-colors">
                 <div className="text-gray-300 font-mono text-sm space-y-1">
-                  <p className="hover:text-orange-400 transition-colors">🎯 <span className="text-orange-300">WASD/Arrows</span> para moverte</p>
-                  <p className="hover:text-orange-400 transition-colors">🔫 <span className="text-orange-300">SPACEBAR</span> para disparar</p>
-                  <p className="hover:text-orange-400 transition-colors">🧟 <span className="text-orange-300">Elimina zombies</span> y sobrevive</p>
+                  <p className="hover:text-orange-400 transition-colors">🎯 <span className="text-orange-300">WASD/Arrows</span> to move</p>
+                  <p className="hover:text-orange-400 transition-colors">🔫 <span className="text-orange-300">SPACEBAR</span> to shoot</p>
+                  <p className="hover:text-orange-400 transition-colors">🧟 <span className="text-orange-300">Kill zombies</span> and survive</p>
                 </div>
               </div>
             </div>

@@ -15,10 +15,10 @@ export const ShareModal: React.FC<ShareModalProps> = ({ isVisible, onClose }) =>
         {/* Header */}
         <div className="mb-6">
           <h2 className="text-3xl font-bold font-mono text-transparent bg-clip-text bg-gradient-to-b from-orange-400 to-red-600 mb-2">
-            COMPARTIR JUEGO
+            SHARE GAME
           </h2>
           <p className="text-gray-300 font-mono text-sm">
-            Escanea el código QR para jugar en tu móvil
+            Scan the QR code to play on your mobile
           </p>
         </div>
 
@@ -27,7 +27,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({ isVisible, onClose }) =>
           <div className="bg-white p-4 rounded-lg inline-block">
             <img 
               src="/qr.jpeg" 
-              alt="QR Code para acceder al juego" 
+              alt="QR Code to access the game" 
               className="w-48 h-48 object-contain"
             />
           </div>
@@ -35,18 +35,18 @@ export const ShareModal: React.FC<ShareModalProps> = ({ isVisible, onClose }) =>
 
         {/* Instructions */}
         <div className="mb-6 text-left">
-          <h3 className="text-orange-400 font-mono font-bold text-sm mb-3">INSTRUCCIONES:</h3>
+          <h3 className="text-orange-400 font-mono font-bold text-sm mb-3">INSTRUCTIONS:</h3>
           <div className="space-y-2 text-gray-300 font-mono text-xs">
-            <p>📱 Abre la cámara de tu teléfono</p>
-            <p>🎯 Apunta al código QR</p>
-            <p>🎮 ¡Juega Zombie Siege en móvil!</p>
+            <p>📱 Open your phone's camera</p>
+            <p>🎯 Point at the QR code</p>
+            <p>🎮 Play Zombie Siege on mobile!</p>
           </div>
         </div>
 
         {/* URL Display */}
         <div className="mb-6">
           <div className="bg-black/60 border border-orange-500/30 rounded-lg p-3">
-            <p className="text-orange-400 font-mono text-xs mb-1">URL DIRECTA:</p>
+            <p className="text-orange-400 font-mono text-xs mb-1">DIRECT URL:</p>
             <p className="text-gray-300 font-mono text-xs break-all">
               https://fork-game-jam-paisanos-pvh5o34m1-alejorrojas-projects.vercel.app/
             </p>
@@ -62,14 +62,14 @@ export const ShareModal: React.FC<ShareModalProps> = ({ isVisible, onClose }) =>
             }}
             className="px-6 py-3 bg-orange-600/80 hover:bg-orange-600 border border-orange-500/50 text-white font-mono font-bold rounded-lg text-sm transition-all duration-200 transform hover:scale-105 hover:border-orange-500"
           >
-            📋 COPIAR URL
+            📋 COPY URL
           </button>
           
           <button
             onClick={onClose}
             className="px-6 py-3 bg-red-600/80 hover:bg-red-600 border border-red-500/50 text-white font-mono font-bold rounded-lg text-sm transition-all duration-200 transform hover:scale-105 hover:border-red-500"
           >
-            CERRAR
+            CLOSE
           </button>
         </div>
 

@@ -43,9 +43,9 @@ export function ScoreSubmissionModal({
       setSubmitSuccess(success)
       
       if (success) {
-        // Esperar un momento para mostrar el mensaje de éxito
+        // Wait a moment to show success message
         setTimeout(() => {
-          onSkip() // Cerrar el modal
+          onSkip() // Close the modal
         }, 1500)
       }
     } catch (error) {
@@ -69,15 +69,15 @@ export function ScoreSubmissionModal({
     <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4">
       <div className="bg-gray-800 border border-gray-600 rounded-lg p-6 max-w-md w-full">
         <h2 className="text-2xl font-bold text-white mb-4 text-center">
-          ¡Guarda tu Score!
+          Save Your Score!
         </h2>
         
         <div className="text-center mb-6">
           <div className="text-yellow-400 text-xl font-semibold mb-2">
-            Zombies Eliminados: {score}
+            Zombies Eliminated: {score}
           </div>
           <div className="text-blue-400 text-lg">
-            Waves Sobrevividas: {wavesSurvived}
+            Waves Survived: {wavesSurvived}
           </div>
         </div>
 
@@ -86,14 +86,14 @@ export function ScoreSubmissionModal({
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label htmlFor="playerName" className="block text-white text-sm font-medium mb-2">
-                  Tu Nombre:
+                  Your Name:
                 </label>
                 <input
                   id="playerName"
                   type="text"
                   value={playerName}
                   onChange={(e) => setPlayerName(e.target.value)}
-                  placeholder="Ingresa tu nombre"
+                  placeholder="Enter your name"
                   maxLength={50}
                   className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   disabled={isSubmittingState || isSubmitting}
@@ -107,7 +107,7 @@ export function ScoreSubmissionModal({
                   disabled={!playerName.trim() || isSubmittingState || isSubmitting}
                   className="flex-1 bg-green-600 hover:bg-green-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-bold py-2 px-4 rounded transition-colors"
                 >
-                  {isSubmittingState || isSubmitting ? 'Guardando...' : 'Guardar Score'}
+                  {isSubmittingState || isSubmitting ? 'Saving...' : 'Save Score'}
                 </button>
                 <button
                   type="button"
@@ -115,7 +115,7 @@ export function ScoreSubmissionModal({
                   disabled={isSubmittingState || isSubmitting}
                   className="flex-1 bg-gray-600 hover:bg-gray-700 disabled:bg-gray-500 disabled:cursor-not-allowed text-white font-bold py-2 px-4 rounded transition-colors"
                 >
-                  Saltar
+                  Skip
                 </button>
               </div>
             </form>
@@ -125,10 +125,10 @@ export function ScoreSubmissionModal({
         {submitSuccess === true && (
           <div className="text-center">
             <div className="text-green-400 text-lg font-semibold mb-2">
-              ¡Score guardado exitosamente!
+              Score saved successfully!
             </div>
             <div className="text-gray-300">
-              Cerrando...
+              Closing...
             </div>
           </div>
         )}
@@ -136,20 +136,20 @@ export function ScoreSubmissionModal({
         {submitSuccess === false && (
           <div className="text-center space-y-4">
             <div className="text-red-400 text-lg font-semibold">
-              Error al guardar el score
+              Error saving score
             </div>
             <div className="flex gap-3">
               <button
                 onClick={() => setSubmitSuccess(null)}
                 className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors"
               >
-                Reintentar
+                Retry
               </button>
               <button
                 onClick={handleSkip}
                 className="flex-1 bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded transition-colors"
               >
-                Saltar
+                Skip
               </button>
             </div>
           </div>

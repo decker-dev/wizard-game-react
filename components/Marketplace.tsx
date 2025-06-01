@@ -37,7 +37,7 @@ export const Marketplace: React.FC<MarketplaceProps> = ({
         <div className="text-center mb-6">
           <p className="text-white text-xl flex items-center justify-center">
             <CoinIcon size="lg" className="mr-2" />
-            Monedas: {player.coins}
+            Coins: {player.coins}
           </p>
         </div>
 
@@ -45,35 +45,35 @@ export const Marketplace: React.FC<MarketplaceProps> = ({
           {/* Weapon Upgrade */}
           <div className="bg-gray-700 rounded-lg p-4 border-2 border-gray-600">
             <div className="flex justify-between items-center mb-2">
-              <h3 className="text-lg font-bold text-red-400">🔫 Mejorar Arma</h3>
+              <h3 className="text-lg font-bold text-red-400">🔫 Upgrade Weapon</h3>
               <span className="text-yellow-400 flex items-center">
                 <CoinIcon size="sm" className="mr-1" />
                 {weaponCost}
               </span>
             </div>
             <p className="text-gray-300 text-sm mb-3">
-              Daño actual: {player.upgrades.weaponDamage} | Nivel: {player.upgrades.weaponLevel}/{MAX_UPGRADE_LEVEL}
+              Current damage: {player.upgrades.weaponDamage} | Level: {player.upgrades.weaponLevel}/{MAX_UPGRADE_LEVEL}
             </p>
             <div className="text-gray-300 text-xs mb-3 space-y-1">
-              <p>+{WEAPON_DAMAGE_INCREASE} de daño por disparo</p>
+              <p>+{WEAPON_DAMAGE_INCREASE} damage per shot</p>
               {player.upgrades.weaponLevel === 0 && (
                 <div className="text-yellow-300">
-                  <p>🔥 Próximas mejoras:</p>
-                  <p>• Nv.1: Disparo más rápido</p>
-                  <p>• Nv.2: Doble disparo</p>
-                  <p>• Nv.3: Balas más grandes</p>
-                  <p>• Nv.4: Triple disparo</p>
-                  <p>• Nv.5: Máximo poder</p>
+                  <p>🔥 Next upgrades:</p>
+                  <p>• Lv.1: Faster shooting</p>
+                  <p>• Lv.2: Double shot</p>
+                  <p>• Lv.3: Bigger bullets</p>
+                  <p>• Lv.4: Triple shot</p>
+                  <p>• Lv.5: Maximum power</p>
                 </div>
               )}
               {player.upgrades.weaponLevel >= 1 && (
                 <div className="text-green-300">
-                  <p>✅ Velocidad: {Math.round(1000/player.upgrades.fireRate * 10)/10} disparos/seg</p>
+                  <p>✅ Speed: {Math.round(1000/player.upgrades.fireRate * 10)/10} shots/sec</p>
                   {player.upgrades.projectileCount > 1 && (
-                    <p>✅ Proyectiles: {player.upgrades.projectileCount}x por disparo</p>
+                    <p>✅ Projectiles: {player.upgrades.projectileCount}x per shot</p>
                   )}
                   {player.upgrades.projectileSize > 1 && (
-                    <p>✅ Tamaño: {Math.round(player.upgrades.projectileSize * 100)}% del original</p>
+                    <p>✅ Size: {Math.round(player.upgrades.projectileSize * 100)}% of original</p>
                   )}
                 </div>
               )}
@@ -88,10 +88,10 @@ export const Marketplace: React.FC<MarketplaceProps> = ({
               }`}
             >
               {player.upgrades.weaponLevel >= MAX_UPGRADE_LEVEL 
-                ? 'MÁXIMO NIVEL' 
+                ? 'MAX LEVEL' 
                 : canUpgradeWeapon 
-                  ? 'COMPRAR' 
-                  : 'SIN MONEDAS'
+                  ? 'BUY' 
+                  : 'NO COINS'
               }
             </button>
           </div>
@@ -99,17 +99,17 @@ export const Marketplace: React.FC<MarketplaceProps> = ({
           {/* Health Upgrade */}
           <div className="bg-gray-700 rounded-lg p-4 border-2 border-gray-600">
             <div className="flex justify-between items-center mb-2">
-              <h3 className="text-lg font-bold text-green-400">❤️ Mejorar Vida</h3>
+              <h3 className="text-lg font-bold text-green-400">❤️ Upgrade Health</h3>
               <span className="text-yellow-400 flex items-center">
                 <CoinIcon size="sm" className="mr-1" />
                 {healthCost}
               </span>
             </div>
             <p className="text-gray-300 text-sm mb-3">
-              Vida máxima: {player.upgrades.maxHealth} | Nivel: {player.upgrades.healthLevel}/{MAX_UPGRADE_LEVEL}
+              Max health: {player.upgrades.maxHealth} | Level: {player.upgrades.healthLevel}/{MAX_UPGRADE_LEVEL}
             </p>
             <p className="text-gray-300 text-sm mb-3">
-              +{HEALTH_INCREASE} de vida máxima
+              +{HEALTH_INCREASE} max health
             </p>
             <button
               onClick={onUpgradeHealth}
@@ -121,10 +121,10 @@ export const Marketplace: React.FC<MarketplaceProps> = ({
               }`}
             >
               {player.upgrades.healthLevel >= MAX_UPGRADE_LEVEL 
-                ? 'MÁXIMO NIVEL' 
+                ? 'MAX LEVEL' 
                 : canUpgradeHealth 
-                  ? 'COMPRAR' 
-                  : 'SIN MONEDAS'
+                  ? 'BUY' 
+                  : 'NO COINS'
               }
             </button>
           </div>
@@ -135,7 +135,7 @@ export const Marketplace: React.FC<MarketplaceProps> = ({
             onClick={onContinue}
             className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded text-xl transition-colors"
           >
-            Continuar a la siguiente wave →
+            Continue to next wave →
           </button>
         </div>
 
@@ -143,14 +143,14 @@ export const Marketplace: React.FC<MarketplaceProps> = ({
         <div className="mt-4 text-center text-xs text-gray-400">
           {player.upgrades.weaponLevel < MAX_UPGRADE_LEVEL && (
             <p className="flex items-center justify-center">
-              Próximo upgrade de arma: 
+              Next weapon upgrade: 
               <CoinIcon size="sm" className="mx-1" />
               {getWeaponUpgradeCost(player.upgrades.weaponLevel + 1)}
             </p>
           )}
           {player.upgrades.healthLevel < MAX_UPGRADE_LEVEL && (
             <p className="flex items-center justify-center">
-              Próximo upgrade de vida: 
+              Next health upgrade: 
               <CoinIcon size="sm" className="mx-1" />
               {getHealthUpgradeCost(player.upgrades.healthLevel + 1)}
             </p>

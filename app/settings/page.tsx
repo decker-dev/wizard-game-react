@@ -46,10 +46,10 @@ export default function SettingsPage() {
       localStorage.setItem('gameSettings', JSON.stringify(settings))
       playSelect()
       // Show feedback - could be improved with a toast notification
-      alert('¡Configuración guardada!')
+      alert('Settings saved!')
     } catch (error) {
       console.warn('Error saving settings:', error)
-      alert('Error al guardar configuración')
+      alert('Error saving settings')
     }
   }
 
@@ -88,10 +88,10 @@ export default function SettingsPage() {
           {/* Header */}
           <div className="text-center mb-8">
             <h1 className="text-5xl font-bold font-mono text-transparent bg-clip-text bg-gradient-to-b from-orange-400 to-red-600 mb-4">
-              CONFIGURACIÓN
+              SETTINGS
             </h1> 
             <p className="text-gray-300 font-mono">
-              Personaliza tu experiencia de juego
+              Customize your gaming experience
             </p>
           </div>
 
@@ -103,7 +103,7 @@ export default function SettingsPage() {
               
               {/* SFX Toggle */}
               <div className="flex items-center justify-between mb-4">
-                <span className="text-gray-300 font-mono">Efectos de Sonido</span>
+                <span className="text-gray-300 font-mono">Sound Effects</span>
                 <button
                   onClick={handleSfxToggle}
                   onMouseEnter={() => playHover()}
@@ -119,7 +119,7 @@ export default function SettingsPage() {
 
               {/* Music Toggle */}
               <div className="flex items-center justify-between mb-4">
-                <span className="text-gray-300 font-mono">Música</span>
+                <span className="text-gray-300 font-mono">Music</span>
                 <button
                   onClick={handleMusicToggle}
                   onMouseEnter={() => playHover()}
@@ -145,14 +145,14 @@ export default function SettingsPage() {
               onClick={() => playSelect()}
               className="px-8 py-4 bg-gray-600/80 hover:bg-gray-600 border border-gray-500/50 text-white font-mono font-bold rounded-lg text-xl transition-all duration-200 transform hover:scale-105 hover:border-gray-500"
             >
-              VOLVER
+              BACK
             </Link>
             <button
               onClick={handleSave}
               onMouseEnter={() => playHover()}
               className="px-8 py-4 bg-green-600/80 hover:bg-green-600 border border-green-500/50 text-white font-mono font-bold rounded-lg text-xl transition-all duration-200 transform hover:scale-105 hover:border-green-500"
             >
-              GUARDAR
+              SAVE
             </button>
           </div>
         </div>

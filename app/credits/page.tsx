@@ -18,7 +18,7 @@ interface CreditSection {
 export default function CreditsPage() {
   const credits: CreditSection[] = [
     {
-      category: "DESARROLLO",
+      category: "DEVELOPMENT",
       items: [
         { role: "Vibe Developer", name: "Lauti", link: "https://x.com/lautidev_" },
         { role: "Vibe Developer", name: "Alejo", link: "https://x.com/alejorrojass" },
@@ -26,7 +26,7 @@ export default function CreditsPage() {
       ]
     },
     {
-      category: "TECNOLOGÍA",
+      category: "TECHNOLOGY",
       items: [
         { role: "Framework", name: "Next.js 14" },
         { role: "Language", name: "TypeScript" },
@@ -57,10 +57,10 @@ export default function CreditsPage() {
           {/* Header */}
           <div className="text-center mb-8">
             <h1 className="text-5xl font-bold font-mono text-transparent bg-clip-text bg-gradient-to-b from-orange-400 to-red-600 mb-4">
-              CRÉDITOS
+              CREDITS
             </h1>
             <p className="text-gray-300 font-mono text-lg">
-              Creado en el Game Jam de Paisanos.io
+              Created in the Paisanos.io Game Jam
             </p>
           </div>
 
@@ -69,9 +69,9 @@ export default function CreditsPage() {
             <h2 className="text-3xl font-bold text-orange-400 font-mono mb-2">
               ZOMBIE APOCALYPSE SURVIVAL
             </h2>
-            <p className="text-gray-300 font-mono mb-2">Desarrollado en 1 día</p>
+            <p className="text-gray-300 font-mono mb-2">Developed in 1 day</p>
             <p className="text-gray-400 font-mono text-sm">
-              Primera Vibe Gaming Hackathon de LATAM - Tech Week Buenos Aires
+              First Vibe Gaming Hackathon in LATAM - Tech Week Buenos Aires
             </p>
           </div>
 
@@ -116,7 +116,7 @@ export default function CreditsPage() {
           {/* Footer Message */}
           <div className="text-center mt-8 bg-black/40 border border-orange-500/20 rounded-lg p-6">
             <p className="text-gray-300 font-mono mb-4">
-              🎮 Un juego desarrollado en comunidad durante la primera Game Jam de Paisanos.io
+              🎮 A game developed by the community during the first Paisanos.io Game Jam
             </p>
             <p className="text-gray-400 font-mono text-xs">
               Made with ❤️ in Buenos Aires using Next.js, TypeScript, and creativity
@@ -129,7 +129,7 @@ export default function CreditsPage() {
               href="/"
               className="px-8 py-4 bg-orange-600/80 hover:bg-orange-600 border border-orange-500/50 text-white font-mono font-bold rounded-lg text-xl transition-all duration-200 transform hover:scale-105 hover:border-orange-500"
             >
-              VOLVER AL INICIO
+              BACK TO HOME
             </Link>
           </div>
         </div>

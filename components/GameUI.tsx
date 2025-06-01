@@ -127,7 +127,7 @@ export const GameUI: React.FC<GameUIProps> = ({
               onClick={onReturnHome}
               className="w-full px-4 py-3 bg-red-600/80 hover:bg-red-600 border border-red-500/50 text-white text-sm font-mono rounded transition-all duration-200 transform hover:scale-105 hover:border-red-500"
             >
-              🏠 VOLVER AL INICIO
+              🏠 BACK TO HOME
             </button>
           )}
           
@@ -136,7 +136,7 @@ export const GameUI: React.FC<GameUIProps> = ({
               onClick={onShare}
               className="w-full px-4 py-3 bg-blue-600/80 hover:bg-blue-600 border border-blue-500/50 text-white text-sm font-mono rounded transition-all duration-200 transform hover:scale-105 hover:border-blue-500"
             >
-              📱 COMPARTIR
+              📱 SHARE
             </button>
           )}
         </div>
