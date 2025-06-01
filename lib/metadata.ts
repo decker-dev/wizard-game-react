@@ -1,14 +1,16 @@
 import type { Metadata } from 'next'
 
-const siteUrl = 'https://game.decker.sh'
+const siteUrl = 'https://zombie.decker.sh'
 
 export const defaultMetadata: Metadata = {
   title: {
-    default: '🧟 Zombie Apocalypse Survival - 2D Pixel Art Shooter',
-    template: '%s | Zombie Apocalypse Survival'
+    default: 'BOXHEAD ZOMBIE SURVIVAL - 2D Pixel Art Shooter',
+    template: '%s | BOXHEAD ZOMBIE SURVIVAL'
   },
-  description: 'Sobrevive a oleadas infinitas de zombies en este innovador shooter 2D con pixel art. Mejora tus armas, compra equipo y compite por el mejor puntaje en las tablas de clasificación globales.',
+  description: 'Survive infinite waves of zombies in BOXHEAD ZOMBIE SURVIVAL, an innovative 2D pixel art shooter. Upgrade your weapons, buy equipment and compete for the best score on global leaderboards.',
   keywords: [
+    'boxhead',
+    'boxhead zombie survival',
     'zombie game',
     'shooter 2d',
     'pixel art',
@@ -19,8 +21,8 @@ export const defaultMetadata: Metadata = {
     'browser game',
     'arcade game',
     'leaderboard',
-    'juego de zombies',
-    'supervivencia',
+    'zombie shooter',
+    'survival horror',
     'game jam',
     'vibe gaming'
   ],
@@ -35,43 +37,43 @@ export const defaultMetadata: Metadata = {
 }
 
 export const gamePageMetadata: Metadata = {
-  title: '🎮 Jugar Ahora - Zombie Apocalypse Survival',
-  description: '¡Comienza tu supervivencia contra las hordas de zombies! Controla con WASD, dispara con el mouse y sobrevive el mayor tiempo posible en este intenso shooter 2D.',
+  title: '🎮 Play Now - BOXHEAD ZOMBIE SURVIVAL',
+  description: 'Start your survival against zombie hordes in BOXHEAD ZOMBIE SURVIVAL! Control with WASD, shoot with mouse and survive as long as possible in this intense 2D shooter.',
   openGraph: {
-    title: '🎮 ¡Juega Zombie Apocalypse Survival Ahora!',
-    description: '¡Comienza tu supervivencia contra las hordas de zombies! Controla con WASD, dispara con el mouse y sobrevive.',
+    title: '🎮 Play BOXHEAD ZOMBIE SURVIVAL Now!',
+    description: 'Start your survival against zombie hordes in BOXHEAD ZOMBIE SURVIVAL! Control with WASD, shoot with mouse and survive.',
     url: '/game',
     images: [
       {
         url: '/og.png',
         width: 1200,
         height: 630,
-        alt: 'Zombie Apocalypse Survival - Gameplay Screenshot',
+        alt: 'BOXHEAD ZOMBIE SURVIVAL - Gameplay Screenshot',
       }
     ],
   },
   twitter: {
-    title: '🎮 ¡Juega Zombie Apocalypse Survival!',
-    description: '¡Comienza tu supervivencia contra las hordas de zombies! Shooter 2D con pixel art.',
+    title: '🎮 Play BOXHEAD ZOMBIE SURVIVAL!',
+    description: 'Start your survival against zombie hordes in BOXHEAD ZOMBIE SURVIVAL! 2D pixel art shooter.',
   },
 }
 
 export const creditsPageMetadata: Metadata = {
-  title: '👥 Créditos - Equipo de Desarrollo',
-  description: 'Conoce al equipo detrás de Zombie Apocalypse Survival: Lauti, Alejo y Decker. Desarrollado durante el primer Vibe Gaming Hackathon en LATAM.',
+  title: '👥 Credits - Development Team',
+  description: 'Meet the team behind BOXHEAD ZOMBIE SURVIVAL: Lauti, Alejo and Decker. Developed during the first Vibe Gaming Hackathon in LATAM.',
   openGraph: {
-    title: '👥 Equipo de Desarrollo - Zombie Apocalypse Survival',
-    description: 'Conoce al talentoso equipo que creó este increíble shooter 2D durante el Vibe Gaming Hackathon.',
+    title: '👥 Development Team - BOXHEAD ZOMBIE SURVIVAL',
+    description: 'Meet the talented team that created this amazing 2D shooter during the Vibe Gaming Hackathon.',
     url: '/credits',
   },
 }
 
 export const leaderboardMetadata: Metadata = {
-  title: '🏆 Tabla de Clasificación - Top Jugadores',
-  description: 'Mira los mejores puntajes y compite por el primer lugar en Zombie Apocalypse Survival. ¿Tienes lo que se necesita para estar en el top?',
+  title: '🏆 Leaderboard - Top Players',
+  description: 'Check out the best scores and compete for first place in BOXHEAD ZOMBIE SURVIVAL. Do you have what it takes to be at the top?',
   openGraph: {
-    title: '🏆 Tabla de Clasificación - Zombie Apocalypse Survival',
-    description: 'Compite por el primer lugar y demuestra que eres el mejor superviviente de zombies.',
+    title: '🏆 Leaderboard - BOXHEAD ZOMBIE SURVIVAL',
+    description: 'Compete for first place and prove you are the best zombie survivor in BOXHEAD ZOMBIE SURVIVAL.',
     url: '/leaderboard',
   },
 }
@@ -80,8 +82,8 @@ export const leaderboardMetadata: Metadata = {
 export const gameStructuredData = {
   '@context': 'https://schema.org',
   '@type': 'VideoGame',
-  name: 'Zombie Apocalypse Survival',
-  description: 'Sobrevive a oleadas infinitas de zombies en este innovador shooter 2D con pixel art.',
+  name: 'BOXHEAD ZOMBIE SURVIVAL',
+  description: 'Survive infinite waves of zombies in BOXHEAD ZOMBIE SURVIVAL, an innovative 2D pixel art shooter.',
   genre: ['Action', 'Shooter', 'Survival', 'Arcade'],
   gamePlatform: ['Web Browser', 'PC', 'Mobile'],
   applicationCategory: 'Game',
@@ -116,7 +118,7 @@ export const gameStructuredData = {
   image: `${siteUrl}/og.png`,
   url: siteUrl,
   datePublished: '2024-12-01',
-  inLanguage: 'es-ES',
+  inLanguage: 'en-US',
   aggregateRating: {
     '@type': 'AggregateRating',
     ratingValue: '4.8',

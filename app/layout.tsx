@@ -4,11 +4,13 @@ import { Analytics } from '@vercel/analytics/react'
 
 export const metadata: Metadata = {
   title: {
-    default: '🧟 Zombie Apocalypse Survival - 2D Pixel Art Shooter',
-    template: '%s | Zombie Apocalypse Survival'
+    default: 'BOXHEAD ZOMBIE SURVIVAL - 2D Pixel Art Shooter',
+    template: '%s | BOXHEAD ZOMBIE SURVIVAL'
   },
-  description: 'Sobrevive a oleadas infinitas de zombies en este innovador shooter 2D con pixel art. Mejora tus armas, compra equipo y compite por el mejor puntaje en las tablas de clasificación globales.',
+  description: 'Survive infinite waves of zombies in BOXHEAD ZOMBIE SURVIVAL, an innovative 2D pixel art shooter. Upgrade your weapons, buy equipment and compete for the best score on global leaderboards.',
   keywords: [
+    'boxhead',
+    'boxhead zombie survival',
     'zombie game',
     'shooter 2d',
     'pixel art',
@@ -19,8 +21,8 @@ export const metadata: Metadata = {
     'browser game',
     'arcade game',
     'leaderboard',
-    'juego de zombies',
-    'supervivencia'
+    'zombie shooter',
+    'survival horror'
   ],
   authors: [
     { name: 'Lauti', url: 'https://x.com/lautidev_' },
@@ -34,31 +36,31 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://game.decker.sh'),
+  metadataBase: new URL('https://zombie.decker.sh'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
     type: 'website',
-    locale: 'es_ES',
+    locale: 'en_US',
     url: '/',
-    title: '🧟 Zombie Apocalypse Survival - Shooter 2D con Pixel Art',
-    description: 'Sobrevive a oleadas infinitas de zombies en este innovador shooter 2D. Sistema de mejoras, marketplace entre oleadas y tablas de clasificación globales. ¡Juega gratis ahora!',
-    siteName: 'Zombie Apocalypse Survival',
+    title: 'BOXHEAD ZOMBIE SURVIVAL - 2D Pixel Art Shooter',
+    description: 'Survive infinite waves of zombies in BOXHEAD ZOMBIE SURVIVAL. Upgrade system, marketplace between waves and global leaderboards. Play free now!',
+    siteName: 'BOXHEAD ZOMBIE SURVIVAL',
     images: [
       {
         url: '/og.png',
         width: 1200,
         height: 630,
-        alt: 'Zombie Apocalypse Survival - 2D Pixel Art Shooter Game',
+        alt: 'BOXHEAD ZOMBIE SURVIVAL - 2D Pixel Art Shooter Game',
         type: 'image/png',
       }
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: '🧟 Zombie Apocalypse Survival - Shooter 2D',
-    description: 'Sobrevive a oleadas infinitas de zombies en este innovador shooter 2D con pixel art. ¡Juega gratis ahora!',
+    title: 'BOXHEAD ZOMBIE SURVIVAL - 2D Shooter',
+    description: 'Survive infinite waves of zombies in BOXHEAD ZOMBIE SURVIVAL, an innovative 2D pixel art shooter. Play free now!',
     images: ['/og.png'],
     creator: '@lautidev_',
   },
@@ -74,16 +76,16 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    google: 'google-site-verification-token', // Reemplaza con tu token real
+    google: 'google-site-verification-token', // Replace with your actual token
   },
   category: 'games',
   classification: 'Game',
   other: {
     'apple-mobile-web-app-capable': 'yes',
     'apple-mobile-web-app-status-bar-style': 'black-translucent',
-    'apple-mobile-web-app-title': 'Zombie Survival',
+    'apple-mobile-web-app-title': 'BOXHEAD ZOMBIE SURVIVAL',
     'mobile-web-app-capable': 'yes',
-    'application-name': 'Zombie Apocalypse Survival',
+    'application-name': 'BOXHEAD ZOMBIE SURVIVAL',
     'msapplication-TileColor': '#000000',
     'theme-color': '#000000',
   },
@@ -95,7 +97,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="es">
+    <html lang="en">
       <body>{children}</body>
       <Analytics />
     </html>

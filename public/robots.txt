@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://game.decker.sh/sitemap.xml
+Sitemap: https://zombie.decker.sh/sitemap.xml
 
 # Crawl delay for politeness
 Crawl-delay: 1
