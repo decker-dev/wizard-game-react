@@ -75,9 +75,6 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-  verification: {
-    google: 'google-site-verification-token', // Replace with your actual token
-  },
   category: 'games',
   classification: 'Game',
   other: {
