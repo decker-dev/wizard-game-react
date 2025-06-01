@@ -13,19 +13,9 @@ export default function HomePage() {
     router.push('/game')
   }
 
-  const handleSettings = () => {
-    router.push('/settings')
-  }
-
-  const handleCredits = () => {
-    router.push('/credits')
-  }
-
   return (
     <HomeScreen
       onStartGame={handleStartGame}
-      onSettings={handleSettings}
-      onCredits={handleCredits}
       topScores={topScores}
       allScores={allScores}
       isLoadingScores={isLoadingScores}

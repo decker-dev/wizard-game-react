@@ -1,12 +1,11 @@
 "use client"
 
 import React, { useState } from "react"
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { FloatingParticles } from '@/components/FloatingParticles'
 import { useGameAudio } from '@/hooks/useGameAudio'
 
 export default function SettingsPage() {
-  const router = useRouter()
   const { playPlayerShoot } = useGameAudio()
   
   // Settings state
@@ -15,10 +14,6 @@ export default function SettingsPage() {
   const [musicEnabled, setMusicEnabled] = useState(true)
   const [showFPS, setShowFPS] = useState(false)
   const [difficulty, setDifficulty] = useState('normal')
-
-  const handleBack = () => {
-    router.push('/')
-  }
 
   const handleSave = () => {
     // Here you would save settings to localStorage or a backend
@@ -30,9 +25,8 @@ export default function SettingsPage() {
       difficulty
     }))
     
-    // Show feedback and return to home
+    // Show feedback
     alert('Configuración guardada!')
-    router.push('/')
   }
 
   const handleTestSound = () => {
@@ -165,12 +159,12 @@ export default function SettingsPage() {
 
           {/* Action Buttons */}
           <div className="flex gap-4 justify-center mt-8">
-            <button
-              onClick={handleBack}
+            <Link
+              href="/"
               className="px-8 py-4 bg-gray-600/80 hover:bg-gray-600 border border-gray-500/50 text-white font-mono font-bold rounded-lg text-xl transition-all duration-200 transform hover:scale-105 hover:border-gray-500"
             >
               VOLVER
-            </button>
+            </Link>
             <button
               onClick={handleSave}
               className="px-8 py-4 bg-green-600/80 hover:bg-green-600 border border-green-500/50 text-white font-mono font-bold rounded-lg text-xl transition-all duration-200 transform hover:scale-105 hover:border-green-500"

@@ -3,11 +3,10 @@ import { FloatingParticles } from './FloatingParticles'
 import { LeaderboardEntry } from '@/types/game'
 import { useState, useEffect } from 'react'
 import { useUISound } from '@/hooks/useUISound'
+import Link from 'next/link'
 
 interface HomeScreenProps {
   onStartGame: () => void
-  onSettings?: () => void
-  onCredits?: () => void
   topScores: LeaderboardEntry[]
   allScores: LeaderboardEntry[]
   isLoadingScores: boolean
@@ -15,8 +14,6 @@ interface HomeScreenProps {
 
 export function HomeScreen({ 
   onStartGame, 
-  onSettings,
-  onCredits,
   topScores, 
   allScores, 
   isLoadingScores 
@@ -58,25 +55,26 @@ export function HomeScreen({
         playStart()
         setTimeout(onStartGame, 300) // Delay for sound effect
       }, 
-      icon: '🎮' 
+      icon: '🎮',
+      href: '/game'
     },
     { 
       id: 'settings', 
       label: 'SETTINGS', 
       action: () => {
         playSelect()
-        onSettings?.()
       }, 
-      icon: '⚙️' 
+      icon: '⚙️',
+      href: '/settings'
     },
     { 
       id: 'credits', 
       label: 'CREDITS', 
       action: () => {
         playSelect()
-        onCredits?.()
       }, 
-      icon: '👥' 
+      icon: '👥',
+      href: '/credits'
     }
   ]
 
@@ -88,7 +86,18 @@ export function HomeScreen({
       playHover()
       setCurrentMenuItem(prev => prev < menuItems.length - 1 ? prev + 1 : 0)
     } else if (e.key === 'Enter') {
-      menuItems[currentMenuItem].action()
+      const currentItem = menuItems[currentMenuItem]
+      if (currentItem.id === 'start') {
+        currentItem.action()
+      } else {
+        // For navigation items, trigger the sound and let the Link handle navigation
+        currentItem.action()
+        // Simulate click on the link
+        const linkElement = document.querySelector(`[data-menu-item="${currentItem.id}"]`) as HTMLAnchorElement
+        if (linkElement) {
+          setTimeout(() => linkElement.click(), 100)
+        }
+      }
     }
   }
 
@@ -96,6 +105,14 @@ export function HomeScreen({
     if (index !== currentMenuItem) {
       playHover()
       setCurrentMenuItem(index)
+    }
+  }
+
+  const handleMenuItemClick = (item: typeof menuItems[0]) => {
+    if (item.id === 'start') {
+      item.action()
+    } else {
+      item.action() // Play sound
     }
   }
 
@@ -142,27 +159,51 @@ export function HomeScreen({
 
             {/* Menu */}
             <div className="space-y-4">
-              {menuItems.map((item, index) => (
-                <button
-                  key={item.id}
-                  onClick={item.action}
-                  onMouseEnter={() => handleMenuItemHover(index)}
-                  className={`
-                    group w-full max-w-md mx-auto lg:mx-0 p-4 rounded-lg font-mono font-bold text-xl
-                    transition-all duration-300 transform border-2
-                    ${index === currentMenuItem 
-                      ? 'bg-orange-600/80 border-orange-500 text-white scale-105 shadow-lg shadow-orange-500/50' 
-                      : 'bg-black/40 border-orange-500/30 text-orange-300 hover:bg-orange-600/20 hover:border-orange-500/60 hover:scale-102'
-                    }
-                    backdrop-blur-sm
-                  `}
-                >
-                  <div className="flex items-center justify-center lg:justify-start gap-3">
-                    <span className="text-2xl">{item.icon}</span>
-                    <span>{item.label}</span>
-                  </div>
-                </button>
-              ))}
+              {menuItems.map((item, index) => {
+                const isSelected = index === currentMenuItem
+                const baseClassName = `
+                  group w-full max-w-md mx-auto lg:mx-0 p-4 rounded-lg font-mono font-bold text-xl
+                  transition-all duration-300 transform border-2 block
+                  ${isSelected 
+                    ? 'bg-orange-600/80 border-orange-500 text-white scale-105 shadow-lg shadow-orange-500/50' 
+                    : 'bg-black/40 border-orange-500/30 text-orange-300 hover:bg-orange-600/20 hover:border-orange-500/60 hover:scale-102'
+                  }
+                  backdrop-blur-sm
+                `
+
+                if (item.id === 'start') {
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => handleMenuItemClick(item)}
+                      onMouseEnter={() => handleMenuItemHover(index)}
+                      className={baseClassName}
+                      type="button"
+                    >
+                      <div className="flex items-center justify-center lg:justify-start gap-3">
+                        <span className="text-2xl">{item.icon}</span>
+                        <span>{item.label}</span>
+                      </div>
+                    </button>
+                  )
+                } else {
+                  return (
+                    <Link
+                      key={item.id}
+                      href={item.href}
+                      onClick={() => handleMenuItemClick(item)}
+                      onMouseEnter={() => handleMenuItemHover(index)}
+                      className={baseClassName}
+                      data-menu-item={item.id}
+                    >
+                      <div className="flex items-center justify-center lg:justify-start gap-3">
+                        <span className="text-2xl">{item.icon}</span>
+                        <span>{item.label}</span>
+                      </div>
+                    </Link>
+                  )
+                }
+              })}
             </div>
 
             {/* Audio Status */}

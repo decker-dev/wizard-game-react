@@ -1,16 +1,10 @@
 "use client"
 
 import React from "react"
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { FloatingParticles } from '@/components/FloatingParticles'
 
 export default function CreditsPage() {
-  const router = useRouter()
-
-  const handleBack = () => {
-    router.push('/')
-  }
-
   const credits = [
     {
       category: "DESARROLLO",
@@ -136,12 +130,12 @@ export default function CreditsPage() {
 
           {/* Back Button */}
           <div className="flex justify-center mt-8">
-            <button
-              onClick={handleBack}
+            <Link
+              href="/"
               className="px-8 py-4 bg-orange-600/80 hover:bg-orange-600 border border-orange-500/50 text-white font-mono font-bold rounded-lg text-xl transition-all duration-200 transform hover:scale-105 hover:border-orange-500"
             >
               VOLVER AL INICIO
-            </button>
+            </Link>
           </div>
         </div>
       </div>
