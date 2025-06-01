@@ -4,8 +4,19 @@ import React from "react"
 import Link from 'next/link'
 import { FloatingParticles } from '@/components/FloatingParticles'
 
+interface CreditItem {
+  role: string;
+  name: string;
+  link?: string;
+}
+
+interface CreditSection {
+  category: string;
+  items: CreditItem[];
+}
+
 export default function CreditsPage() {
-  const credits = [
+  const credits: CreditSection[] = [
     {
       category: "DESARROLLO",
       items: [
@@ -24,7 +35,7 @@ export default function CreditsPage() {
         { role: "Database", name: "Supabase" },
         { role: "Deployment", name: "Vercel" }
       ]
-    },
+    }
   ]
 
   return (
@@ -65,7 +76,7 @@ export default function CreditsPage() {
           </div>
 
           {/* Credits Sections */}
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
+          <div className="grid gap-6 md:grid-cols-2">
             {credits.map((section, sectionIndex) => (
               <div 
                 key={section.category}
@@ -106,9 +117,6 @@ export default function CreditsPage() {
           <div className="text-center mt-8 bg-black/40 border border-orange-500/20 rounded-lg p-6">
             <p className="text-gray-300 font-mono mb-4">
               🎮 Un juego desarrollado en comunidad durante la primera Game Jam de Paisanos.io
-            </p>
-            <p className="text-orange-400 font-mono text-sm mb-2">
-              "Vení a codear, diseñar, compartir y aprender con otros que están tan manija como vos"
             </p>
             <p className="text-gray-400 font-mono text-xs">
               Made with ❤️ in Buenos Aires using Next.js, TypeScript, and creativity
