@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react'
+import { BASE_MAX_MANA } from '@/constants/game'
 
 export type GameScreen = 'home' | 'playing' | 'gameOver'
 
@@ -21,7 +22,7 @@ export function useGameScreens() {
     currentScreen: 'home',
     score: 0,
     currentWave: 0,
-    playerHealth: 100,
+    playerHealth: BASE_MAX_MANA,
     playerCoins: 0,
     gameOver: false,
     gameWon: false,
@@ -56,7 +57,7 @@ export function useGameScreens() {
       isLoading: false,
       score: 0,
       currentWave: 0,
-      playerHealth: 100,
+      playerHealth: BASE_MAX_MANA,
       playerCoins: 0,
       gameOver: false,
       gameWon: false,
@@ -69,7 +70,7 @@ export function useGameScreens() {
     updateScreenState({
       score: 0,
       currentWave: 0,
-      playerHealth: 100,
+      playerHealth: BASE_MAX_MANA,
       playerCoins: 0,
       gameOver: false,
       gameWon: false,

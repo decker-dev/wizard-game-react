@@ -12,7 +12,7 @@ let audioContext: AudioContext | null = null
 // Initialize audio context
 const initAudioContext = () => {
   if (typeof window === 'undefined') return null
-  
+
   if (!audioContext) {
     try {
       audioContext = new (window.AudioContext || (window as any).webkitAudioContext)()
@@ -29,16 +29,16 @@ const getAudioSettings = (): AudioSettings => {
   if (typeof window === 'undefined') {
     return { musicEnabled: true, sfxEnabled: true }
   }
-  
+
   try {
-    const stored = localStorage.getItem('zombieGame_audioSettings')
+    const stored = localStorage.getItem('mysticGame_audioSettings')
     if (stored) {
       return JSON.parse(stored)
     }
   } catch (error) {
     console.warn('Error loading audio settings:', error)
   }
-  
+
   return { musicEnabled: true, sfxEnabled: true }
 }
 
@@ -107,12 +107,12 @@ const createZombieDeathSound = () => {
     // Sonido de muerte con múltiples componentes para hacer más satisfactorio
     // 1. Sonido grave inicial (impacto)
     createBeep(120, 0.15, 0.08)
-    
+
     // 2. Ruido de muerte (splat)
     setTimeout(() => {
       createNoiseSound(0.2, 0.04)
     }, 50)
-    
+
     // 3. Tono descendente (muerte)
     setTimeout(() => {
       const oscillator = context.createOscillator()
@@ -146,12 +146,12 @@ const createShooterZombieDeathSound = () => {
     // Sonido especial para zombie shooter (más grave y dramático)
     // 1. Impacto más fuerte
     createBeep(100, 0.2, 0.1)
-    
+
     // 2. Ruido más intenso
     setTimeout(() => {
       createNoiseSound(0.25, 0.06)
     }, 60)
-    
+
     // 3. Tono descendente más profundo
     setTimeout(() => {
       const oscillator = context.createOscillator()
@@ -188,7 +188,7 @@ export function useGameAudio() {
 
   const playZombieDeath = useCallback((zombieType: 'normal' | 'shooter' = 'normal') => {
     if (!isClient || !audioSettings.sfxEnabled) return
-    
+
     if (zombieType === 'shooter') {
       createShooterZombieDeathSound()
     } else {
@@ -207,10 +207,27 @@ export function useGameAudio() {
     setTimeout(() => createNoiseSound(0.1, 0.03), 50)
   }, [isClient, audioSettings.sfxEnabled])
 
+  const playCreatureDeath = useCallback((creatureType: 'normal' | 'caster' = 'normal') => {
+    if (!isClient || !audioSettings.sfxEnabled) return
+
+    if (creatureType === 'caster') {
+      createShooterZombieDeathSound()
+    } else {
+      createZombieDeathSound()
+    }
+  }, [isClient, audioSettings.sfxEnabled])
+
+  const playPlayerCast = useCallback(() => {
+    if (!isClient || !audioSettings.sfxEnabled) return
+    createBeep(800, 0.05, 0.04)
+  }, [isClient, audioSettings.sfxEnabled])
+
   return {
     playZombieDeath,
     playPlayerShoot,
     playPlayerHit,
+    playCreatureDeath,
+    playPlayerCast,
     audioSettings
   }
 } 

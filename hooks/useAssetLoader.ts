@@ -1,24 +1,35 @@
 import { useRef, useCallback } from 'react'
 
-export const useAssetLoader = () => {
+interface AssetLoaderReturn {
+  loadAssets: () => Promise<{
+    playerSprites: { [key: string]: HTMLImageElement | null },
+    creatureSprites: { [key: string]: HTMLImageElement | null },
+    floorTexture: HTMLImageElement | null
+  }>
+  creatureSpritesRef: React.RefObject<{ [key: string]: HTMLImageElement | null }>
+  playerSpritesRef: React.RefObject<{ [key: string]: HTMLImageElement | null }>
+  floorTextureRef: React.RefObject<HTMLImageElement | null>
+}
+
+export function useAssetLoader(): AssetLoaderReturn {
   const playerSpritesRef = useRef<{ [key: string]: HTMLImageElement | null }>({
-    // Soldier sprites for player (with soldier_ prefix)
-    'soldier_N_S': null,      // North Standing
-    'soldier_N_W_L': null,    // North Walking Left
-    'soldier_N_W_R': null,    // North Walking Right
-    'soldier_S_S': null,      // South Standing
-    'soldier_S_W_L': null,    // South Walking Left
-    'soldier_S_W_R': null,    // South Walking Right
-    'soldier_E_S': null,      // East Standing
-    'soldier_E_W_L': null,    // East Walking Left
-    'soldier_E_W_R': null,    // East Walking Right
-    'soldier_O_S': null,      // West Standing
-    'soldier_O_W_L': null,    // West Walking Left
-    'soldier_O_W_R': null,    // West Walking Right
+    // Wizard sprites for player (with wizard_ prefix)
+    'wizard_N_S': null,      // North Standing
+    'wizard_N_W_L': null,    // North Walking Left
+    'wizard_N_W_R': null,    // North Walking Right
+    'wizard_S_S': null,      // South Standing
+    'wizard_S_W_L': null,    // South Walking Left
+    'wizard_S_W_R': null,    // South Walking Right
+    'wizard_E_S': null,      // East Standing
+    'wizard_E_W_L': null,    // East Walking Left
+    'wizard_E_W_R': null,    // East Walking Right
+    'wizard_O_S': null,      // West Standing
+    'wizard_O_W_L': null,    // West Walking Left
+    'wizard_O_W_R': null,    // West Walking Right
   })
 
-  const zombieSpritesRef = useRef<{ [key: string]: HTMLImageElement | null }>({
-    // Mage sprites for shooter zombies (with mage_ prefix)
+  const creatureSpritesRef = useRef<{ [key: string]: HTMLImageElement | null }>({
+    // Mage sprites for caster creatures (with mage_ prefix)
     'mage_N_S': null,      // North Standing
     'mage_N_W_L': null,    // North Walking Left
     'mage_N_W_R': null,    // North Walking Right
@@ -31,135 +42,109 @@ export const useAssetLoader = () => {
     'mage_O_S': null,      // West Standing
     'mage_O_W_L': null,    // West Walking Left
     'mage_O_W_R': null,    // West Walking Right
-    // Zombie sprites for normal zombies (with zombie_ prefix)
-    'zombie_N_S': null,      // North Standing
-    'zombie_N_W_L': null,    // North Walking Left
-    'zombie_N_W_R': null,    // North Walking Right
-    'zombie_S_S': null,      // South Standing
-    'zombie_S_W_L': null,    // South Walking Left
-    'zombie_S_W_R': null,    // South Walking Right
-    'zombie_E_S': null,      // East Standing
-    'zombie_E_W_L': null,    // East Walking Left
-    'zombie_E_W_R': null,    // East Walking Right
-    'zombie_O_S': null,      // West Standing
-    'zombie_O_W_L': null,    // West Walking Left
-    'zombie_O_W_R': null,    // West Walking Right
+
+    // Creature sprites for normal creatures (with creature_ prefix)
+    'creature_N_S': null,      // North Standing
+    'creature_N_W_L': null,    // North Walking Left
+    'creature_N_W_R': null,    // North Walking Right
+    'creature_S_S': null,      // South Standing
+    'creature_S_W_L': null,    // South Walking Left
+    'creature_S_W_R': null,    // South Walking Right
+    'creature_E_S': null,      // East Standing
+    'creature_E_W_L': null,    // East Walking Left
+    'creature_E_W_R': null,    // East Walking Right
+    'creature_O_S': null,      // West Standing
+    'creature_O_W_L': null,    // West Walking Left
+    'creature_O_W_R': null,    // West Walking Right
   })
 
   const floorTextureRef = useRef<HTMLImageElement | null>(null)
 
-  const loadAssets = useCallback(async (): Promise<{
-    playerSprites: { [key: string]: HTMLImageElement | null },
-    zombieSprites: { [key: string]: HTMLImageElement | null },
-    floorTexture: HTMLImageElement | null
-  }> => {
-    try {
-      // Cargar sprites del soldier para el player
-      const soldierSprites = [
-        'N_S',
-        'N_W_L',
-        'N_W_R',
-        'S_S',
-        'S_W_L',
-        'S_W_R',
-        'E_S',
-        'E_W_L',
-        'E_W_R',
-        'O_S',
-        'O_W_L',
-        'O_W_R'
-      ]
+  const loadAssets = useCallback(async () => {
+    // Cargar sprites del wizard para el player
+    const wizardSprites = [
+      'N_S', 'N_W_L', 'N_W_R',
+      'S_S', 'S_W_L', 'S_W_R',
+      'E_S', 'E_W_L', 'E_W_R',
+      'O_S', 'O_W_L', 'O_W_R'
+    ]
 
-      const playerSprites: { [key: string]: HTMLImageElement | null } = {}
-
-      for (const spriteName of soldierSprites) {
+    const playerPromises = wizardSprites.map(spriteName => {
+      return new Promise<void>((resolve, reject) => {
         const img = new Image()
-        img.src = `/soldier/${spriteName}.png`
-        await new Promise((resolve, reject) => {
-          img.onload = resolve
-          img.onerror = reject
-        })
-        playerSprites[`soldier_${spriteName}`] = img
-      }
-
-      playerSpritesRef.current = playerSprites
-
-      // Cargar sprites del mago para shooters
-      const mageSprites = [
-        'N_S',
-        'N_W_L',
-        'N_W_R',
-        'S_S',
-        'S_W_L',
-        'S_W_R',
-        'E_S',
-        'E_W_L',
-        'E_W_R',
-        'O_S',
-        'O_W_L',
-        'O_W_R'
-      ]
-
-      for (const spriteName of mageSprites) {
-        const img = new Image()
-        img.src = `/mage/${spriteName}.png`
-        await new Promise((resolve, reject) => {
-          img.onload = resolve
-          img.onerror = reject
-        })
-        zombieSpritesRef.current[`mage_${spriteName}`] = img
-      }
-
-      // Cargar sprites del zombie normal
-      const zombieSprites = [
-        'N_S',
-        'N_W_L',
-        'N_W_R',
-        'S_S',
-        'S_W_L',
-        'S_W_R',
-        'E_S',
-        'E_W_L',
-        'E_W_R',
-        'O_S',
-        'O_W_L',
-        'O_W_R'
-      ]
-
-      for (const spriteName of zombieSprites) {
-        const img = new Image()
-        img.src = `/zombie/${spriteName}.png`
-        await new Promise((resolve, reject) => {
-          img.onload = resolve
-          img.onerror = reject
-        })
-        zombieSpritesRef.current[`zombie_${spriteName}`] = img
-      }
-
-      // Cargar textura del piso
-      const floorTexture = new Image()
-      floorTexture.src = '/floor-texture.png'
-      await new Promise((resolve, reject) => {
-        floorTexture.onload = resolve
-        floorTexture.onerror = reject
+        img.onload = () => {
+          playerSpritesRef.current[`wizard_${spriteName}`] = img
+          resolve()
+        }
+        img.onerror = reject
+        img.src = `/wizard/${spriteName}.png`
       })
-      floorTextureRef.current = floorTexture
+    })
 
-      return {
-        playerSprites,
-        zombieSprites: zombieSpritesRef.current,
-        floorTexture
+    // Cargar sprites del mago para casters
+    const mageSprites = [
+      'N_S', 'N_W_L', 'N_W_R',
+      'S_S', 'S_W_L', 'S_W_R',
+      'E_S', 'E_W_L', 'E_W_R',
+      'O_S', 'O_W_L', 'O_W_R'
+    ]
+
+    const magePromises = mageSprites.map(spriteName => {
+      return new Promise<void>((resolve, reject) => {
+        const img = new Image()
+        img.onload = () => {
+          creatureSpritesRef.current[`mage_${spriteName}`] = img
+          resolve()
+        }
+        img.onerror = reject
+        img.src = `/mage/${spriteName}.png`
+      })
+    })
+
+    // Cargar sprites de las criaturas normales
+    const creatureSprites = [
+      'N_S', 'N_W_L', 'N_W_R',
+      'S_S', 'S_W_L', 'S_W_R',
+      'E_S', 'E_W_L', 'E_W_R',
+      'O_S', 'O_W_L', 'O_W_R'
+    ]
+
+    const creaturePromises = creatureSprites.map(spriteName => {
+      return new Promise<void>((resolve, reject) => {
+        const img = new Image()
+        img.onload = () => {
+          creatureSpritesRef.current[`creature_${spriteName}`] = img
+          resolve()
+        }
+        img.onerror = reject
+        img.src = `/creature/${spriteName}.png`
+      })
+    })
+
+    // Cargar textura del suelo
+    const floorPromise = new Promise<void>((resolve, reject) => {
+      const img = new Image()
+      img.onload = () => {
+        floorTextureRef.current = img
+        resolve()
       }
-    } catch (error) {
-      console.error("Failed to load game assets:", error)
-      throw error
+      img.onerror = reject
+      img.src = '/floor-texture.png'
+    })
+
+    await Promise.all([...playerPromises, ...magePromises, ...creaturePromises, floorPromise])
+
+    return {
+      playerSprites: playerSpritesRef.current,
+      creatureSprites: creatureSpritesRef.current,
+      floorTexture: floorTextureRef.current
     }
   }, [])
 
   return {
+    loadAssets,
+    creatureSpritesRef,
     playerSpritesRef,
-    zombieSpritesRef,
-    floorTextureRef,
-    loadAssets
+    floorTextureRef
   }
 } 

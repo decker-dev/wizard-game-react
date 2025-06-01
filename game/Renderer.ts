@@ -9,13 +9,13 @@ import {
   INVULNERABILITY_TIME,
   WALL_BLOCK_SIZE
 } from '@/constants/game'
-import { getZombieSprite } from './Zombies'
+import { getCreatureSprite } from '@/game/Creatures'
 import { getPlayerSprite } from './Player'
 
 export const render = (
   ctx: CanvasRenderingContext2D,
   gameState: GameState,
-  zombieSprites: { [key: string]: HTMLImageElement | null },
+  creatureSprites: { [key: string]: HTMLImageElement | null },
   waveMessage: string,
   canvasWidth: number = CANVAS_WIDTH,
   canvasHeight: number = CANVAS_HEIGHT,
@@ -72,26 +72,36 @@ export const render = (
     )
     ctx.restore()
     ctx.globalAlpha = 1.0
+  } else {
+    // Debug: If no sprite found, render a fallback rectangle
+    console.log('No player sprite found, rendering fallback. Player direction:', player.direction, 'isMoving:', player.isMoving, 'animationFrame:', player.animationFrame)
+    ctx.fillStyle = '#4A90E2' // Blue color for wizard
+    ctx.fillRect(
+      player.position.x - cameraX - PLAYER_SPRITE_WIDTH / 2,
+      player.position.y - cameraY - PLAYER_SPRITE_HEIGHT / 2,
+      PLAYER_SPRITE_WIDTH,
+      PLAYER_SPRITE_HEIGHT
+    )
   }
 
-  // Render player health bar
+  // Render player mana bar
   const playerScreenX = player.position.x - cameraX
   const playerScreenY = player.position.y - cameraY
-  const playerHealthBarWidth = PLAYER_SPRITE_WIDTH
-  const playerHealthBarHeight = 6
+  const playerManaBarWidth = PLAYER_SPRITE_WIDTH
+  const playerManaBarHeight = 6
   ctx.fillStyle = "rgba(255,0,0,0.5)"
   ctx.fillRect(
-    playerScreenX - playerHealthBarWidth / 2,
+    playerScreenX - playerManaBarWidth / 2,
     playerScreenY - PLAYER_SPRITE_HEIGHT / 2 - 15,
-    playerHealthBarWidth,
-    playerHealthBarHeight
+    playerManaBarWidth,
+    playerManaBarHeight
   )
-  ctx.fillStyle = "rgba(0,255,0,0.8)"
+  ctx.fillStyle = "rgba(0,100,255,0.8)"
   ctx.fillRect(
-    playerScreenX - playerHealthBarWidth / 2,
+    playerScreenX - playerManaBarWidth / 2,
     playerScreenY - PLAYER_SPRITE_HEIGHT / 2 - 15,
-    playerHealthBarWidth * Math.max(0, player.health / 100),
-    playerHealthBarHeight
+    playerManaBarWidth * Math.max(0, player.mana / player.maxMana),
+    playerManaBarHeight
   )
 
   // Render projectiles
@@ -104,56 +114,56 @@ export const render = (
       screenY >= 0 &&
       screenY <= canvasHeight
     ) {
-      ctx.fillStyle = p.isFireball ? '#FF4400' : '#FFFF00'
+      ctx.fillStyle = p.isMagicBolt ? '#8A2BE2' : '#FFD700'
       ctx.beginPath()
       ctx.arc(screenX, screenY, p.radius, 0, Math.PI * 2)
       ctx.fill()
     }
   })
 
-  // Render zombies
-  gameState.zombies.forEach((z) => {
-    const screenX = z.position.x - cameraX
-    const screenY = z.position.y - cameraY
+  // Render creatures
+  gameState.creatures.forEach((c) => {
+    const screenX = c.position.x - cameraX
+    const screenY = c.position.y - cameraY
 
     if (
-      screenX + z.width >= 0 &&
-      screenX - z.width <= canvasWidth &&
-      screenY + z.height >= 0 &&
-      screenY - z.height <= canvasHeight
+      screenX + c.width >= 0 &&
+      screenX - c.width <= canvasWidth &&
+      screenY + c.height >= 0 &&
+      screenY - c.height <= canvasHeight
     ) {
-      const zombieSprite = getZombieSprite(z, zombieSprites)
+      const creatureSprite = getCreatureSprite(c, creatureSprites)
 
-      if (zombieSprite) {
-        // Renderizar el sprite del zombie
+      if (creatureSprite) {
+        // Renderizar el sprite de la criatura
         ctx.drawImage(
-          zombieSprite,
-          screenX - z.width / 2,
-          screenY - z.height / 2,
-          z.width,
-          z.height
+          creatureSprite,
+          screenX - c.width / 2,
+          screenY - c.height / 2,
+          c.width,
+          c.height
         )
       } else {
         // Fallback: usar colores como antes si no hay sprite
-        ctx.fillStyle = z.type === 'shooter' ? '#FF4444' : '#2E8B57'
-        ctx.fillRect(screenX - z.width / 2, screenY - z.height / 2, z.width, z.height)
+        ctx.fillStyle = c.type === 'caster' ? '#8A2BE2' : '#228B22'
+        ctx.fillRect(screenX - c.width / 2, screenY - c.height / 2, c.width, c.height)
       }
 
-      // Barra de vida del zombie
-      const healthBarWidth = z.width * 0.8
+      // Barra de vida de la criatura
+      const healthBarWidth = c.width * 0.8
       const healthBarHeight = 5
       ctx.fillStyle = "rgba(255,0,0,0.5)"
       ctx.fillRect(
         screenX - healthBarWidth / 2,
-        screenY - z.height / 2 - 10,
+        screenY - c.height / 2 - 10,
         healthBarWidth,
         healthBarHeight
       )
       ctx.fillStyle = "rgba(0,255,0,0.8)"
       ctx.fillRect(
         screenX - healthBarWidth / 2,
-        screenY - z.height / 2 - 10,
-        healthBarWidth * Math.max(0, z.health / z.maxHealth),
+        screenY - c.height / 2 - 10,
+        healthBarWidth * Math.max(0, c.health / c.maxHealth),
         healthBarHeight
       )
     }
@@ -224,12 +234,12 @@ const renderMinimap = (
     )
   })
 
-  // Zombies en el minimapa
+  // Criaturas en el minimapa
   ctx.fillStyle = "#FF0000"
-  gameState.zombies.forEach((z) => {
+  gameState.creatures.forEach((c) => {
     ctx.fillRect(
-      canvasWidth - minimapSize - minimapPadding + z.position.x * minimapScaleX - 1,
-      minimapPadding + z.position.y * minimapScaleY - 1,
+      canvasWidth - minimapSize - minimapPadding + c.position.x * minimapScaleX - 1,
+      minimapPadding + c.position.y * minimapScaleY - 1,
       2,
       2
     )
@@ -309,24 +319,19 @@ const renderWallBlocks = (
       const blockWidth = Math.min(WALL_BLOCK_SIZE, width - bx * WALL_BLOCK_SIZE)
       const blockHeight = Math.min(WALL_BLOCK_SIZE, height - by * WALL_BLOCK_SIZE)
 
-      // Renderizar el bloque base con color gris
-      ctx.fillStyle = "#808080" // Gris base
+      // Dibujar el bloque de pared con efecto 3D
+      ctx.fillStyle = "#666666"
       ctx.fillRect(blockX, blockY, blockWidth, blockHeight)
 
-      // Agregar efecto 3D - sombra en la parte inferior y derecha
-      ctx.fillStyle = "rgba(0,0,0,0.4)"
-      ctx.fillRect(blockX + 2, blockY + blockHeight - 3, blockWidth - 2, 3) // Sombra inferior
-      ctx.fillRect(blockX + blockWidth - 3, blockY + 2, 3, blockHeight - 2) // Sombra derecha
+      // Borde superior e izquierdo más claro (luz)
+      ctx.fillStyle = "#888888"
+      ctx.fillRect(blockX, blockY, blockWidth, 2)
+      ctx.fillRect(blockX, blockY, 2, blockHeight)
 
-      // Agregar highlight en la parte superior e izquierda
-      ctx.fillStyle = "rgba(255,255,255,0.3)"
-      ctx.fillRect(blockX, blockY, blockWidth, 2) // Highlight superior
-      ctx.fillRect(blockX, blockY, 2, blockHeight) // Highlight izquierdo
-
-      // Borde del bloque
-      ctx.strokeStyle = "rgba(0,0,0,0.6)"
-      ctx.lineWidth = 1
-      ctx.strokeRect(blockX, blockY, blockWidth, blockHeight)
+      // Borde inferior y derecho más oscuro (sombra)
+      ctx.fillStyle = "#444444"
+      ctx.fillRect(blockX, blockY + blockHeight - 2, blockWidth, 2)
+      ctx.fillRect(blockX + blockWidth - 2, blockY, 2, blockHeight)
     }
   }
 } 

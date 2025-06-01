@@ -1,15 +1,15 @@
 import { useCallback, useRef } from 'react'
 import { GameState } from '@/types/game'
 import {
-  WEAPON_DAMAGE_INCREASE,
-  HEALTH_INCREASE,
+  SPELL_DAMAGE_INCREASE,
+  MANA_INCREASE,
   MAX_UPGRADE_LEVEL,
-  BASE_ZOMBIES_PER_WAVE,
-  ZOMBIES_INCREASE_PER_WAVE,
+  BASE_CREATURES_PER_WAVE,
+  CREATURES_INCREASE_PER_WAVE,
   EXPONENTIAL_SCALING_INTERVAL,
   EXPONENTIAL_SPAWN_MULTIPLIER
 } from '@/constants/game'
-import { getWeaponUpgradeCost, getHealthUpgradeCost } from '@/utils/marketplace'
+import { getSpellUpgradeCost, getManaUpgradeCost } from '@/utils/marketplace'
 import { obstaclesData } from '@/data/obstacles'
 import { createInitialPlayer } from '@/game/Player'
 
@@ -18,20 +18,20 @@ export const useGameState = () => {
     (playerSprites: { [key: string]: HTMLImageElement | null }): GameState => ({
       player: createInitialPlayer(playerSprites),
       projectiles: [],
-      zombies: [],
+      creatures: [],
       obstacles: obstaclesData,
       score: 0,
       currentWave: 0,
-      zombiesToSpawnThisWave: 0,
-      zombiesRemainingInWave: 0,
-      zombiesSpawnedThisWave: 0,
+      creaturesToSpawnThisWave: 0,
+      creaturesRemainingInWave: 0,
+      creaturesSpawnedThisWave: 0,
       gameOver: false,
       gameWon: false,
       keys: {},
       mousePosition: { x: 70, y: 0 },
       waveTransitioning: false,
       showMarketplace: false,
-      coinParticles: [],
+      crystalParticles: [],
     }),
     [],
   )
@@ -76,11 +76,11 @@ export const useGameState = () => {
     // Configurar la wave con escalado progresivo
     const exponentialBonus = Math.floor(gameStateRef.current.currentWave / EXPONENTIAL_SCALING_INTERVAL)
     const spawnMultiplier = Math.pow(EXPONENTIAL_SPAWN_MULTIPLIER, exponentialBonus)
-    const baseZombies = BASE_ZOMBIES_PER_WAVE + (gameStateRef.current.currentWave * ZOMBIES_INCREASE_PER_WAVE)
-    gameStateRef.current.zombiesToSpawnThisWave = Math.floor(baseZombies * spawnMultiplier)
-    gameStateRef.current.zombiesRemainingInWave = gameStateRef.current.zombiesToSpawnThisWave
-    gameStateRef.current.zombiesSpawnedThisWave = 0
-    gameStateRef.current.zombies = []
+    const baseCreatures = BASE_CREATURES_PER_WAVE + (gameStateRef.current.currentWave * CREATURES_INCREASE_PER_WAVE)
+    gameStateRef.current.creaturesToSpawnThisWave = Math.floor(baseCreatures * spawnMultiplier)
+    gameStateRef.current.creaturesRemainingInWave = gameStateRef.current.creaturesToSpawnThisWave
+    gameStateRef.current.creaturesSpawnedThisWave = 0
+    gameStateRef.current.creatures = []
 
     setWaveMessage(`Wave ${gameStateRef.current.currentWave} starting...`)
     setTimeout(() => {
@@ -102,11 +102,11 @@ export const useGameState = () => {
     // Configurar la wave con escalado progresivo
     const exponentialBonus = Math.floor(gameStateRef.current.currentWave / EXPONENTIAL_SCALING_INTERVAL)
     const spawnMultiplier = Math.pow(EXPONENTIAL_SPAWN_MULTIPLIER, exponentialBonus)
-    const baseZombies = BASE_ZOMBIES_PER_WAVE + (gameStateRef.current.currentWave * ZOMBIES_INCREASE_PER_WAVE)
-    gameStateRef.current.zombiesToSpawnThisWave = Math.floor(baseZombies * spawnMultiplier)
-    gameStateRef.current.zombiesRemainingInWave = gameStateRef.current.zombiesToSpawnThisWave
-    gameStateRef.current.zombiesSpawnedThisWave = 0
-    gameStateRef.current.zombies = []
+    const baseCreatures = BASE_CREATURES_PER_WAVE + (gameStateRef.current.currentWave * CREATURES_INCREASE_PER_WAVE)
+    gameStateRef.current.creaturesToSpawnThisWave = Math.floor(baseCreatures * spawnMultiplier)
+    gameStateRef.current.creaturesRemainingInWave = gameStateRef.current.creaturesToSpawnThisWave
+    gameStateRef.current.creaturesSpawnedThisWave = 0
+    gameStateRef.current.creatures = []
 
     setWaveMessage(`Wave ${gameStateRef.current.currentWave} starting...`)
     setTimeout(() => {
@@ -121,51 +121,51 @@ export const useGameState = () => {
     if (!gameStateRef.current) return
 
     const player = gameStateRef.current.player
-    const cost = getWeaponUpgradeCost(player.upgrades.weaponLevel)
-    if (player.coins >= cost && player.upgrades.weaponLevel < MAX_UPGRADE_LEVEL) {
-      player.coins -= cost
-      player.upgrades.weaponLevel++
+    const cost = getSpellUpgradeCost(player.upgrades.spellLevel)
+    if (player.crystals >= cost && player.upgrades.spellLevel < MAX_UPGRADE_LEVEL) {
+      player.crystals -= cost
+      player.upgrades.spellLevel++
 
       // Incrementar daño base
-      player.upgrades.weaponDamage += WEAPON_DAMAGE_INCREASE
+      player.upgrades.spellDamage += SPELL_DAMAGE_INCREASE
 
       // Aplicar mejoras avanzadas según el nivel específico
-      switch (player.upgrades.weaponLevel) {
+      switch (player.upgrades.spellLevel) {
         case 1:
-          // Nivel 1: Disparo más rápido
-          player.upgrades.fireRate = 200
+          // Nivel 1: Lanzamiento más rápido
+          player.upgrades.castRate = 200
           break
 
         case 2:
-          // Nivel 2: Doble disparo + más rápido
+          // Nivel 2: Doble hechizo + más rápido
           player.upgrades.projectileCount = 2
           player.upgrades.spread = 0.2
-          player.upgrades.fireRate = 180
+          player.upgrades.castRate = 180
           break
 
         case 3:
-          // Nivel 3: Balas más grandes + más rápido
+          // Nivel 3: Hechizos más grandes + más rápido
           player.upgrades.projectileSize = 1.5
-          player.upgrades.fireRate = 160
+          player.upgrades.castRate = 160
           break
 
         case 4:
-          // Nivel 4: Triple disparo
+          // Nivel 4: Triple hechizo
           player.upgrades.projectileCount = 3
           player.upgrades.spread = 0.3
-          player.upgrades.fireRate = 150
+          player.upgrades.castRate = 150
           break
 
         case 5:
-          // Nivel 5: Máximo poder - cuádruple disparo con balas enormes
+          // Nivel 5: Máximo poder - cuádruple hechizo con proyectiles enormes
           player.upgrades.projectileCount = 4
           player.upgrades.spread = 0.4
           player.upgrades.projectileSize = 2.0
-          player.upgrades.fireRate = 120
+          player.upgrades.castRate = 120
           break
       }
 
-      setPlayerCoins(player.coins)
+      setPlayerCoins(player.crystals)
     }
   }, [])
 
@@ -173,17 +173,17 @@ export const useGameState = () => {
     if (!gameStateRef.current) return
 
     const player = gameStateRef.current.player
-    const cost = getHealthUpgradeCost(player.upgrades.healthLevel)
-    if (player.coins >= cost && player.upgrades.healthLevel < MAX_UPGRADE_LEVEL) {
-      player.coins -= cost
-      player.upgrades.healthLevel++
-      player.upgrades.maxHealth += HEALTH_INCREASE
+    const cost = getManaUpgradeCost(player.upgrades.manaLevel)
+    if (player.crystals >= cost && player.upgrades.manaLevel < MAX_UPGRADE_LEVEL) {
+      player.crystals -= cost
+      player.upgrades.manaLevel++
+      player.upgrades.maxMana += MANA_INCREASE
 
-      // Restaurar vida al comprar mejora de salud
-      player.health = player.upgrades.maxHealth
+      // Restaurar mana al comprar mejora de mana
+      player.mana = player.upgrades.maxMana
 
-      setPlayerCoins(player.coins)
-      setPlayerHealth(player.health)
+      setPlayerCoins(player.crystals)
+      setPlayerHealth(player.mana)
     }
   }, [])
 

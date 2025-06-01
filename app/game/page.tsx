@@ -48,10 +48,10 @@ export default function GamePage() {
         screenState={screenState}
         gameStateRef={gameController.gameStateRef}
         canvasRef={gameController.canvasRef}
-        zombieSpritesRef={gameController.zombieSpritesRef}
+        creatureSpritesRef={gameController.creatureSpritesRef}
         floorTextureRef={gameController.floorTextureRef}
-        playZombieDeath={gameController.playZombieDeath}
-        playPlayerShoot={gameController.playPlayerShoot}
+        playCreatureDeath={gameController.playCreatureDeath}
+        playPlayerCast={gameController.playPlayerCast}
         playPlayerHit={gameController.playPlayerHit}
         onMouseMove={gameController.handleMouseMoveWrapper}
         onMouseClick={gameController.handleMouseClick}

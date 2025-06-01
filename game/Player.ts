@@ -1,5 +1,5 @@
 import { Player, GameState } from '@/types/game'
-import { PLAYER_SPEED, PLAYER_SPRITE_WIDTH, PLAYER_SPRITE_HEIGHT, PLAYER_COLLISION_RADIUS, MAP_WIDTH, MAP_HEIGHT, BASE_MAX_HEALTH, BASE_WEAPON_DAMAGE, BASE_PROJECTILE_COUNT, BASE_PROJECTILE_SIZE, BASE_FIRE_RATE, BASE_SPREAD } from '@/constants/game'
+import { PLAYER_SPEED, PLAYER_SPRITE_WIDTH, PLAYER_SPRITE_HEIGHT, PLAYER_COLLISION_RADIUS, MAP_WIDTH, MAP_HEIGHT, BASE_MAX_MANA, BASE_SPELL_DAMAGE, BASE_PROJECTILE_COUNT, BASE_PROJECTILE_SIZE, BASE_CAST_RATE, BASE_SPREAD } from '@/constants/game'
 import { getEntityRect, checkAABBCollision } from '@/utils/math'
 
 export const createInitialPlayer = (playerSprites: { [key: string]: HTMLImageElement | null }): Player => ({
@@ -8,21 +8,21 @@ export const createInitialPlayer = (playerSprites: { [key: string]: HTMLImageEle
   width: PLAYER_SPRITE_WIDTH * 0.8,
   height: PLAYER_SPRITE_HEIGHT * 0.8,
   speed: PLAYER_SPEED,
-  health: BASE_MAX_HEALTH,
-  maxHealth: BASE_MAX_HEALTH,
+  mana: BASE_MAX_MANA,
+  maxMana: BASE_MAX_MANA,
   angle: 0,
   sprites: playerSprites,
   lastDamageTime: 0,
   lastMovementDirection: { x: 1, y: 0 },
-  coins: 0,
+  crystals: 0,
   upgrades: {
-    weaponDamage: BASE_WEAPON_DAMAGE,
-    maxHealth: BASE_MAX_HEALTH,
-    weaponLevel: 0,
-    healthLevel: 0,
+    spellDamage: BASE_SPELL_DAMAGE,
+    maxMana: BASE_MAX_MANA,
+    spellLevel: 0,
+    manaLevel: 0,
     projectileCount: BASE_PROJECTILE_COUNT,
     projectileSize: BASE_PROJECTILE_SIZE,
-    fireRate: BASE_FIRE_RATE,
+    castRate: BASE_CAST_RATE,
     spread: BASE_SPREAD
   },
   direction: 'S',
@@ -120,6 +120,15 @@ export const getPlayerSprite = (player: Player): HTMLImageElement | null => {
     spriteName += `_${animFrame}`
   }
 
-  // Usar sprites del soldier para el player
-  return player.sprites[`soldier_${spriteName}`] || player.sprites['soldier_S_S'] // fallback to soldier south standing
+  const fullSpriteName = `wizard_${spriteName}`
+  const sprite = player.sprites[fullSpriteName]
+
+  // Debug logging
+  if (!sprite) {
+    console.log('Player sprite not found:', fullSpriteName)
+    console.log('Available sprites:', Object.keys(player.sprites))
+  }
+
+  // Usar sprites del wizard para el player
+  return sprite || player.sprites['wizard_S_S'] // fallback to wizard south standing
 } 

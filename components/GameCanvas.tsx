@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useCallback, useState } from 'react'
 import { GameState } from '@/types/game'
 import { CANVAS_WIDTH, CANVAS_HEIGHT } from '@/constants/game'
 import { updatePlayer } from '@/game/Player'
-import { updateZombies } from '@/game/Zombies'
+import { updateCreatures } from '@/game/Creatures'
 import { updateProjectiles } from '@/game/Projectiles'
 import { checkCollisions } from '@/game/Collisions'
 import { render } from '@/game/Renderer'
@@ -11,7 +11,7 @@ import { CoinParticles } from './CoinParticles'
 
 interface GameCanvasProps {
   gameState: GameState | null
-  zombieSprites: {[key: string]: HTMLImageElement | null}
+  creatureSprites: {[key: string]: HTMLImageElement | null}
   floorTexture?: HTMLImageElement | null
   waveMessage: string
   startNextWave: () => void
@@ -21,14 +21,14 @@ interface GameCanvasProps {
   setGameOver: (gameOver: boolean) => void
   onMouseMove: (e: MouseEvent) => void
   onMouseClick: (e: MouseEvent) => void
-  playZombieDeath: (zombieType: 'normal' | 'shooter') => void
+  playCreatureDeath: (creatureType: 'normal' | 'caster') => void
   playPlayerShoot: () => void
   playPlayerHit: () => void
 }
 
 export const GameCanvas: React.FC<GameCanvasProps> = ({
   gameState,
-  zombieSprites,
+  creatureSprites,
   floorTexture,
   waveMessage,
   startNextWave,
@@ -38,7 +38,7 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
   setGameOver,
   onMouseMove,
   onMouseClick,
-  playZombieDeath,
+  playCreatureDeath,
   playPlayerShoot,
   playPlayerHit
 }) => {
@@ -124,22 +124,22 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
 
     if (!gameState.gameOver && !gameState.gameWon) {
       updatePlayer(gameState)
-      updateZombies(gameState)
+      updateCreatures(gameState)
       updateProjectiles(gameState)
-      gameState.coinParticles = updateCoinParticles(gameState.coinParticles)
-      checkCollisions(gameState, startNextWave, setScore, setPlayerHealth, setGameOver, setPlayerCoins, playZombieDeath, playPlayerHit)
+      gameState.crystalParticles = updateCoinParticles(gameState.crystalParticles)
+      checkCollisions(gameState, startNextWave, setScore, setPlayerHealth, setGameOver, setPlayerCoins, playCreatureDeath, playPlayerHit)
     }
 
     const canvas = canvasRef.current
     if (canvas) {
       const ctx = canvas.getContext("2d")
       if (ctx) {
-        render(ctx, gameState, zombieSprites, waveMessage, canvasDimensions.width, canvasDimensions.height, floorTexture)
+        render(ctx, gameState, creatureSprites, waveMessage, canvasDimensions.width, canvasDimensions.height, floorTexture)
       }
     }
 
     animationFrameRef.current = requestAnimationFrame(gameLoop)
-  }, [gameState, zombieSprites, floorTexture, waveMessage, startNextWave, setScore, setPlayerHealth, setGameOver, setPlayerCoins, canvasDimensions, playZombieDeath, playPlayerHit])
+  }, [gameState, creatureSprites, floorTexture, waveMessage, startNextWave, setScore, setPlayerHealth, setGameOver, setPlayerCoins, canvasDimensions, playCreatureDeath, playPlayerHit])
 
   useEffect(() => {
     if (gameState && !gameState.gameOver && !gameState.gameWon) {
@@ -217,7 +217,7 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
         onClick={toggleFullscreen}
         className={`absolute ${
           isFullscreen ? 'top-4 right-4 z-50' : 'top-2 right-2 z-10'
-        } bg-orange-600/80 hover:bg-orange-600 border border-orange-500/50 text-white p-2 rounded font-mono font-bold transition-all duration-200 transform hover:scale-105 hover:border-orange-500`}
+        } bg-purple-600/80 hover:bg-purple-600 border border-purple-500/50 text-white p-2 rounded font-mono font-bold transition-all duration-200 transform hover:scale-105 hover:border-purple-500`}
         title={isFullscreen ? "Exit fullscreen (ESC)" : "Fullscreen"}
       >
         {isFullscreen ? (
@@ -233,8 +233,8 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
 
       {/* Instructions for fullscreen mode */}
       {isFullscreen && (
-        <div className="absolute top-4 left-4 z-40 bg-black/80 backdrop-blur-sm border border-orange-500/30 rounded-lg p-3">
-          <p className="text-orange-400 font-mono text-sm">Press ESC to exit fullscreen</p>
+        <div className="absolute top-4 left-4 z-40 bg-black/80 backdrop-blur-sm border border-purple-500/30 rounded-lg p-3">
+          <p className="text-purple-400 font-mono text-sm">Press ESC to exit fullscreen</p>
         </div>
       )}
 
@@ -243,10 +243,10 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
         {/* Coin Particles Overlay */}
         {gameState && (
           <CoinParticles 
-            particles={gameState.coinParticles} 
+            particles={gameState.crystalParticles} 
             removeParticle={(id: string) => {
               if (gameState) {
-                gameState.coinParticles = gameState.coinParticles.filter(p => p.id !== id)
+                gameState.crystalParticles = gameState.crystalParticles.filter(p => p.id !== id)
               }
             }} 
           />
@@ -258,8 +258,8 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
           height={canvasDimensions.height}
           className={`${
             isFullscreen 
-              ? 'border-2 border-orange-500/70 bg-gray-900 rounded shadow-2xl' 
-              : 'border-4 border-orange-500/50 bg-gray-900 rounded-lg shadow-lg hover:border-orange-500/70 transition-colors'
+              ? 'border-2 border-purple-500/70 bg-gray-900 rounded shadow-2xl' 
+              : 'border-4 border-purple-500/50 bg-gray-900 rounded-lg shadow-lg hover:border-purple-500/70 transition-colors'
           }`}
           style={{
             imageRendering: 'pixelated', // Maintain pixel art look when scaled

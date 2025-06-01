@@ -4,13 +4,13 @@ export interface Vector2 {
 }
 
 export interface PlayerUpgrades {
-  weaponDamage: number
-  maxHealth: number
-  weaponLevel: number
-  healthLevel: number
+  spellDamage: number
+  maxMana: number
+  spellLevel: number
+  manaLevel: number
   projectileCount: number
   projectileSize: number
-  fireRate: number
+  castRate: number
   spread: number
 }
 
@@ -20,13 +20,13 @@ export interface Player {
   width: number
   height: number
   speed: number
-  health: number
-  maxHealth: number
+  mana: number
+  maxMana: number
   angle: number
   sprites: { [key: string]: HTMLImageElement | null }
   lastDamageTime: number
   lastMovementDirection: Vector2
-  coins: number
+  crystals: number
   upgrades: PlayerUpgrades
   direction: 'N' | 'S' | 'E' | 'O'
   isMoving: boolean
@@ -39,10 +39,10 @@ export interface Projectile {
   velocity: Vector2
   radius: number
   speed: number
-  isFireball?: boolean
+  isMagicBolt?: boolean
 }
 
-export interface Zombie {
+export interface Creature {
   id: string
   position: Vector2
   width: number
@@ -50,8 +50,8 @@ export interface Zombie {
   speed: number
   health: number
   maxHealth: number
-  type: 'normal' | 'shooter'
-  lastShotTime?: number
+  type: 'normal' | 'caster'
+  lastSpellTime?: number
   sprite?: HTMLImageElement | null
   direction: 'N' | 'S' | 'E' | 'O'
   isMoving: boolean
@@ -66,7 +66,7 @@ export interface Obstacle {
   height: number
 }
 
-export interface CoinParticle {
+export interface CrystalParticle {
   id: string
   x: number
   y: number
@@ -74,26 +74,26 @@ export interface CoinParticle {
   vy: number
   alpha: number
   scale: number
-  coins: number
+  crystals: number
 }
 
 export interface GameState {
   player: Player
   projectiles: Projectile[]
-  zombies: Zombie[]
+  creatures: Creature[]
   obstacles: Obstacle[]
   score: number
   currentWave: number
-  zombiesToSpawnThisWave: number
-  zombiesRemainingInWave: number
-  zombiesSpawnedThisWave: number
+  creaturesToSpawnThisWave: number
+  creaturesRemainingInWave: number
+  creaturesSpawnedThisWave: number
   gameOver: boolean
   gameWon: boolean
   keys: { [key: string]: boolean }
   mousePosition: Vector2
   waveTransitioning: boolean
   showMarketplace: boolean
-  coinParticles: CoinParticle[]
+  crystalParticles: CrystalParticle[]
 }
 
 export interface LeaderboardEntry {

@@ -1,128 +1,94 @@
 import type { Metadata } from 'next'
 
-const siteUrl = 'https://zombie.decker.sh'
+const siteUrl = 'https://mystic.decker.sh'
 
-export const defaultMetadata: Metadata = {
-  title: {
-    default: 'BOXHEAD ZOMBIE SURVIVAL - 2D Pixel Art Shooter',
-    template: '%s | BOXHEAD ZOMBIE SURVIVAL'
-  },
-  description: 'Survive infinite waves of zombies in BOXHEAD ZOMBIE SURVIVAL, an innovative 2D pixel art shooter. Upgrade your weapons, buy equipment and compete for the best score on global leaderboards.',
-  keywords: [
-    'boxhead',
-    'boxhead zombie survival',
-    'zombie game',
-    'shooter 2d',
-    'pixel art',
-    'survival game',
-    'zombie apocalypse',
-    'waves game',
-    'online game',
-    'browser game',
-    'arcade game',
-    'leaderboard',
-    'zombie shooter',
-    'survival horror',
-    'game jam',
-    'vibe gaming'
-  ],
-  authors: [
-    { name: 'Lauti', url: 'https://x.com/lautidev_' },
-    { name: 'Alejo', url: 'https://x.com/alejorrojass' },
-    { name: 'Decker', url: 'https://x.com/0xDecker' }
-  ],
-  creator: 'Vibe Gaming Team',
-  publisher: 'Vibe Gaming',
+export const metadata = {
   metadataBase: new URL(siteUrl),
-}
-
-export const gamePageMetadata: Metadata = {
-  title: '🎮 Play Now - BOXHEAD ZOMBIE SURVIVAL',
-  description: 'Start your survival against zombie hordes in BOXHEAD ZOMBIE SURVIVAL! Control with WASD, shoot with mouse and survive as long as possible in this intense 2D shooter.',
+  title: {
+    default: 'MYSTIC REALM DEFENDER - 2D Pixel Art Fantasy Game',
+    template: '%s | MYSTIC REALM DEFENDER'
+  },
+  description: 'Master the arcane arts in MYSTIC REALM DEFENDER, an innovative 2D pixel art fantasy game. Enhance your spells, collect crystals and compete for the best score on global leaderboards.',
+  keywords: [
+    'mystic realm',
+    'fantasy game',
+    'magic game',
+    'pixel art',
+    'wizard game',
+    'survival game',
+    'mythical creatures',
+    'arcane defense',
+    'spell casting',
+    'magical shooter',
+    'fantasy survival',
+    'browser game',
+    'web game',
+    'indie game',
+    'retro game',
+    'action game'
+  ],
+  authors: [{ name: 'Lauti, Alejo & Decker' }],
+  creator: 'Vibe Gaming Hackathon Team',
+  publisher: 'Vibe Gaming',
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
   openGraph: {
-    title: '🎮 Play BOXHEAD ZOMBIE SURVIVAL Now!',
-    description: 'Start your survival against zombie hordes in BOXHEAD ZOMBIE SURVIVAL! Control with WASD, shoot with mouse and survive.',
-    url: '/game',
+    type: 'website',
+    locale: 'en_US',
+    url: siteUrl,
+    title: '🎮 Play Now - MYSTIC REALM DEFENDER',
+    description: 'Master the arcane arts in MYSTIC REALM DEFENDER! Control with WASD, cast spells with mouse and survive as long as possible in this intense 2D fantasy game.',
+    siteName: 'MYSTIC REALM DEFENDER',
     images: [
       {
-        url: '/og.png',
-        width: 1536,
-        height: 1024,
-        alt: 'BOXHEAD ZOMBIE SURVIVAL - Gameplay Screenshot',
-      }
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'MYSTIC REALM DEFENDER - Gameplay Screenshot',
+      },
     ],
   },
   twitter: {
-    title: '🎮 Play BOXHEAD ZOMBIE SURVIVAL!',
-    description: 'Start your survival against zombie hordes in BOXHEAD ZOMBIE SURVIVAL! 2D pixel art shooter.',
+    card: 'summary_large_image',
+    title: '🎮 Play MYSTIC REALM DEFENDER!',
+    description: 'Master the arcane arts in MYSTIC REALM DEFENDER! 2D pixel art fantasy game.',
+    images: ['/og-image.png'],
+  },
+  other: {
+    'game:credits': 'Meet the team behind MYSTIC REALM DEFENDER: Lauti, Alejo and Decker. Developed during the first Vibe Gaming Hackathon in LATAM.',
+    'game:credits:title': '👥 Development Team - MYSTIC REALM DEFENDER',
+    'game:credits:description': 'Meet the talented team that created this amazing 2D fantasy game during the Vibe Gaming Hackathon.',
+    'game:leaderboard': `${siteUrl}/leaderboard`,
+    'game:leaderboard:title': '🏆 Leaderboard - MYSTIC REALM DEFENDER',
+    'game:leaderboard:description': 'Compete for first place and prove you are the best realm defender in MYSTIC REALM DEFENDER.',
   },
 }
 
-export const creditsPageMetadata: Metadata = {
-  title: '👥 Credits - Development Team',
-  description: 'Meet the team behind BOXHEAD ZOMBIE SURVIVAL: Lauti, Alejo and Decker. Developed during the first Vibe Gaming Hackathon in LATAM.',
-  openGraph: {
-    title: '👥 Development Team - BOXHEAD ZOMBIE SURVIVAL',
-    description: 'Meet the talented team that created this amazing 2D shooter during the Vibe Gaming Hackathon.',
-    url: '/credits',
-  },
-}
-
-export const leaderboardMetadata: Metadata = {
-  title: '🏆 Leaderboard - Top Players',
-  description: 'Check out the best scores and compete for first place in BOXHEAD ZOMBIE SURVIVAL. Do you have what it takes to be at the top?',
-  openGraph: {
-    title: '🏆 Leaderboard - BOXHEAD ZOMBIE SURVIVAL',
-    description: 'Compete for first place and prove you are the best zombie survivor in BOXHEAD ZOMBIE SURVIVAL.',
-    url: '/leaderboard',
-  },
-}
-
-// Schema.org structured data for better SEO
-export const gameStructuredData = {
+export const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'VideoGame',
-  name: 'BOXHEAD ZOMBIE SURVIVAL',
-  description: 'Survive infinite waves of zombies in BOXHEAD ZOMBIE SURVIVAL, an innovative 2D pixel art shooter.',
-  genre: ['Action', 'Shooter', 'Survival', 'Arcade'],
-  gamePlatform: ['Web Browser', 'PC', 'Mobile'],
+  name: 'MYSTIC REALM DEFENDER',
+  description: 'Master the arcane arts in MYSTIC REALM DEFENDER, an innovative 2D pixel art fantasy game.',
+  genre: ['Action', 'Fantasy', 'Survival', 'Arcade'],
+  gamePlatform: 'Web Browser',
+  operatingSystem: 'Any',
   applicationCategory: 'Game',
-  operatingSystem: ['Windows', 'macOS', 'Linux', 'iOS', 'Android'],
   offers: {
     '@type': 'Offer',
     price: '0',
     priceCurrency: 'USD',
-    availability: 'https://schema.org/InStock'
   },
-  author: [
-    {
-      '@type': 'Person',
-      name: 'Lauti',
-      url: 'https://x.com/lautidev_'
-    },
-    {
-      '@type': 'Person',
-      name: 'Alejo',
-      url: 'https://x.com/alejorrojass'
-    },
-    {
-      '@type': 'Person',
-      name: 'Decker',
-      url: 'https://x.com/0xDecker'
-    }
-  ],
-  publisher: {
+  author: {
     '@type': 'Organization',
-    name: 'Vibe Gaming'
+    name: 'Vibe Gaming Hackathon Team',
   },
-  image: `${siteUrl}/og.png`,
-  url: siteUrl,
-  datePublished: '2024-12-01',
-  inLanguage: 'en-US',
-  aggregateRating: {
-    '@type': 'AggregateRating',
-    ratingValue: '4.8',
-    ratingCount: '100',
-    bestRating: '5'
-  }
 } 

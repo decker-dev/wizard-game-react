@@ -1,19 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { CoinIcon } from './CoinIcon'
-
-interface CoinParticle {
-  id: string
-  x: number
-  y: number
-  vx: number
-  vy: number
-  alpha: number
-  scale: number
-  coins: number
-}
+import { CrystalParticle } from '@/types/game'
 
 interface CoinParticlesProps {
-  particles: CoinParticle[]
+  particles: CrystalParticle[]
   removeParticle: (id: string) => void
 }
 
@@ -51,7 +41,7 @@ export const CoinParticles: React.FC<CoinParticlesProps> = ({ particles, removeP
           }}
         >
           <CoinIcon size="md" className="mr-1" />
-          +{particle.coins}
+          +{particle.crystals}
         </div>
       ))}
     </div>

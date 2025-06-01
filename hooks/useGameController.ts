@@ -20,7 +20,7 @@ export function useGameController(autoStart: boolean = false) {
     upgradeHealth
   } = useGameState()
 
-  const { loadAssets, zombieSpritesRef, playerSpritesRef, floorTextureRef } = useAssetLoader()
+  const { loadAssets, creatureSpritesRef, playerSpritesRef, floorTextureRef } = useAssetLoader()
   const {
     topScores,
     allScores,
@@ -30,7 +30,7 @@ export function useGameController(autoStart: boolean = false) {
     submitScore,
     recordNewGame
   } = useLeaderboard()
-  const { playZombieDeath, playPlayerShoot, playPlayerHit } = useGameAudio()
+  const { playCreatureDeath, playPlayerCast, playPlayerHit } = useGameAudio()
 
   // Screen and UI state management
   const {
@@ -51,7 +51,7 @@ export function useGameController(autoStart: boolean = false) {
   } = useGameScreens()
 
   // Input handling
-  const { handleKeyDown, handleKeyUp, handleMouseMove, handleMouseClick } = useInputHandlers(gameStateRef, playPlayerShoot)
+  const { handleKeyDown, handleKeyUp, handleMouseMove, handleMouseClick } = useInputHandlers(gameStateRef, playPlayerCast)
 
   // Game lifecycle methods
   const handleStartNextWave = useCallback(() => {
@@ -74,6 +74,10 @@ export function useGameController(autoStart: boolean = false) {
       const { playerSprites } = await loadAssets()
       const gameState = initializeGameState(playerSprites)
 
+      // Initialize playerHealth with player's mana
+      setPlayerHealth(gameState.player.mana)
+      setPlayerCoins(gameState.player.crystals)
+
       // Registrar nueva partida iniciada
       await recordNewGame()
 
@@ -83,7 +87,7 @@ export function useGameController(autoStart: boolean = false) {
       console.error("Failed to load game assets:", error)
       navigateToHome()
     }
-  }, [loadAssets, initializeGameState, handleStartNextWave, navigateToGame, setGameReady, navigateToHome, recordNewGame])
+  }, [loadAssets, initializeGameState, handleStartNextWave, navigateToGame, setGameReady, navigateToHome, recordNewGame, setPlayerHealth, setPlayerCoins])
 
   // Auto-start game when needed (for /game route)
   useEffect(() => {
@@ -96,11 +100,17 @@ export function useGameController(autoStart: boolean = false) {
     const gameState = resetGameState(playerSpritesRef.current)
     resetScreenState()
 
+    // Initialize playerHealth with player's mana
+    if (gameState) {
+      setPlayerHealth(gameState.player.mana)
+      setPlayerCoins(gameState.player.crystals)
+    }
+
     // Registrar nueva partida iniciada (reinicio cuenta como nueva partida)
     await recordNewGame()
 
     handleStartNextWave()
-  }, [resetGameState, playerSpritesRef, resetScreenState, handleStartNextWave, recordNewGame])
+  }, [resetGameState, playerSpritesRef, resetScreenState, handleStartNextWave, recordNewGame, setPlayerHealth, setPlayerCoins])
 
   // Score handling
   const handleScoreSubmit = useCallback(async (scoreData: any) => {
@@ -143,7 +153,7 @@ export function useGameController(autoStart: boolean = false) {
     canvasRef,
 
     // Assets
-    zombieSpritesRef,
+    creatureSpritesRef,
     playerSpritesRef,
     floorTextureRef,
 
@@ -155,8 +165,8 @@ export function useGameController(autoStart: boolean = false) {
     isSubmitting,
 
     // Audio
-    playZombieDeath,
-    playPlayerShoot,
+    playCreatureDeath,
+    playPlayerCast,
     playPlayerHit,
 
     // Actions

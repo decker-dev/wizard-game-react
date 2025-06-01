@@ -39,7 +39,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({ isVisible, onClose }) =>
           <div className="space-y-2 text-gray-300 font-mono text-xs">
             <p>📱 Open your phone's camera</p>
             <p>🎯 Point at the QR code</p>
-            <p>🎮 Play Zombie Siege on mobile!</p>
+            <p>🎮 Play Mystic Realm Defender on mobile!</p>
           </div>
         </div>
 

@@ -1,13 +1,13 @@
 import { GameState } from '@/types/game'
 import {
   KNOCKBACK_FORCE,
-  ZOMBIE_DAMAGE,
-  FIREBALL_DAMAGE,
+  CREATURE_DAMAGE,
+  MAGIC_BOLT_DAMAGE,
   INVULNERABILITY_TIME,
   MAP_WIDTH,
   MAP_HEIGHT,
-  COIN_REWARD_NORMAL_ZOMBIE,
-  COIN_REWARD_SHOOTER_ZOMBIE
+  CRYSTAL_REWARD_NORMAL_CREATURE,
+  CRYSTAL_REWARD_CASTER_CREATURE
 } from '@/constants/game'
 import { checkAABBCollision, getEntityRect, normalize } from '@/utils/math'
 import { createCoinParticle } from '@/utils/coinParticles'
@@ -19,17 +19,17 @@ export const checkCollisions = (
   setPlayerHealth: (health: number) => void,
   setGameOver: (gameOver: boolean) => void,
   setPlayerCoins?: (coins: number) => void,
-  playZombieDeath?: (zombieType: 'normal' | 'shooter') => void,
+  playCreatureDeath?: (creatureType: 'normal' | 'caster') => void,
   playPlayerHit?: () => void
 ) => {
-  const { projectiles, zombies, player, zombiesSpawnedThisWave, zombiesToSpawnThisWave } = gameState
+  const { projectiles, creatures, player, creaturesSpawnedThisWave, creaturesToSpawnThisWave } = gameState
 
-  // Revisar colisiones de proyectiles con zombies y jugador
+  // Revisar colisiones de proyectiles con criaturas y jugador
   for (let i = projectiles.length - 1; i >= 0; i--) {
     const p = projectiles[i]
 
-    // Si es una bola de fuego, revisar colisión con el jugador
-    if (p.isFireball) {
+    // Si es un magic bolt, revisar colisión con el jugador
+    if (p.isMagicBolt) {
       const projectileRect = {
         x: p.position.x - p.radius,
         y: p.position.y - p.radius,
@@ -44,15 +44,15 @@ export const checkCollisions = (
       }
       if (checkAABBCollision(projectileRect, playerRect)) {
         projectiles.splice(i, 1)
-        player.health -= FIREBALL_DAMAGE
-        setPlayerHealth(player.health)
+        player.mana -= MAGIC_BOLT_DAMAGE
+        setPlayerHealth(player.mana)
 
         // Reproducir sonido de jugador herido
         if (playPlayerHit) {
           playPlayerHit()
         }
 
-        if (player.health <= 0) {
+        if (player.mana <= 0) {
           gameState.gameOver = true
           setGameOver(true)
         }
@@ -60,18 +60,18 @@ export const checkCollisions = (
       }
     }
 
-    // Revisar colisión con zombies (solo para proyectiles del jugador)
-    if (!p.isFireball) {
-      for (let j = zombies.length - 1; j >= 0; j--) {
-        const z = zombies[j]
-        const zombieRect = getEntityRect(z)
+    // Revisar colisión con criaturas (solo para proyectiles del jugador)
+    if (!p.isMagicBolt) {
+      for (let j = creatures.length - 1; j >= 0; j--) {
+        const z = creatures[j]
+        const creatureRect = getEntityRect(z)
         const projectileRect = {
           x: p.position.x - p.radius,
           y: p.position.y - p.radius,
           width: p.radius * 2,
           height: p.radius * 2,
         }
-        if (checkAABBCollision(projectileRect, zombieRect)) {
+        if (checkAABBCollision(projectileRect, creatureRect)) {
           // Calcular dirección del empuje
           const knockbackDirection = normalize({
             x: p.velocity.x,
@@ -82,16 +82,16 @@ export const checkCollisions = (
           const originalX = z.position.x
           const originalY = z.position.y
 
-          // Aplicar empuje al zombie
+          // Aplicar empuje a la criatura
           z.position.x += knockbackDirection.x * KNOCKBACK_FORCE
           z.position.y += knockbackDirection.y * KNOCKBACK_FORCE
 
           // Verificar colisión con obstáculos después del knockback
-          const zombieRectAfterKnockback = getEntityRect(z)
+          const creatureRectAfterKnockback = getEntityRect(z)
           let collisionDetected = false
 
           for (const obstacle of gameState.obstacles) {
-            if (checkAABBCollision(zombieRectAfterKnockback, obstacle)) {
+            if (checkAABBCollision(creatureRectAfterKnockback, obstacle)) {
               collisionDetected = true
               break
             }
@@ -103,33 +103,33 @@ export const checkCollisions = (
             z.position.y = originalY
           }
 
-          // Asegurar que el zombie no salga del mapa
+          // Asegurar que la criatura no salga del mapa
           z.position.x = Math.max(z.width / 2, Math.min(MAP_WIDTH - z.width / 2, z.position.x))
           z.position.y = Math.max(z.height / 2, Math.min(MAP_HEIGHT - z.height / 2, z.position.y))
 
           projectiles.splice(i, 1)
-          z.health -= player.upgrades.weaponDamage
+          z.health -= player.upgrades.spellDamage
           if (z.health <= 0) {
-            // Reproducir sonido de muerte de zombie según su tipo
-            if (playZombieDeath) {
-              playZombieDeath(z.type)
+            // Reproducir sonido de muerte de criatura según su tipo
+            if (playCreatureDeath) {
+              playCreatureDeath(z.type)
             }
 
-            // Recompensar monedas según el tipo de zombie
-            const coinsEarned = z.type === 'shooter' ? COIN_REWARD_SHOOTER_ZOMBIE : COIN_REWARD_NORMAL_ZOMBIE
-            player.coins += coinsEarned
+            // Recompensar cristales según el tipo de criatura
+            const crystalsEarned = z.type === 'caster' ? CRYSTAL_REWARD_CASTER_CREATURE : CRYSTAL_REWARD_NORMAL_CREATURE
+            player.crystals += crystalsEarned
             if (setPlayerCoins) {
-              setPlayerCoins(player.coins)
+              setPlayerCoins(player.crystals)
             }
 
-            // Crear partículas de monedas en la posición del zombie muerto
-            const coinParticle = createCoinParticle(z.position.x, z.position.y, coinsEarned)
-            gameState.coinParticles.push(coinParticle)
+            // Crear partículas de cristales en la posición de la criatura muerta
+            const crystalParticle = createCoinParticle(z.position.x, z.position.y, crystalsEarned)
+            gameState.crystalParticles.push(crystalParticle)
 
-            zombies.splice(j, 1)
+            creatures.splice(j, 1)
             gameState.score++
             setScore(gameState.score)
-            if (zombiesSpawnedThisWave >= zombiesToSpawnThisWave && zombies.length === 0) {
+            if (creaturesSpawnedThisWave >= creaturesToSpawnThisWave && creatures.length === 0) {
               startNextWave()
             }
           }
@@ -143,27 +143,27 @@ export const checkCollisions = (
   const canTakeDamage = now - player.lastDamageTime >= INVULNERABILITY_TIME
 
   if (canTakeDamage) {
-    const playerRectForZombieCollision = {
+    const playerRectForCreatureCollision = {
       x: player.position.x - player.collisionRadius,
       y: player.position.y - player.collisionRadius,
       width: player.collisionRadius * 2,
       height: player.collisionRadius * 2,
     }
 
-    for (let i = zombies.length - 1; i >= 0; i--) {
-      const z = zombies[i]
-      const zombieRect = getEntityRect(z)
-      if (checkAABBCollision(playerRectForZombieCollision, zombieRect)) {
-        player.health -= ZOMBIE_DAMAGE
+    for (let i = creatures.length - 1; i >= 0; i--) {
+      const z = creatures[i]
+      const creatureRect = getEntityRect(z)
+      if (checkAABBCollision(playerRectForCreatureCollision, creatureRect)) {
+        player.mana -= CREATURE_DAMAGE
         player.lastDamageTime = now
-        setPlayerHealth(player.health)
+        setPlayerHealth(player.mana)
 
         // Reproducir sonido de jugador herido
         if (playPlayerHit) {
           playPlayerHit()
         }
 
-        if (player.health <= 0) {
+        if (player.mana <= 0) {
           gameState.gameOver = true
           setGameOver(true)
         }

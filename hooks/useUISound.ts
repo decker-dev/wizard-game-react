@@ -13,7 +13,7 @@ let currentMusicInterval: NodeJS.Timeout | null = null
 // Initialize audio context
 const initAudioContext = () => {
   if (typeof window === 'undefined') return null
-  
+
   if (!audioContext) {
     try {
       audioContext = new (window.AudioContext || (window as any).webkitAudioContext)()
@@ -30,25 +30,25 @@ const getAudioSettings = (): AudioSettings => {
   if (typeof window === 'undefined') {
     return { musicEnabled: true, sfxEnabled: true }
   }
-  
+
   try {
-    const stored = localStorage.getItem('zombieGame_audioSettings')
+    const stored = localStorage.getItem('mysticGame_audioSettings')
     if (stored) {
       return JSON.parse(stored)
     }
   } catch (error) {
     console.warn('Error loading audio settings:', error)
   }
-  
+
   return { musicEnabled: true, sfxEnabled: true }
 }
 
 // Save audio settings to localStorage
 const saveAudioSettings = (settings: AudioSettings) => {
   if (typeof window === 'undefined') return
-  
+
   try {
-    localStorage.setItem('zombieGame_audioSettings', JSON.stringify(settings))
+    localStorage.setItem('mysticGame_audioSettings', JSON.stringify(settings))
   } catch (error) {
     console.warn('Error saving audio settings:', error)
   }
@@ -116,20 +116,20 @@ export function useUISound() {
 
   useEffect(() => {
     setIsClient(true)
-    setAudioSettings(getAudioSettings())
+    const stored = localStorage.getItem('mysticGame_audioSettings')
+    if (stored) {
+      try {
+        setAudioSettings(JSON.parse(stored))
+      } catch (e) {
+        console.error('Failed to parse audio settings:', e)
+      }
+    }
   }, [])
 
-  const updateAudioSettings = useCallback((newSettings: Partial<AudioSettings>) => {
-    const updatedSettings = { ...audioSettings, ...newSettings }
-    setAudioSettings(updatedSettings)
-    saveAudioSettings(updatedSettings)
-    
-    // Stop music if disabled
-    if (!updatedSettings.musicEnabled && currentMusicInterval) {
-      clearInterval(currentMusicInterval)
-      currentMusicInterval = null
-    }
-  }, [audioSettings])
+  const updateAudioSettings = useCallback((settings: AudioSettings) => {
+    setAudioSettings(settings)
+    localStorage.setItem('mysticGame_audioSettings', JSON.stringify(settings))
+  }, [])
 
   const playHover = useCallback(() => {
     if (!isClient || !audioSettings.sfxEnabled) return
@@ -162,13 +162,13 @@ export function useUISound() {
   }, [isClient, audioSettings.sfxEnabled])
 
   const startMenuMusic = useCallback(() => {
-    if (!isClient || !audioSettings.musicEnabled) return () => {}
-    
+    if (!isClient || !audioSettings.musicEnabled) return () => { }
+
     // Stop any existing music
     if (currentMusicInterval) {
       clearInterval(currentMusicInterval)
     }
-    
+
     const playTone = () => {
       if (!audioSettings.musicEnabled) return
       createBeep(220, 2, 0.02)
@@ -181,10 +181,10 @@ export function useUISound() {
         createBeep(110, 3, 0.01)
       }, 2000)
     }
-    
+
     playTone()
     currentMusicInterval = setInterval(playTone, 6000)
-    
+
     return () => {
       if (currentMusicInterval) {
         clearInterval(currentMusicInterval)

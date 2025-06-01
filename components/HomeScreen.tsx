@@ -129,12 +129,12 @@ export function HomeScreen({
         {/* Smoke/Fog effect */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
         <div className="absolute top-0 left-0 w-full h-full opacity-20">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-red-500/10 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
         </div>
 
         {/* Grid overlay */}
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,140,0,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,140,0,0.1)_1px,transparent_1px)] bg-[size:20px_20px]"></div>
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(147,51,234,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(147,51,234,0.1)_1px,transparent_1px)] bg-[size:20px_20px]"></div>
 
         {/* Floating particles */}
         <FloatingParticles />
@@ -148,14 +148,14 @@ export function HomeScreen({
           <div className="flex-1 text-center lg:text-left">
             {/* Title */}
             <div className={`mb-8 ${animateTitle ? 'animate-fade-in-up' : 'opacity-0'}`}>
-              <h1 className="text-6xl lg:text-8xl font-bold font-mono text-transparent bg-clip-text bg-gradient-to-b from-orange-400 to-red-600 mb-4 tracking-wider">
-                BOXHEAD
+              <h1 className="text-6xl lg:text-8xl font-bold font-mono text-transparent bg-clip-text bg-gradient-to-b from-purple-400 to-blue-600 mb-4 tracking-wider">
+                MYSTIC
               </h1>
-              <h2 className="text-2xl lg:text-4xl font-mono text-orange-300 mb-2">
-                ZOMBIE SURVIVAL
+              <h2 className="text-2xl lg:text-4xl font-mono text-purple-300 mb-2">
+                REALM DEFENDER
               </h2>
               <p className="text-gray-400 text-lg font-mono">
-                Survive the apocalypse. Eliminate the hordes.
+                Master the arcane arts. Defend against mythical beasts.
               </p>
             </div>
 
@@ -167,8 +167,8 @@ export function HomeScreen({
                   group w-full max-w-md mx-auto lg:mx-0 p-4 rounded-lg font-mono font-bold text-xl
                   transition-all duration-300 transform border-2 block
                   ${isSelected 
-                    ? 'bg-orange-600/80 border-orange-500 text-white scale-105 shadow-lg shadow-orange-500/50' 
-                    : 'bg-black/40 border-orange-500/30 text-orange-300 hover:bg-orange-600/20 hover:border-orange-500/60 hover:scale-102'
+                    ? 'bg-purple-600/80 border-purple-500 text-white scale-105 shadow-lg shadow-purple-500/50' 
+                    : 'bg-black/40 border-purple-500/30 text-purple-300 hover:bg-purple-600/20 hover:border-purple-500/60 hover:scale-102'
                   }
                   backdrop-blur-sm
                 `
@@ -209,12 +209,12 @@ export function HomeScreen({
             </div>
 
             {/* Game Instructions */}
-            <div className="mt-6 p-4 bg-black/40 backdrop-blur-sm border border-orange-500/20 rounded-lg max-w-md mx-auto lg:mx-0">
-              <h3 className="text-orange-300 font-mono text-sm mb-2">🎮 HOW TO PLAY</h3>
+            <div className="mt-6 p-4 bg-black/40 backdrop-blur-sm border border-purple-500/20 rounded-lg max-w-md mx-auto lg:mx-0">
+              <h3 className="text-purple-300 font-mono text-sm mb-2">🔮 HOW TO PLAY</h3>
               <div className="text-xs text-gray-400 space-y-1">
                 <p>WASD - Move</p>
-                <p>Mouse - Aim & Shoot</p>
-                <p>Survive waves of zombies!</p>
+                <p>Mouse - Aim & Cast Spells</p>
+                <p>Survive waves of mythical creatures!</p>
               </div>
             </div>
           </div>
@@ -233,10 +233,10 @@ export function HomeScreen({
       </div>
 
       {/* Corner decorative elements */}
-      <div className="absolute top-0 left-0 w-32 h-32 border-l-2 border-t-2 border-orange-500/30"></div>
-      <div className="absolute top-0 right-0 w-32 h-32 border-r-2 border-t-2 border-orange-500/30"></div>
-      <div className="absolute bottom-0 left-0 w-32 h-32 border-l-2 border-b-2 border-orange-500/30"></div>
-      <div className="absolute bottom-0 right-0 w-32 h-32 border-r-2 border-b-2 border-orange-500/30"></div>
+      <div className="absolute top-0 left-0 w-32 h-32 border-l-2 border-t-2 border-purple-500/30"></div>
+      <div className="absolute top-0 right-0 w-32 h-32 border-r-2 border-t-2 border-purple-500/30"></div>
+      <div className="absolute bottom-0 left-0 w-32 h-32 border-l-2 border-b-2 border-purple-500/30"></div>
+      <div className="absolute bottom-0 right-0 w-32 h-32 border-r-2 border-b-2 border-purple-500/30"></div>
 
     </div>
   )

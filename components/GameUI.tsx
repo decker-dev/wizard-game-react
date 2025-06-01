@@ -27,36 +27,40 @@ export const GameUI: React.FC<GameUIProps> = ({
   onShare,
   player
 }) => {
+  // Use player.mana if available, otherwise fall back to playerHealth
+  const currentMana = player?.mana ?? playerHealth
+  const maxMana = player?.maxMana ?? 100
+
   return (
     <div className="space-y-4">
       {/* Game Title Header */}
-      <div className="bg-black/60 backdrop-blur-sm border border-orange-500/30 rounded-lg p-4 hover:border-orange-500/50 transition-colors">
-        <h1 className="text-2xl font-bold font-mono text-transparent bg-clip-text bg-gradient-to-b from-orange-400 to-red-600 text-center mb-2">
-          ZOMBIE SIEGE
+      <div className="bg-black/60 backdrop-blur-sm border border-purple-500/30 rounded-lg p-4 hover:border-purple-500/50 transition-colors">
+        <h1 className="text-2xl font-bold font-mono text-transparent bg-clip-text bg-gradient-to-b from-purple-400 to-blue-600 text-center mb-2">
+          MYSTIC REALM
         </h1>
         <div className="text-center text-gray-400 font-mono text-xs">
-          ∞ Survival Mode ∞
+          ∞ Arcane Defense ∞
         </div>
       </div>
 
       {/* Stats - Vertical Layout */}
       <div className="space-y-3">
         {/* Kills */}
-        <div className="bg-black/60 backdrop-blur-sm border border-orange-500/20 rounded-lg p-4 hover:border-orange-500/40 transition-colors">
+        <div className="bg-black/60 backdrop-blur-sm border border-purple-500/20 rounded-lg p-4 hover:border-purple-500/40 transition-colors">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-orange-400 text-sm font-mono">KILLS</div>
+              <div className="text-purple-400 text-sm font-mono">DEFEATED</div>
               <div className="text-3xl font-bold text-white font-mono">{score}</div>
             </div>
-            <div className="text-4xl">💀</div>
+            <div className="text-4xl">🐉</div>
           </div>
         </div>
         
         {/* Wave */}
-        <div className="bg-black/60 backdrop-blur-sm border border-orange-500/20 rounded-lg p-4 hover:border-orange-500/40 transition-colors">
+        <div className="bg-black/60 backdrop-blur-sm border border-purple-500/20 rounded-lg p-4 hover:border-purple-500/40 transition-colors">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-orange-400 text-sm font-mono">WAVE</div>
+              <div className="text-purple-400 text-sm font-mono">WAVE</div>
               <div className="text-3xl font-bold text-white font-mono">{currentWave}</div>
               <div className="text-xs text-gray-400 font-mono">∞ Infinite</div>
             </div>
@@ -64,57 +68,57 @@ export const GameUI: React.FC<GameUIProps> = ({
           </div>
         </div>
         
-        {/* Health */}
-        <div className="bg-black/60 backdrop-blur-sm border border-orange-500/20 rounded-lg p-4 hover:border-orange-500/40 transition-colors">
+        {/* Mana */}
+        <div className="bg-black/60 backdrop-blur-sm border border-purple-500/20 rounded-lg p-4 hover:border-purple-500/40 transition-colors">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-orange-400 text-sm font-mono">HEALTH</div>
+              <div className="text-purple-400 text-sm font-mono">MANA</div>
               <div className="text-2xl font-bold font-mono">
-                <span className={playerHealth > 50 ? "text-green-400" : playerHealth > 25 ? "text-yellow-400" : "text-red-400"}>
-                  {playerHealth}
+                <span className={currentMana > maxMana * 0.5 ? "text-blue-400" : currentMana > maxMana * 0.25 ? "text-yellow-400" : "text-red-400"}>
+                  {Math.round(currentMana)}
                 </span>
-                <span className="text-gray-400">/{player?.maxHealth || 100}</span>
+                <span className="text-gray-400">/{maxMana}</span>
               </div>
-              {/* Health Bar */}
+              {/* Mana Bar */}
               <div className="w-full bg-gray-700 rounded-full h-2 mt-2">
                 <div 
                   className={`h-2 rounded-full transition-all duration-300 ${
-                    playerHealth > 50 ? "bg-green-400" : 
-                    playerHealth > 25 ? "bg-yellow-400" : "bg-red-400"
+                    currentMana > maxMana * 0.5 ? "bg-blue-400" : 
+                    currentMana > maxMana * 0.25 ? "bg-yellow-400" : "bg-red-400"
                   }`}
-                  style={{ width: `${(playerHealth / (player?.maxHealth || 100)) * 100}%` }}
+                  style={{ width: `${Math.max(0, Math.min(100, (currentMana / maxMana) * 100))}%` }}
                 ></div>
               </div>
             </div>
-            <div className="text-4xl">❤️</div>
+            <div className="text-4xl">🔮</div>
           </div>
         </div>
         
         {/* Coins */}
-        <div className="bg-black/60 backdrop-blur-sm border border-orange-500/20 rounded-lg p-4 hover:border-orange-500/40 transition-colors">
+        <div className="bg-black/60 backdrop-blur-sm border border-purple-500/20 rounded-lg p-4 hover:border-purple-500/40 transition-colors">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-orange-400 text-sm font-mono">COINS</div>
+              <div className="text-purple-400 text-sm font-mono">CRYSTALS</div>
               <div className="text-3xl font-bold text-yellow-400 font-mono flex items-center">
                 <CoinIcon size="md" className="mr-2" />
                 {playerCoins}
               </div>
             </div>
-            <div className="text-4xl">💰</div>
+            <div className="text-4xl">💎</div>
           </div>
         </div>
       </div>
 
       {/* Weapon Info */}
       {player && (
-        <div className="bg-black/60 backdrop-blur-sm border border-orange-500/20 rounded-lg p-4 hover:border-orange-500/40 transition-colors">
-          <div className="text-orange-400 text-sm font-mono mb-2">WEAPON</div>
+        <div className="bg-black/60 backdrop-blur-sm border border-purple-500/20 rounded-lg p-4 hover:border-purple-500/40 transition-colors">
+          <div className="text-purple-400 text-sm font-mono mb-2">SPELL POWER</div>
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-white font-mono font-bold">Level {player.upgrades.weaponLevel}</div>
-              <div className="text-gray-400 text-xs font-mono">Damage: {player.upgrades.weaponDamage}</div>
+              <div className="text-white font-mono font-bold">Level {player.upgrades.spellLevel}</div>
+              <div className="text-gray-400 text-xs font-mono">Damage: {player.upgrades.spellDamage}</div>
             </div>
-            <div className="text-4xl">🔫</div>
+            <div className="text-4xl">🪄</div>
           </div>
         </div>
       )}
@@ -143,12 +147,12 @@ export const GameUI: React.FC<GameUIProps> = ({
       )}
 
       {/* Status Messages */}
-      <div className="bg-black/40 backdrop-blur-sm border border-orange-500/20 rounded-lg p-3">
+      <div className="bg-black/40 backdrop-blur-sm border border-purple-500/20 rounded-lg p-3">
         <div className="text-gray-300 font-mono text-xs text-center space-y-1">
-          <div className="text-orange-400">STATUS</div>
-          {gameOver && <div className="text-red-400">💀 GAME OVER</div>}
+          <div className="text-purple-400">STATUS</div>
+          {gameOver && <div className="text-red-400">💀 REALM FALLEN</div>}
           {gameWon && <div className="text-green-400">🏆 VICTORY</div>}
-          {!gameOver && !gameWon && <div className="text-green-400">🔥 FIGHTING</div>}
+          {!gameOver && !gameWon && <div className="text-green-400">🔥 DEFENDING</div>}
         </div>
       </div>
     </div>
