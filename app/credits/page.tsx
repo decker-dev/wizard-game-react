@@ -9,27 +9,9 @@ export default function CreditsPage() {
     {
       category: "DESARROLLO",
       items: [
-        { role: "Lead Developer", name: "Tu Nombre" },
-        { role: "Game Design", name: "Tu Nombre" },
-        { role: "Frontend Development", name: "Next.js + React" },
-        { role: "State Management", name: "Custom Hooks" }
-      ]
-    },
-    {
-      category: "ARTE Y DISEÑO",
-      items: [
-        { role: "UI/UX Design", name: "Tailwind CSS" },
-        { role: "Pixel Art", name: "Custom Sprites" },
-        { role: "Visual Effects", name: "CSS Animations" },
-        { role: "Color Palette", name: "Apocalyptic Theme" }
-      ]
-    },
-    {
-      category: "AUDIO",
-      items: [
-        { role: "Sound Effects", name: "Web Audio API" },
-        { role: "Audio Integration", name: "Custom Audio Hooks" },
-        { role: "Music System", name: "Dynamic Audio" }
+        { role: "Vibe Developer", name: "Lauti", link: "https://x.com/lautidev_" },
+        { role: "Vibe Developer", name: "Alejo", link: "https://x.com/alejorrojass" },
+        { role: "Vibe Developer", name: "Decker", link: "https://x.com/0xDecker" },
       ]
     },
     {
@@ -43,15 +25,6 @@ export default function CreditsPage() {
         { role: "Deployment", name: "Vercel" }
       ]
     },
-    {
-      category: "AGRADECIMIENTOS ESPECIALES",
-      items: [
-        { role: "Inspiración", name: "Juegos clásicos de zombies" },
-        { role: "Community", name: "React & Next.js Community" },
-        { role: "Testing", name: "Beta Testers" },
-        { role: "Feedback", name: "Game Jam Participants" }
-      ]
-    }
   ]
 
   return (
@@ -76,7 +49,7 @@ export default function CreditsPage() {
               CRÉDITOS
             </h1>
             <p className="text-gray-300 font-mono text-lg">
-              Gracias a todos los que hicieron posible este juego
+              Creado en el Game Jam de Paisanos.io
             </p>
           </div>
 
@@ -85,14 +58,14 @@ export default function CreditsPage() {
             <h2 className="text-3xl font-bold text-orange-400 font-mono mb-2">
               ZOMBIE APOCALYPSE SURVIVAL
             </h2>
-            <p className="text-gray-300 font-mono mb-2">Versión 1.0</p>
+            <p className="text-gray-300 font-mono mb-2">Desarrollado en 1 día</p>
             <p className="text-gray-400 font-mono text-sm">
-              Un juego de supervivencia zombie en 2D con waves infinitas
+              Primera Vibe Gaming Hackathon de LATAM - Tech Week Buenos Aires
             </p>
           </div>
 
           {/* Credits Sections */}
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
             {credits.map((section, sectionIndex) => (
               <div 
                 key={section.category}
@@ -108,9 +81,20 @@ export default function CreditsPage() {
                       <span className="text-gray-300 font-mono text-sm">
                         {item.role}
                       </span>
-                      <span className="text-white font-mono font-bold text-sm">
-                        {item.name}
-                      </span>
+                      {item.link ? (
+                        <a 
+                          href={item.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-orange-400 hover:text-orange-300 font-mono font-bold text-sm underline decoration-dotted transition-colors"
+                        >
+                          {item.name}
+                        </a>
+                      ) : (
+                        <span className="text-white font-mono font-bold text-sm">
+                          {item.name}
+                        </span>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -121,10 +105,13 @@ export default function CreditsPage() {
           {/* Footer Message */}
           <div className="text-center mt-8 bg-black/40 border border-orange-500/20 rounded-lg p-6">
             <p className="text-gray-300 font-mono mb-4">
-              ¡Gracias por jugar! Este juego fue desarrollado con pasión durante el Game Jam.
+              🎮 Un juego desarrollado en comunidad durante la primera Game Jam de Paisanos.io
             </p>
-            <p className="text-orange-400 font-mono text-sm">
-              Made with ❤️ using Next.js, TypeScript, and creativity
+            <p className="text-orange-400 font-mono text-sm mb-2">
+              "Vení a codear, diseñar, compartir y aprender con otros que están tan manija como vos"
+            </p>
+            <p className="text-gray-400 font-mono text-xs">
+              Made with ❤️ in Buenos Aires using Next.js, TypeScript, and creativity
             </p>
           </div>
 
