@@ -55,7 +55,7 @@ export default function SettingsPage() {
           <div className="text-center mb-8">
             <h1 className="text-5xl font-bold font-mono text-transparent bg-clip-text bg-gradient-to-b from-orange-400 to-red-600 mb-4">
               CONFIGURACIÓN
-            </h1>
+            </h1> 
             <p className="text-gray-300 font-mono">
               Personaliza tu experiencia de juego
             </p>
@@ -121,40 +121,6 @@ export default function SettingsPage() {
               </button>
             </div>
 
-            {/* Game Settings */}
-            <div className="bg-black/40 border border-orange-500/20 rounded-lg p-6">
-              <h3 className="text-xl font-bold text-orange-400 font-mono mb-4">JUEGO</h3>
-              
-              {/* Difficulty */}
-              <div className="mb-4">
-                <label className="block text-gray-300 font-mono mb-2">Dificultad</label>
-                <select
-                  value={difficulty}
-                  onChange={(e) => setDifficulty(e.target.value)}
-                  className="w-full p-2 bg-gray-700 border border-gray-600 rounded text-white font-mono focus:border-orange-500 focus:outline-none"
-                >
-                  <option value="easy">Fácil</option>
-                  <option value="normal">Normal</option>
-                  <option value="hard">Difícil</option>
-                  <option value="nightmare">Pesadilla</option>
-                </select>
-              </div>
-
-              {/* Show FPS */}
-              <div className="flex items-center justify-between">
-                <span className="text-gray-300 font-mono">Mostrar FPS</span>
-                <button
-                  onClick={() => setShowFPS(!showFPS)}
-                  className={`px-4 py-2 rounded font-mono font-bold transition-colors ${
-                    showFPS 
-                      ? 'bg-green-600 text-white border border-green-500' 
-                      : 'bg-gray-600 text-gray-300 border border-gray-500'
-                  }`}
-                >
-                  {showFPS ? 'ON' : 'OFF'}
-                </button>
-              </div>
-            </div>
           </div>
 
           {/* Action Buttons */}
