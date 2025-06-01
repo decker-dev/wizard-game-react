@@ -270,7 +270,7 @@ This project was developed during a Game Jam and is available for educational an
 
 ## 🔗 **Links**
 
-- **🎮 Play Now**: [Zombie Apocalypse Survival](https://vercel.com/lautaro-rebillcoms-projects/v0-2-d-shooter-game)
+- **🎮 Play Now**: [Zombie Apocalypse Survival](zombie-game-react.vercel.app)
 - **🏆 Game Jam**: [Paisanos.io Event](https://lu.ma/xqvznvg4?locale=es)
 - **🐦 Developers**: [Lauti](https://x.com/lautidev_) • [Alejo](https://x.com/alejorrojass) • [Decker](https://x.com/0xDecker)
 
