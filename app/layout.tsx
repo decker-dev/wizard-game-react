@@ -50,8 +50,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: '/og.png',
-        width: 1200,
-        height: 630,
+        width: 1536,
+        height: 1024,
         alt: 'BOXHEAD ZOMBIE SURVIVAL - 2D Pixel Art Shooter Game',
         type: 'image/png',
       }
@@ -85,6 +85,10 @@ export const metadata: Metadata = {
     'application-name': 'BOXHEAD ZOMBIE SURVIVAL',
     'msapplication-TileColor': '#000000',
     'theme-color': '#000000',
+    // WhatsApp specific meta tags
+    'og:image:width': '1536',
+    'og:image:height': '1024',
+    'og:image:type': 'image/png',
   },
 }
 
@@ -95,6 +99,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Additional WhatsApp-friendly meta tags */}
+        <meta property="og:image" content="https://zombie.decker.sh/og.png" />
+        <meta property="og:image:secure_url" content="https://zombie.decker.sh/og.png" />
+        <meta property="og:image:width" content="1536" />
+        <meta property="og:image:height" content="1024" />
+        <meta property="og:image:alt" content="BOXHEAD ZOMBIE SURVIVAL - 2D Pixel Art Shooter Game" />
+        <meta property="og:image:type" content="image/png" />
+        
+        {/* WhatsApp specific */}
+        <meta name="thumbnail" content="https://zombie.decker.sh/og.png" />
+        
+        {/* Additional fallbacks */}
+        <link rel="image_src" href="https://zombie.decker.sh/og.png" />
+      </head>
       <body>{children}</body>
       <Analytics />
     </html>
