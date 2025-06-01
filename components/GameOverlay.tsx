@@ -23,32 +23,32 @@ export function GameOverlay({
   onSaveScore
 }: GameOverlayProps) {
   return (
-    <div className="absolute inset-0 bg-black/90 backdrop-blur-sm flex flex-col items-center justify-center rounded-lg border border-orange-500/50">
-      <div className="bg-black/80 backdrop-blur-sm border border-orange-500/30 rounded-lg p-8 text-center hover:border-orange-500/50 transition-colors">
-        <h2 className="text-5xl font-bold font-mono text-transparent bg-clip-text bg-gradient-to-b from-orange-400 to-red-600 mb-6">
+    <div className="absolute inset-0 bg-black/90 backdrop-blur-sm flex flex-col items-center justify-center rounded-lg border border-purple-500/50">
+      <div className="bg-black/80 backdrop-blur-sm border border-purple-500/30 rounded-lg p-8 text-center hover:border-purple-500/50 transition-colors">
+        <h2 className="text-5xl font-bold font-mono text-transparent bg-clip-text bg-gradient-to-b from-purple-400 to-blue-600 mb-6">
           {gameWon ? "YOU WON!" : "GAME OVER!"}
         </h2>
         {gameWon && (
           <p className="text-2xl mb-4 text-green-400 font-mono">
-            You successfully defended against all the zombie waves!
+            You successfully defended the mystical realm against all creature waves!
           </p>
         )}
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <div className="bg-black/40 border border-orange-500/20 rounded p-4">
-            <div className="text-orange-400 font-mono text-sm">ZOMBIES KILLED</div>
+          <div className="bg-black/40 border border-purple-500/20 rounded p-4">
+            <div className="text-purple-400 font-mono text-sm">CREATURES DEFEATED</div>
             <div className="text-3xl font-bold text-white font-mono">{score}</div>
           </div>
-          <div className="bg-black/40 border border-orange-500/20 rounded p-4">
-            <div className="text-orange-400 font-mono text-sm">COINS</div>
+          <div className="bg-black/40 border border-purple-500/20 rounded p-4">
+            <div className="text-purple-400 font-mono text-sm">CRYSTALS</div>
             <div className="text-3xl font-bold text-yellow-400 font-mono flex items-center justify-center">
               <CoinIcon size="lg" className="mr-2" />
               {playerCoins}
             </div>
           </div>
-          <div className="bg-black/40 border border-orange-500/20 rounded p-4">
-            <div className="text-orange-400 font-mono text-sm">WAVE REACHED</div>
+          <div className="bg-black/40 border border-purple-500/20 rounded p-4">
+            <div className="text-purple-400 font-mono text-sm">WAVE REACHED</div>
             <div className="text-3xl font-bold text-white font-mono">{currentWave}</div>
           </div>
         </div>
@@ -69,7 +69,7 @@ export function GameOverlay({
             </button>
             <button
               onClick={onReturnHome}
-              className="p-4 bg-orange-600/80 hover:bg-orange-600 border border-orange-500/50 text-white font-mono font-bold rounded-lg text-lg transition-all duration-200 transform hover:scale-105 hover:border-orange-500"
+              className="p-4 bg-purple-600/80 hover:bg-purple-600 border border-purple-500/50 text-white font-mono font-bold rounded-lg text-lg transition-all duration-200 transform hover:scale-105 hover:border-purple-500"
             >
               🏠 BACK TO HOME
             </button>

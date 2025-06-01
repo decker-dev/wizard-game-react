@@ -227,6 +227,57 @@ export const updateCreatures = (gameState: GameState) => {
     creature.position.x = Math.max(creature.width / 2, Math.min(MAP_WIDTH - creature.width / 2, creature.position.x))
     creature.position.y = Math.max(creature.height / 2, Math.min(MAP_HEIGHT - creature.height / 2, creature.position.y))
   })
+
+  // Verificar colisiones entre criaturas para evitar superposición
+  for (let i = 0; i < creatures.length; i++) {
+    for (let j = i + 1; j < creatures.length; j++) {
+      const creature1 = creatures[i]
+      const creature2 = creatures[j]
+
+      const rect1 = getEntityRect(creature1)
+      const rect2 = getEntityRect(creature2)
+
+      if (checkAABBCollision(rect1, rect2)) {
+        // Calcular dirección de separación
+        const separationDirection = normalize({
+          x: creature2.position.x - creature1.position.x,
+          y: creature2.position.y - creature1.position.y
+        })
+
+        // Si están exactamente en la misma posición, usar dirección aleatoria
+        if (separationDirection.x === 0 && separationDirection.y === 0) {
+          const angle = Math.random() * Math.PI * 2
+          separationDirection.x = Math.cos(angle)
+          separationDirection.y = Math.sin(angle)
+        }
+
+        // Separar las criaturas
+        const separationForce = 5
+        creature1.position.x -= separationDirection.x * separationForce
+        creature1.position.y -= separationDirection.y * separationForce
+        creature2.position.x += separationDirection.x * separationForce
+        creature2.position.y += separationDirection.y * separationForce
+
+        // Verificar que no salgan del mapa ni colisionen con obstáculos
+        for (const creature of [creature1, creature2]) {
+          // Límites del mapa
+          creature.position.x = Math.max(creature.width / 2, Math.min(MAP_WIDTH - creature.width / 2, creature.position.x))
+          creature.position.y = Math.max(creature.height / 2, Math.min(MAP_HEIGHT - creature.height / 2, creature.position.y))
+
+          // Verificar colisión con obstáculos
+          const creatureRect = getEntityRect(creature)
+          for (const obs of obstacles) {
+            if (checkAABBCollision(creatureRect, obs)) {
+              // Si colisiona con obstáculo, mover en dirección opuesta
+              creature.position.x += separationDirection.x * separationForce * (creature === creature1 ? 1 : -1)
+              creature.position.y += separationDirection.y * separationForce * (creature === creature1 ? 1 : -1)
+              break
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 export const getCreatureSprite = (creature: Creature, creatureSprites: { [key: string]: HTMLImageElement | null }) => {

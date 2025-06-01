@@ -99,7 +99,7 @@ const createNoiseSound = (duration: number, volume: number = 0.05) => {
 }
 
 // Create more complex sounds for game events
-const createZombieDeathSound = () => {
+const createCreatureDeathSound = () => {
   const context = initAudioContext()
   if (!context) return
 
@@ -138,12 +138,12 @@ const createZombieDeathSound = () => {
   }
 }
 
-const createShooterZombieDeathSound = () => {
+const createCasterCreatureDeathSound = () => {
   const context = initAudioContext()
   if (!context) return
 
   try {
-    // Sonido especial para zombie shooter (más grave y dramático)
+    // Sonido especial para criatura caster (más grave y dramático)
     // 1. Impacto más fuerte
     createBeep(100, 0.2, 0.1)
 
@@ -186,13 +186,13 @@ export function useGameAudio() {
     setAudioSettings(getAudioSettings())
   }, [])
 
-  const playZombieDeath = useCallback((zombieType: 'normal' | 'shooter' = 'normal') => {
+  const playCreatureDeath = useCallback((creatureType: 'normal' | 'caster' = 'normal') => {
     if (!isClient || !audioSettings.sfxEnabled) return
 
-    if (zombieType === 'shooter') {
-      createShooterZombieDeathSound()
+    if (creatureType === 'caster') {
+      createCasterCreatureDeathSound()
     } else {
-      createZombieDeathSound()
+      createCreatureDeathSound()
     }
   }, [isClient, audioSettings.sfxEnabled])
 
@@ -207,26 +207,15 @@ export function useGameAudio() {
     setTimeout(() => createNoiseSound(0.1, 0.03), 50)
   }, [isClient, audioSettings.sfxEnabled])
 
-  const playCreatureDeath = useCallback((creatureType: 'normal' | 'caster' = 'normal') => {
-    if (!isClient || !audioSettings.sfxEnabled) return
-
-    if (creatureType === 'caster') {
-      createShooterZombieDeathSound()
-    } else {
-      createZombieDeathSound()
-    }
-  }, [isClient, audioSettings.sfxEnabled])
-
   const playPlayerCast = useCallback(() => {
     if (!isClient || !audioSettings.sfxEnabled) return
     createBeep(800, 0.05, 0.04)
   }, [isClient, audioSettings.sfxEnabled])
 
   return {
-    playZombieDeath,
+    playCreatureDeath,
     playPlayerShoot,
     playPlayerHit,
-    playCreatureDeath,
     playPlayerCast,
     audioSettings
   }

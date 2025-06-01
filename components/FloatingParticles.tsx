@@ -35,7 +35,7 @@ export function FloatingParticles() {
       {particles.map((particle) => (
         <div
           key={particle.id}
-          className="absolute bg-orange-300/20 rounded-full animate-float"
+          className="absolute bg-purple-300/20 rounded-full animate-float"
           style={{
             left: `${particle.x}%`,
             top: `${particle.y}%`,

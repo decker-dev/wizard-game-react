@@ -62,7 +62,7 @@ export function Leaderboard({ topScores, allScores, totalGamesPlayed, isLoading 
           onClick={() => setActiveTab('top')}
           className={`flex-1 py-2 px-4 rounded-md font-medium transition-colors ${
             activeTab === 'top'
-              ? 'bg-orange-600/80 border-orange-500 text-white scale-10 shadow-orange-500/50'
+              ? 'bg-purple-600/80 border-purple-500 text-white scale-10 shadow-purple-500/50'
               : 'text-gray-300 hover:text-white'
           }`}
         >
@@ -72,7 +72,7 @@ export function Leaderboard({ topScores, allScores, totalGamesPlayed, isLoading 
           onClick={() => setActiveTab('all')}
           className={`flex-1 py-2 px-4 rounded-md font-medium transition-colors ${
             activeTab === 'all'
-              ? 'bg-orange-600/80 border-orange-500 text-white scale-105 shadow-orange-500/50'
+              ? 'bg-purple-600/80 border-purple-500 text-white scale-105 shadow-purple-500/50'
               : 'text-gray-300 hover:text-white'
           }`} 
         >
@@ -100,7 +100,7 @@ export function Leaderboard({ topScores, allScores, totalGamesPlayed, isLoading 
                       : position === 2
                       ? 'bg-gray-600 border border-gray-500'
                       : position === 3
-                      ? 'bg-orange-900 border border-orange-600'
+                      ? 'bg-purple-900 border border-purple-600'
                       : 'bg-gray-700 border border-gray-600'
                   }`}
                 >
@@ -122,7 +122,7 @@ export function Leaderboard({ topScores, allScores, totalGamesPlayed, isLoading 
 
                   <div className="text-right">
                     <div className="text-yellow-400 font-bold text-lg">
-                      {entry.score.toLocaleString()} zombies
+                      {entry.score.toLocaleString()} creatures
                     </div>
                     <div className="text-blue-400 text-sm">
                       Wave {entry.waves_survived}

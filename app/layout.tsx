@@ -4,25 +4,27 @@ import { Analytics } from '@vercel/analytics/react'
 
 export const metadata: Metadata = {
   title: {
-    default: 'BOXHEAD ZOMBIE SURVIVAL - 2D Pixel Art Shooter',
-    template: '%s | BOXHEAD ZOMBIE SURVIVAL'
+    default: 'MYSTIC REALM DEFENDER - 2D Pixel Art Fantasy Game',
+    template: '%s | MYSTIC REALM DEFENDER'
   },
-  description: 'Survive infinite waves of zombies in BOXHEAD ZOMBIE SURVIVAL, an innovative 2D pixel art shooter. Upgrade your weapons, buy equipment and compete for the best score on global leaderboards.',
+  description: 'Master the arcane arts in MYSTIC REALM DEFENDER, an innovative 2D pixel art fantasy game. Enhance your spells, collect crystals and compete for the best score on global leaderboards.',
   keywords: [
-    'boxhead',
-    'boxhead zombie survival',
-    'zombie game',
-    'shooter 2d',
+    'mystic realm',
+    'fantasy game',
+    'magic game',
     'pixel art',
+    'wizard game',
     'survival game',
-    'zombie apocalypse',
-    'waves game',
-    'online game',
+    'mythical creatures',
+    'arcane defense',
+    'spell casting',
+    'magical shooter',
+    'fantasy survival',
     'browser game',
-    'arcade game',
-    'leaderboard',
-    'zombie shooter',
-    'survival horror'
+    'web game',
+    'indie game',
+    'retro game',
+    'action game'
   ],
   authors: [
     { name: 'Lauti', url: 'https://x.com/lautidev_' },
@@ -36,7 +38,7 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://zombie.decker.sh'),
+  metadataBase: new URL('https://mystic.decker.sh'),
   alternates: {
     canonical: '/',
   },
@@ -44,24 +46,24 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     url: '/',
-    title: 'BOXHEAD ZOMBIE SURVIVAL - 2D Pixel Art Shooter',
-    description: 'Survive infinite waves of zombies in BOXHEAD ZOMBIE SURVIVAL. Upgrade system, marketplace between waves and global leaderboards. Play free now!',
-    siteName: 'BOXHEAD ZOMBIE SURVIVAL',
+    title: 'MYSTIC REALM DEFENDER - 2D Pixel Art Fantasy Game',
+    description: 'Master the arcane arts in MYSTIC REALM DEFENDER! Control with WASD, cast spells with mouse and survive as long as possible in this intense 2D fantasy game.',
+    siteName: 'MYSTIC REALM DEFENDER',
     images: [
       {
-        url: '/og.png',
-        width: 1536,
-        height: 1024,
-        alt: 'BOXHEAD ZOMBIE SURVIVAL - 2D Pixel Art Shooter Game',
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'MYSTIC REALM DEFENDER - Gameplay Screenshot',
         type: 'image/png',
       }
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'BOXHEAD ZOMBIE SURVIVAL - 2D Shooter',
-    description: 'Survive infinite waves of zombies in BOXHEAD ZOMBIE SURVIVAL, an innovative 2D pixel art shooter. Play free now!',
-    images: ['/og.png'],
+    title: '🎮 Play MYSTIC REALM DEFENDER!',
+    description: 'Master the arcane arts in MYSTIC REALM DEFENDER! 2D pixel art fantasy game.',
+    images: ['/og-image.png'],
     creator: '@lautidev_',
   },
   robots: {
@@ -80,14 +82,14 @@ export const metadata: Metadata = {
   other: {
     'apple-mobile-web-app-capable': 'yes',
     'apple-mobile-web-app-status-bar-style': 'black-translucent',
-    'apple-mobile-web-app-title': 'BOXHEAD ZOMBIE SURVIVAL',
+    'apple-mobile-web-app-title': 'MYSTIC REALM DEFENDER',
     'mobile-web-app-capable': 'yes',
-    'application-name': 'BOXHEAD ZOMBIE SURVIVAL',
-    'msapplication-TileColor': '#000000',
-    'theme-color': '#000000',
+    'application-name': 'MYSTIC REALM DEFENDER',
+    'msapplication-TileColor': '#8A2BE2',
+    'theme-color': '#8A2BE2',
     // WhatsApp specific meta tags
-    'og:image:width': '1536',
-    'og:image:height': '1024',
+    'og:image:width': '1200',
+    'og:image:height': '630',
     'og:image:type': 'image/png',
   },
 }
@@ -101,18 +103,18 @@ export default function RootLayout({
     <html lang="en">
       <head>
         {/* Additional WhatsApp-friendly meta tags */}
-        <meta property="og:image" content="https://zombie.decker.sh/og.png" />
-        <meta property="og:image:secure_url" content="https://zombie.decker.sh/og.png" />
-        <meta property="og:image:width" content="1536" />
-        <meta property="og:image:height" content="1024" />
-        <meta property="og:image:alt" content="BOXHEAD ZOMBIE SURVIVAL - 2D Pixel Art Shooter Game" />
+        <meta property="og:image" content="https://mystic.decker.sh/og-image.png" />
+        <meta property="og:image:secure_url" content="https://mystic.decker.sh/og-image.png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content="MYSTIC REALM DEFENDER - Gameplay Screenshot" />
         <meta property="og:image:type" content="image/png" />
         
         {/* WhatsApp specific */}
-        <meta name="thumbnail" content="https://zombie.decker.sh/og.png" />
+        <meta name="thumbnail" content="https://mystic.decker.sh/og-image.png" />
         
         {/* Additional fallbacks */}
-        <link rel="image_src" href="https://zombie.decker.sh/og.png" />
+        <link rel="image_src" href="https://mystic.decker.sh/og-image.png" />
       </head>
       <body>{children}</body>
       <Analytics />

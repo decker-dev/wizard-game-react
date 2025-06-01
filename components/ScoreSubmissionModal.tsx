@@ -74,7 +74,7 @@ export function ScoreSubmissionModal({
         
         <div className="text-center mb-6">
           <div className="text-yellow-400 text-xl font-semibold mb-2">
-            Zombies Eliminated: {score}
+            Creatures Defeated: {score}
           </div>
           <div className="text-blue-400 text-lg">
             Waves Survived: {wavesSurvived}
