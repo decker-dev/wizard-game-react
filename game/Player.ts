@@ -2,12 +2,7 @@ import { Player, GameState } from '@/types/game'
 import { PLAYER_SPEED, PLAYER_SPRITE_WIDTH, PLAYER_SPRITE_HEIGHT, PLAYER_COLLISION_RADIUS, MAP_WIDTH, MAP_HEIGHT, BASE_MAX_HEALTH, BASE_WEAPON_DAMAGE, BASE_PROJECTILE_COUNT, BASE_PROJECTILE_SIZE, BASE_FIRE_RATE, BASE_SPREAD } from '@/constants/game'
 import { getEntityRect, checkAABBCollision } from '@/utils/math'
 
-export const createInitialPlayer = (playerSprites: {
-  N: HTMLImageElement | null
-  S: HTMLImageElement | null
-  E: HTMLImageElement | null
-  W: HTMLImageElement | null
-}): Player => ({
+export const createInitialPlayer = (playerSprites: { [key: string]: HTMLImageElement | null }): Player => ({
   position: { x: 70, y: 70 },
   collisionRadius: PLAYER_COLLISION_RADIUS,
   width: PLAYER_SPRITE_WIDTH * 0.8,
@@ -29,7 +24,11 @@ export const createInitialPlayer = (playerSprites: {
     projectileSize: BASE_PROJECTILE_SIZE,
     fireRate: BASE_FIRE_RATE,
     spread: BASE_SPREAD
-  }
+  },
+  direction: 'S',
+  isMoving: false,
+  animationFrame: 'S',
+  lastAnimationTime: Date.now()
 })
 
 export const updatePlayer = (gameState: GameState) => {
@@ -45,8 +44,12 @@ export const updatePlayer = (gameState: GameState) => {
   if (keys["a"] || keys["arrowleft"]) dx -= speed
   if (keys["d"] || keys["arrowright"]) dx += speed
 
+  // Determinar si el jugador se está moviendo
+  const isMoving = dx !== 0 || dy !== 0
+  player.isMoving = isMoving
+
   // Actualizar la última dirección de movimiento si hay movimiento
-  if (dx !== 0 || dy !== 0) {
+  if (isMoving) {
     if (dx !== 0 && dy !== 0) {
       const mag = Math.sqrt(dx * dx + dy * dy)
       dx = (dx / mag) * speed
@@ -60,6 +63,25 @@ export const updatePlayer = (gameState: GameState) => {
       // Actualizar el ángulo del sprite basado en la dirección de movimiento
       player.angle = Math.atan2(dy, dx)
     }
+
+    // Actualizar dirección basada en movimiento
+    const absX = Math.abs(dx)
+    const absY = Math.abs(dy)
+
+    if (absX > absY) {
+      player.direction = dx > 0 ? 'E' : 'O'
+    } else {
+      player.direction = dy > 0 ? 'S' : 'N'
+    }
+
+    // Manejar animación de caminar
+    const now = Date.now()
+    if (now - player.lastAnimationTime > 300) { // Cambiar frame cada 300ms
+      player.animationFrame = player.animationFrame === 'L' ? 'R' : 'L'
+      player.lastAnimationTime = now
+    }
+  } else {
+    player.animationFrame = 'S' // Standing frame when not moving
   }
 
   player.position.x += dx
@@ -88,18 +110,16 @@ export const updatePlayer = (gameState: GameState) => {
 }
 
 export const getPlayerSprite = (player: Player): HTMLImageElement | null => {
-  const { lastMovementDirection } = player
-  const { x, y } = lastMovementDirection
+  const direction = player.direction
+  const frameType = player.isMoving ? 'W' : 'S' // W for walking, S for standing
+  const animFrame = player.isMoving ? player.animationFrame : 'S'
 
-  // Determinar la dirección principal basada en el vector de movimiento
-  const absX = Math.abs(x)
-  const absY = Math.abs(y)
-
-  if (absX > absY) {
-    // Movimiento horizontal predominante
-    return x > 0 ? player.sprites.E : player.sprites.W
-  } else {
-    // Movimiento vertical predominante
-    return y > 0 ? player.sprites.S : player.sprites.N
+  // Construir nombre del sprite: direction_frameType_animFrame
+  let spriteName = `${direction}_${frameType}`
+  if (player.isMoving && animFrame !== 'S') {
+    spriteName += `_${animFrame}`
   }
+
+  // Usar sprites del soldier para el player
+  return player.sprites[`soldier_${spriteName}`] || player.sprites['soldier_S_S'] // fallback to soldier south standing
 } 

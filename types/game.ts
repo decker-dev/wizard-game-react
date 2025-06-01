@@ -23,16 +23,15 @@ export interface Player {
   health: number
   maxHealth: number
   angle: number
-  sprites: {
-    N: HTMLImageElement | null
-    S: HTMLImageElement | null
-    E: HTMLImageElement | null
-    W: HTMLImageElement | null
-  }
+  sprites: { [key: string]: HTMLImageElement | null }
   lastDamageTime: number
   lastMovementDirection: Vector2
   coins: number
   upgrades: PlayerUpgrades
+  direction: 'N' | 'S' | 'E' | 'O'
+  isMoving: boolean
+  animationFrame: 'L' | 'R' | 'S'
+  lastAnimationTime: number
 }
 
 export interface Projectile {

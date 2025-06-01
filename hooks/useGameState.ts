@@ -1,8 +1,8 @@
 import { useCallback, useRef } from 'react'
 import { GameState } from '@/types/game'
-import { 
-  WEAPON_DAMAGE_INCREASE, 
-  HEALTH_INCREASE, 
+import {
+  WEAPON_DAMAGE_INCREASE,
+  HEALTH_INCREASE,
   MAX_UPGRADE_LEVEL,
   BASE_ZOMBIES_PER_WAVE,
   ZOMBIES_INCREASE_PER_WAVE,
@@ -15,12 +15,7 @@ import { createInitialPlayer } from '@/game/Player'
 
 export const useGameState = () => {
   const createInitialGameState = useCallback(
-    (playerSprites: {
-      N: HTMLImageElement | null
-      S: HTMLImageElement | null
-      E: HTMLImageElement | null
-      W: HTMLImageElement | null
-    }): GameState => ({
+    (playerSprites: { [key: string]: HTMLImageElement | null }): GameState => ({
       player: createInitialPlayer(playerSprites),
       projectiles: [],
       zombies: [],
@@ -43,22 +38,12 @@ export const useGameState = () => {
 
   const gameStateRef = useRef<GameState | null>(null)
 
-  const initializeGameState = useCallback((playerSprites: {
-    N: HTMLImageElement | null
-    S: HTMLImageElement | null
-    E: HTMLImageElement | null
-    W: HTMLImageElement | null
-  }) => {
+  const initializeGameState = useCallback((playerSprites: { [key: string]: HTMLImageElement | null }) => {
     gameStateRef.current = createInitialGameState(playerSprites)
     return gameStateRef.current
   }, [createInitialGameState])
 
-  const resetGameState = useCallback((playerSprites: {
-    N: HTMLImageElement | null
-    S: HTMLImageElement | null
-    E: HTMLImageElement | null
-    W: HTMLImageElement | null
-  }) => {
+  const resetGameState = useCallback((playerSprites: { [key: string]: HTMLImageElement | null }) => {
     gameStateRef.current = createInitialGameState(playerSprites)
     return gameStateRef.current
   }, [createInitialGameState])
@@ -140,37 +125,37 @@ export const useGameState = () => {
     if (player.coins >= cost && player.upgrades.weaponLevel < MAX_UPGRADE_LEVEL) {
       player.coins -= cost
       player.upgrades.weaponLevel++
-      
+
       // Incrementar daño base
       player.upgrades.weaponDamage += WEAPON_DAMAGE_INCREASE
-      
+
       // Aplicar mejoras avanzadas según el nivel específico
       switch (player.upgrades.weaponLevel) {
         case 1:
           // Nivel 1: Disparo más rápido
           player.upgrades.fireRate = 200
           break
-          
+
         case 2:
           // Nivel 2: Doble disparo + más rápido
           player.upgrades.projectileCount = 2
           player.upgrades.spread = 0.2
           player.upgrades.fireRate = 180
           break
-          
+
         case 3:
           // Nivel 3: Balas más grandes + más rápido
           player.upgrades.projectileSize = 1.5
           player.upgrades.fireRate = 160
           break
-          
+
         case 4:
           // Nivel 4: Triple disparo
           player.upgrades.projectileCount = 3
           player.upgrades.spread = 0.3
           player.upgrades.fireRate = 150
           break
-          
+
         case 5:
           // Nivel 5: Máximo poder - cuádruple disparo con balas enormes
           player.upgrades.projectileCount = 4
@@ -179,7 +164,7 @@ export const useGameState = () => {
           player.upgrades.fireRate = 120
           break
       }
-      
+
       setPlayerCoins(player.coins)
     }
   }, [])
@@ -193,10 +178,10 @@ export const useGameState = () => {
       player.coins -= cost
       player.upgrades.healthLevel++
       player.upgrades.maxHealth += HEALTH_INCREASE
-      
+
       // Restaurar vida al comprar mejora de salud
       player.health = player.upgrades.maxHealth
-      
+
       setPlayerCoins(player.coins)
       setPlayerHealth(player.health)
     }
