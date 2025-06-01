@@ -1,38 +1,72 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import Link from 'next/link'
 import { FloatingParticles } from '@/components/FloatingParticles'
 import { useGameAudio } from '@/hooks/useGameAudio'
+import { useUISound } from '@/hooks/useUISound'
 
 export default function SettingsPage() {
   const { playPlayerShoot } = useGameAudio()
+  const { 
+    audioSettings, 
+    updateAudioSettings, 
+    playHover, 
+    playSelect 
+  } = useUISound()
   
   // Settings state
-  const [volume, setVolume] = useState(50)
-  const [sfxEnabled, setSfxEnabled] = useState(true)
-  const [musicEnabled, setMusicEnabled] = useState(true)
   const [showFPS, setShowFPS] = useState(false)
   const [difficulty, setDifficulty] = useState('normal')
 
+  // Load settings on mount
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('gameSettings')
+      if (stored) {
+        const settings = JSON.parse(stored)
+        setShowFPS(settings.showFPS || false)
+        setDifficulty(settings.difficulty || 'normal')
+      }
+    } catch (error) {
+      console.warn('Error loading settings:', error)
+    }
+  }, [])
+
   const handleSave = () => {
-    // Here you would save settings to localStorage or a backend
-    localStorage.setItem('gameSettings', JSON.stringify({
-      volume,
-      sfxEnabled,
-      musicEnabled,
+    // Save settings to localStorage
+    const settings = {
+      sfxEnabled: audioSettings.sfxEnabled,
+      musicEnabled: audioSettings.musicEnabled,
       showFPS,
       difficulty
-    }))
+    }
     
-    // Show feedback
-    alert('Configuración guardada!')
+    try {
+      localStorage.setItem('gameSettings', JSON.stringify(settings))
+      playSelect()
+      // Show feedback - could be improved with a toast notification
+      alert('¡Configuración guardada!')
+    } catch (error) {
+      console.warn('Error saving settings:', error)
+      alert('Error al guardar configuración')
+    }
   }
 
   const handleTestSound = () => {
-    if (sfxEnabled) {
+    if (audioSettings.sfxEnabled) {
       playPlayerShoot()
     }
+  }
+
+  const handleSfxToggle = () => {
+    playHover()
+    updateAudioSettings({ sfxEnabled: !audioSettings.sfxEnabled })
+  }
+
+  const handleMusicToggle = () => {
+    playHover()
+    updateAudioSettings({ musicEnabled: !audioSettings.musicEnabled })
   }
 
   return (
@@ -67,33 +101,19 @@ export default function SettingsPage() {
             <div className="bg-black/40 border border-orange-500/20 rounded-lg p-6">
               <h3 className="text-xl font-bold text-orange-400 font-mono mb-4">AUDIO</h3>
               
-              {/* Volume */}
-              <div className="mb-4">
-                <label className="block text-gray-300 font-mono mb-2">
-                  Volumen: {volume}%
-                </label>
-                <input
-                  type="range"
-                  min="0"
-                  max="100"
-                  value={volume}
-                  onChange={(e) => setVolume(Number(e.target.value))}
-                  className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider"
-                />
-              </div>
-
               {/* SFX Toggle */}
               <div className="flex items-center justify-between mb-4">
                 <span className="text-gray-300 font-mono">Efectos de Sonido</span>
                 <button
-                  onClick={() => setSfxEnabled(!sfxEnabled)}
+                  onClick={handleSfxToggle}
+                  onMouseEnter={() => playHover()}
                   className={`px-4 py-2 rounded font-mono font-bold transition-colors ${
-                    sfxEnabled 
+                    audioSettings.sfxEnabled 
                       ? 'bg-green-600 text-white border border-green-500' 
                       : 'bg-gray-600 text-gray-300 border border-gray-500'
                   }`}
                 >
-                  {sfxEnabled ? 'ON' : 'OFF'}
+                  {audioSettings.sfxEnabled ? 'ON' : 'OFF'}
                 </button>
               </div>
 
@@ -101,24 +121,18 @@ export default function SettingsPage() {
               <div className="flex items-center justify-between mb-4">
                 <span className="text-gray-300 font-mono">Música</span>
                 <button
-                  onClick={() => setMusicEnabled(!musicEnabled)}
+                  onClick={handleMusicToggle}
+                  onMouseEnter={() => playHover()}
                   className={`px-4 py-2 rounded font-mono font-bold transition-colors ${
-                    musicEnabled 
+                    audioSettings.musicEnabled 
                       ? 'bg-green-600 text-white border border-green-500' 
                       : 'bg-gray-600 text-gray-300 border border-gray-500'
                   }`}
                 >
-                  {musicEnabled ? 'ON' : 'OFF'}
+                  {audioSettings.musicEnabled ? 'ON' : 'OFF'}
                 </button>
               </div>
 
-              {/* Test Sound Button */}
-              <button
-                onClick={handleTestSound}
-                className="px-4 py-2 bg-orange-600/80 hover:bg-orange-600 border border-orange-500/50 text-white font-mono font-bold rounded transition-all duration-200 hover:border-orange-500"
-              >
-                PROBAR SONIDO
-              </button>
             </div>
 
           </div>
@@ -127,12 +141,15 @@ export default function SettingsPage() {
           <div className="flex gap-4 justify-center mt-8">
             <Link
               href="/"
+              onMouseEnter={() => playHover()}
+              onClick={() => playSelect()}
               className="px-8 py-4 bg-gray-600/80 hover:bg-gray-600 border border-gray-500/50 text-white font-mono font-bold rounded-lg text-xl transition-all duration-200 transform hover:scale-105 hover:border-gray-500"
             >
               VOLVER
             </Link>
             <button
               onClick={handleSave}
+              onMouseEnter={() => playHover()}
               className="px-8 py-4 bg-green-600/80 hover:bg-green-600 border border-green-500/50 text-white font-mono font-bold rounded-lg text-xl transition-all duration-200 transform hover:scale-105 hover:border-green-500"
             >
               GUARDAR

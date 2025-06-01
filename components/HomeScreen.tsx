@@ -208,15 +208,6 @@ export function HomeScreen({
               })}
             </div>
 
-            {/* Audio Status */}
-            <div className="mt-8 p-4 bg-black/40 backdrop-blur-sm border border-orange-500/20 rounded-lg max-w-md mx-auto lg:mx-0">
-              <h3 className="text-orange-300 font-mono text-sm mb-2">🎵 AUDIO STATUS</h3>
-              <div className="text-xs text-gray-400 space-y-1">
-                <p>Music: <span className={audioSettings.musicEnabled ? "text-green-400" : "text-red-400"}>{audioSettings.musicEnabled ? "ON" : "OFF"}</span></p>
-                <p>SFX: <span className={audioSettings.sfxEnabled ? "text-green-400" : "text-red-400"}>{audioSettings.sfxEnabled ? "ON" : "OFF"}</span></p>
-              </div>
-            </div>
-
             {/* Game Instructions */}
             <div className="mt-6 p-4 bg-black/40 backdrop-blur-sm border border-orange-500/20 rounded-lg max-w-md mx-auto lg:mx-0">
               <h3 className="text-orange-300 font-mono text-sm mb-2">🎮 HOW TO PLAY</h3>
