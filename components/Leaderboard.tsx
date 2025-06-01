@@ -61,19 +61,19 @@ export function Leaderboard({ topScores, allScores, isLoading }: LeaderboardProp
           onClick={() => setActiveTab('top')}
           className={`flex-1 py-2 px-4 rounded-md font-medium transition-colors ${
             activeTab === 'top'
-              ? 'bg-blue-600 text-white'
+              ? 'bg-orange-600/80 border-orange-500 text-white scale-10 shadow-orange-500/50'
               : 'text-gray-300 hover:text-white'
           }`}
         >
-          Top 10
+          Top 3
         </button>
         <button
           onClick={() => setActiveTab('all')}
           className={`flex-1 py-2 px-4 rounded-md font-medium transition-colors ${
             activeTab === 'all'
-              ? 'bg-blue-600 text-white'
+              ? 'bg-orange-600/80 border-orange-500 text-white scale-105 shadow-orange-500/50'
               : 'text-gray-300 hover:text-white'
-          }`}
+          }`} 
         >
           Todos los Scores
         </button>
