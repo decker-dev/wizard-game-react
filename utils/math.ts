@@ -6,6 +6,10 @@ export const normalize = (vector: Vector2): Vector2 => {
   return { x: vector.x / mag, y: vector.y / mag }
 }
 
+export const magnitude = (vector: Vector2): number => {
+  return Math.sqrt(vector.x ** 2 + vector.y ** 2)
+}
+
 export const distance = (a: Vector2, b: Vector2): number => {
   return Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2))
 }

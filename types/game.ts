@@ -57,6 +57,11 @@ export interface Creature {
   isMoving: boolean
   animationFrame: 'L' | 'R' | 'S'
   lastAnimationTime: number
+  lastPosition?: Vector2
+  currentPath?: Vector2[]
+  currentPathIndex?: number
+  lastPathUpdate?: number
+  targetPosition?: Vector2
 }
 
 export interface Obstacle {

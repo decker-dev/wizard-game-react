@@ -25,6 +25,8 @@ import {
   MIN_CASTER_CAST_RATE
 } from '@/constants/game'
 import { normalize, getEntityRect, checkAABBCollision, distance } from '@/utils/math'
+import { CreatureAI } from './AIBehaviors'
+import { pathfinder } from './Pathfinding'
 
 export const createCreature = (
   x: number,
@@ -72,7 +74,13 @@ export const createCreature = (
     direction: 'S',
     isMoving: false,
     animationFrame: 'S',
-    lastAnimationTime: Date.now()
+    lastAnimationTime: Date.now(),
+    lastPosition: { x, y }, // Inicializar posición anterior para IA
+    // Inicializar campos de pathfinding
+    currentPath: undefined,
+    currentPathIndex: 0,
+    lastPathUpdate: 0,
+    targetPosition: undefined
   }
 }
 
@@ -116,55 +124,120 @@ export const updateCreatures = (gameState: GameState) => {
 
   if (waveTransitioning) return
 
+  // Actualizar el pathfinder con los obstáculos actuales
+  pathfinder.updateObstacles(obstacles)
+
   // Spawn new creatures
   spawnCreature(gameState)
 
   creatures.forEach((creature) => {
-    const oldPos = { ...creature.position }
-    const direction = normalize({
-      x: player.position.x - creature.position.x,
-      y: player.position.y - creature.position.y
-    })
+    // Guardar posición anterior para el sistema de IA
+    creature.lastPosition = { ...creature.position }
 
-    // Actualizar dirección basada en movimiento (para ambos tipos)
-    const absX = Math.abs(direction.x)
-    const absY = Math.abs(direction.y)
+    const distanceToPlayer = distance(player.position, creature.position)
 
-    if (absX > absY) {
-      creature.direction = direction.x > 0 ? 'E' : 'O'
+    // Usar el nuevo sistema de IA con Steering Behaviors y Pathfinding
+    let steeringForce
+    if (creature.type === 'caster') {
+      steeringForce = CreatureAI.updateCasterCreature(
+        creature,
+        player.position,
+        creatures,
+        obstacles,
+        distanceToPlayer
+      )
     } else {
-      creature.direction = direction.y > 0 ? 'S' : 'N'
+      steeringForce = CreatureAI.updateNormalCreature(
+        creature,
+        player.position,
+        creatures,
+        obstacles
+      )
     }
 
-    // Movimiento diferente según el tipo
-    if (creature.type === 'caster') {
-      // Los casters mantienen distancia
-      const distanceToPlayer = distance(player.position, creature.position)
+    // Aplicar la fuerza de steering al movimiento con verificación de colisiones mejorada
+    const oldPos = { ...creature.position }
+    const newX = creature.position.x + steeringForce.x
+    const newY = creature.position.y + steeringForce.y
 
-      if (distanceToPlayer < 300) {
-        // Alejarse del jugador
-        direction.x *= -1
-        direction.y *= -1
-        creature.isMoving = true
-      } else if (distanceToPlayer > 400) {
-        // Acercarse al jugador
-        // Ya tenemos la dirección correcta
-        creature.isMoving = true
-      } else {
-        // Mantener posición y lanzar hechizos
-        direction.x = 0
-        direction.y = 0
-        creature.isMoving = false
+    // Verificar colisión en X
+    creature.position.x = newX
+    let creatureRect = getEntityRect(creature)
+    let collisionX = false
+
+    for (const obstacle of obstacles) {
+      if (checkAABBCollision(creatureRect, obstacle)) {
+        collisionX = true
+        break
       }
+    }
 
-      // Lanzar hechizo si ha pasado suficiente tiempo - mejora con las waves
+    if (collisionX) {
+      creature.position.x = oldPos.x // Revertir movimiento en X
+    }
+
+    // Verificar colisión en Y
+    creature.position.y = newY
+    creatureRect = getEntityRect(creature)
+    let collisionY = false
+
+    for (const obstacle of obstacles) {
+      if (checkAABBCollision(creatureRect, obstacle)) {
+        collisionY = true
+        break
+      }
+    }
+
+    if (collisionY) {
+      creature.position.y = oldPos.y // Revertir movimiento en Y
+    }
+
+    // Si hay colisión en ambos ejes, invalidar el path actual para forzar recálculo
+    if (collisionX && collisionY) {
+      creature.currentPath = undefined
+      creature.currentPathIndex = 0
+    }
+
+    // Determinar dirección basada en el movimiento real
+    const actualMovement = {
+      x: creature.position.x - oldPos.x,
+      y: creature.position.y - oldPos.y
+    }
+
+    const absX = Math.abs(actualMovement.x)
+    const absY = Math.abs(actualMovement.y)
+
+    if (absX > 0.05 || absY > 0.05) { // Solo actualizar si hay movimiento significativo
+      creature.isMoving = true
+
+      if (absX > absY) {
+        creature.direction = actualMovement.x > 0 ? 'E' : 'O'
+      } else {
+        creature.direction = actualMovement.y > 0 ? 'S' : 'N'
+      }
+    } else {
+      creature.isMoving = false
+    }
+
+    // Mantener la criatura dentro del mapa
+    creature.position.x = Math.max(creature.width / 2, Math.min(MAP_WIDTH - creature.width / 2, creature.position.x))
+    creature.position.y = Math.max(creature.height / 2, Math.min(MAP_HEIGHT - creature.height / 2, creature.position.y))
+
+    // Lógica de casting para casters (mejorada)
+    if (creature.type === 'caster') {
       const now = Date.now()
       const improvedCastRate = Math.max(
-        MIN_CASTER_CAST_RATE, // Mínimo tiempo entre hechizos
+        MIN_CASTER_CAST_RATE,
         CASTER_CAST_RATE - (currentWave * CASTER_CAST_RATE_IMPROVEMENT_PER_WAVE)
       )
 
-      if (now - (creature.lastSpellTime || 0) > improvedCastRate) {
+      // Solo lanzar hechizos si está en rango óptimo, tiene línea de vista y ha pasado suficiente tiempo
+      const hasLineOfSight = pathfinder.hasLineOfSight(creature.position, player.position, obstacles)
+
+      if (distanceToPlayer <= 400 && distanceToPlayer >= 150 &&
+        hasLineOfSight &&
+        now - (creature.lastSpellTime || 0) > improvedCastRate) {
+
         const magicBoltDirection = normalize({
           x: player.position.x - creature.position.x,
           y: player.position.y - creature.position.y
@@ -189,46 +262,19 @@ export const updateCreatures = (gameState: GameState) => {
         })
         creature.lastSpellTime = now
       }
-    } else {
-      // Criaturas normales siempre se mueven hacia el jugador
-      creature.isMoving = true
     }
 
-    // Manejar animación de caminar (para ambos tipos)
+    // Manejar animación de caminar
     const now = Date.now()
-    if (creature.isMoving && now - creature.lastAnimationTime > 300) { // Cambiar frame cada 300ms
+    if (creature.isMoving && now - creature.lastAnimationTime > 300) {
       creature.animationFrame = creature.animationFrame === 'L' ? 'R' : 'L'
       creature.lastAnimationTime = now
     } else if (!creature.isMoving) {
-      creature.animationFrame = 'S' // Standing
+      creature.animationFrame = 'S'
     }
-
-    // Aplicar movimiento
-    creature.position.x += direction.x * creature.speed
-    creature.position.y += direction.y * creature.speed
-
-    // Verificar colisiones con obstáculos
-    const creatureRect = getEntityRect(creature)
-    let collisionDetected = false
-
-    for (const obstacle of obstacles) {
-      if (checkAABBCollision(creatureRect, obstacle)) {
-        collisionDetected = true
-        break
-      }
-    }
-
-    // Si hay colisión, revertir el movimiento
-    if (collisionDetected) {
-      creature.position = oldPos
-    }
-
-    // Mantener la criatura dentro del mapa
-    creature.position.x = Math.max(creature.width / 2, Math.min(MAP_WIDTH - creature.width / 2, creature.position.x))
-    creature.position.y = Math.max(creature.height / 2, Math.min(MAP_HEIGHT - creature.height / 2, creature.position.y))
   })
 
-  // Verificar colisiones entre criaturas para evitar superposición
+  // Verificar colisiones entre criaturas para evitar superposición (simplificado)
   for (let i = 0; i < creatures.length; i++) {
     for (let j = i + 1; j < creatures.length; j++) {
       const creature1 = creatures[i]
@@ -251,30 +297,22 @@ export const updateCreatures = (gameState: GameState) => {
           separationDirection.y = Math.sin(angle)
         }
 
-        // Separar las criaturas
-        const separationForce = 5
+        // Separar las criaturas (reducido porque el sistema de IA ya maneja separación)
+        const separationForce = 1.5
         creature1.position.x -= separationDirection.x * separationForce
         creature1.position.y -= separationDirection.y * separationForce
         creature2.position.x += separationDirection.x * separationForce
         creature2.position.y += separationDirection.y * separationForce
 
-        // Verificar que no salgan del mapa ni colisionen con obstáculos
+        // Verificar límites del mapa
         for (const creature of [creature1, creature2]) {
-          // Límites del mapa
           creature.position.x = Math.max(creature.width / 2, Math.min(MAP_WIDTH - creature.width / 2, creature.position.x))
           creature.position.y = Math.max(creature.height / 2, Math.min(MAP_HEIGHT - creature.height / 2, creature.position.y))
-
-          // Verificar colisión con obstáculos
-          const creatureRect = getEntityRect(creature)
-          for (const obs of obstacles) {
-            if (checkAABBCollision(creatureRect, obs)) {
-              // Si colisiona con obstáculo, mover en dirección opuesta
-              creature.position.x += separationDirection.x * separationForce * (creature === creature1 ? 1 : -1)
-              creature.position.y += separationDirection.y * separationForce * (creature === creature1 ? 1 : -1)
-              break
-            }
-          }
         }
+
+        // Invalidar paths si las criaturas fueron empujadas
+        creature1.currentPath = undefined
+        creature2.currentPath = undefined
       }
     }
   }
