@@ -27,9 +27,9 @@ export const GameUI: React.FC<GameUIProps> = ({
   onShare,
   player
 }) => {
-  // Use player.mana if available, otherwise fall back to playerHealth
-  const currentMana = player?.mana ?? playerHealth
-  const maxMana = player?.maxMana ?? 100
+  // Use player.health if available, otherwise fall back to playerHealth
+  const currentHealth = player?.health ?? playerHealth
+  const maxHealth = player?.maxHealth ?? 100
 
   return (
     <div className="space-y-4">
@@ -45,14 +45,14 @@ export const GameUI: React.FC<GameUIProps> = ({
 
       {/* Stats - Vertical Layout */}
       <div className="space-y-3">
-        {/* Kills */}
+        {/* Score */}
         <div className="bg-black/60 backdrop-blur-sm border border-purple-500/20 rounded-lg p-4 hover:border-purple-500/40 transition-colors">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-purple-400 text-sm font-mono">DEFEATED</div>
+              <div className="text-purple-400 text-sm font-mono">SCORE</div>
               <div className="text-3xl font-bold text-white font-mono">{score}</div>
             </div>
-            <div className="text-4xl">🐉</div>
+            <div className="text-4xl">⚔️</div>
           </div>
         </div>
         
@@ -62,35 +62,34 @@ export const GameUI: React.FC<GameUIProps> = ({
             <div>
               <div className="text-purple-400 text-sm font-mono">WAVE</div>
               <div className="text-3xl font-bold text-white font-mono">{currentWave}</div>
-              <div className="text-xs text-gray-400 font-mono">∞ Infinite</div>
             </div>
             <div className="text-4xl">🌊</div>
           </div>
         </div>
         
-        {/* Mana */}
+        {/* Health */}
         <div className="bg-black/60 backdrop-blur-sm border border-purple-500/20 rounded-lg p-4 hover:border-purple-500/40 transition-colors">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-purple-400 text-sm font-mono">MANA</div>
+              <div className="text-purple-400 text-sm font-mono">HEALTH</div>
               <div className="text-2xl font-bold font-mono">
-                <span className={currentMana > maxMana * 0.5 ? "text-blue-400" : currentMana > maxMana * 0.25 ? "text-yellow-400" : "text-red-400"}>
-                  {Math.round(currentMana)}
+                <span className={currentHealth > maxHealth * 0.5 ? "text-green-400" : currentHealth > maxHealth * 0.25 ? "text-yellow-400" : "text-red-400"}>
+                  {Math.round(currentHealth)}
                 </span>
-                <span className="text-gray-400">/{maxMana}</span>
+                <span className="text-gray-400">/{maxHealth}</span>
               </div>
-              {/* Mana Bar */}
+              {/* Health Bar */}
               <div className="w-full bg-gray-700 rounded-full h-2 mt-2">
                 <div 
                   className={`h-2 rounded-full transition-all duration-300 ${
-                    currentMana > maxMana * 0.5 ? "bg-blue-400" : 
-                    currentMana > maxMana * 0.25 ? "bg-yellow-400" : "bg-red-400"
+                    currentHealth > maxHealth * 0.5 ? "bg-green-400" : 
+                    currentHealth > maxHealth * 0.25 ? "bg-yellow-400" : "bg-red-400"
                   }`}
-                  style={{ width: `${Math.max(0, Math.min(100, (currentMana / maxMana) * 100))}%` }}
+                  style={{ width: `${Math.max(0, Math.min(100, (currentHealth / maxHealth) * 100))}%` }}
                 ></div>
               </div>
             </div>
-            <div className="text-4xl">🔮</div>
+            <div className="text-4xl">❤️</div>
           </div>
         </div>
         

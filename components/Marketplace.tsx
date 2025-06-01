@@ -2,10 +2,10 @@ import React from 'react'
 import { Player } from '@/types/game'
 import { 
   SPELL_DAMAGE_INCREASE, 
-  MANA_INCREASE, 
+  HEALTH_INCREASE, 
   MAX_UPGRADE_LEVEL 
 } from '@/constants/game'
-import { getSpellUpgradeCost, getManaUpgradeCost } from '@/utils/marketplace'
+import { getSpellUpgradeCost, getHealthUpgradeCost } from '@/utils/marketplace'
 import { CoinIcon } from './CoinIcon'
 
 interface MarketplaceProps {
@@ -22,10 +22,10 @@ export const Marketplace: React.FC<MarketplaceProps> = ({
   onContinue
 }) => {
   const weaponCost = getSpellUpgradeCost(player.upgrades.spellLevel)
-  const healthCost = getManaUpgradeCost(player.upgrades.manaLevel)
+  const healthCost = getHealthUpgradeCost(player.upgrades.healthLevel)
   
   const canUpgradeWeapon = player.crystals >= weaponCost && player.upgrades.spellLevel < MAX_UPGRADE_LEVEL
-  const canUpgradeHealth = player.crystals >= healthCost && player.upgrades.manaLevel < MAX_UPGRADE_LEVEL
+  const canUpgradeHealth = player.crystals >= healthCost && player.upgrades.healthLevel < MAX_UPGRADE_LEVEL
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50">
@@ -99,28 +99,28 @@ export const Marketplace: React.FC<MarketplaceProps> = ({
           {/* Health Upgrade */}
           <div className="bg-gray-700 rounded-lg p-4 border-2 border-gray-600">
             <div className="flex justify-between items-center mb-2">
-              <h3 className="text-lg font-bold text-blue-400">🔮 Increase Mana</h3>
+              <h3 className="text-lg font-bold text-red-400">❤️ Increase Health</h3>
               <span className="text-yellow-400 flex items-center">
                 <CoinIcon size="sm" className="mr-1" />
                 {healthCost}
               </span>
             </div>
             <p className="text-gray-300 text-sm mb-3">
-              Max mana: {player.upgrades.maxMana} | Level: {player.upgrades.manaLevel}/{MAX_UPGRADE_LEVEL}
+              Max health: {player.upgrades.maxHealth} | Level: {player.upgrades.healthLevel}/{MAX_UPGRADE_LEVEL}
             </p>
             <p className="text-gray-300 text-sm mb-3">
-              +{MANA_INCREASE} max mana
+              +{HEALTH_INCREASE} max health
             </p>
             <button
               onClick={onUpgradeHealth}
               disabled={!canUpgradeHealth}
               className={`w-full py-2 rounded font-bold transition-colors ${
                 canUpgradeHealth
-                  ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                  ? 'bg-red-600 hover:bg-red-700 text-white'
                   : 'bg-gray-600 text-gray-400 cursor-not-allowed'
               }`}
             >
-              {player.upgrades.manaLevel >= MAX_UPGRADE_LEVEL 
+              {player.upgrades.healthLevel >= MAX_UPGRADE_LEVEL 
                 ? 'MAX LEVEL' 
                 : canUpgradeHealth 
                   ? 'ENHANCE' 
@@ -148,11 +148,11 @@ export const Marketplace: React.FC<MarketplaceProps> = ({
               {getSpellUpgradeCost(player.upgrades.spellLevel + 1)}
             </p>
           )}
-          {player.upgrades.manaLevel < MAX_UPGRADE_LEVEL && (
+          {player.upgrades.healthLevel < MAX_UPGRADE_LEVEL && (
             <p className="flex items-center justify-center">
-              Next mana enhancement: 
+              Next health enhancement: 
               <CoinIcon size="sm" className="mx-1" />
-              {getManaUpgradeCost(player.upgrades.manaLevel + 1)}
+              {getHealthUpgradeCost(player.upgrades.healthLevel + 1)}
             </p>
           )}
         </div>

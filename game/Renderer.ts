@@ -84,24 +84,24 @@ export const render = (
     )
   }
 
-  // Render player mana bar
+  // Render player health bar
   const playerScreenX = player.position.x - cameraX
   const playerScreenY = player.position.y - cameraY
-  const playerManaBarWidth = PLAYER_SPRITE_WIDTH
-  const playerManaBarHeight = 6
+  const playerHealthBarWidth = PLAYER_SPRITE_WIDTH
+  const playerHealthBarHeight = 6
   ctx.fillStyle = "rgba(255,0,0,0.5)"
   ctx.fillRect(
-    playerScreenX - playerManaBarWidth / 2,
+    playerScreenX - playerHealthBarWidth / 2,
     playerScreenY - PLAYER_SPRITE_HEIGHT / 2 - 15,
-    playerManaBarWidth,
-    playerManaBarHeight
+    playerHealthBarWidth,
+    playerHealthBarHeight
   )
-  ctx.fillStyle = "rgba(0,100,255,0.8)"
+  ctx.fillStyle = "rgba(0,255,0,0.8)"
   ctx.fillRect(
-    playerScreenX - playerManaBarWidth / 2,
+    playerScreenX - playerHealthBarWidth / 2,
     playerScreenY - PLAYER_SPRITE_HEIGHT / 2 - 15,
-    playerManaBarWidth * Math.max(0, player.mana / player.maxMana),
-    playerManaBarHeight
+    playerHealthBarWidth * Math.max(0, player.health / player.maxHealth),
+    playerHealthBarHeight
   )
 
   // Render projectiles
@@ -114,7 +114,7 @@ export const render = (
       screenY >= 0 &&
       screenY <= canvasHeight
     ) {
-      ctx.fillStyle = p.isMagicBolt ? '#8A2BE2' : '#FFD700'
+      ctx.fillStyle = p.isMagicBolt ? '#8A2BE2' : '#FFFF00'
       ctx.beginPath()
       ctx.arc(screenX, screenY, p.radius, 0, Math.PI * 2)
       ctx.fill()

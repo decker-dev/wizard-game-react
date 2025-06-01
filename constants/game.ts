@@ -33,12 +33,12 @@ export const CRYSTAL_REWARD_CASTER_CREATURE = 7;
 
 // Marketplace & Upgrades - Precios base que escalan
 export const SPELL_UPGRADE_BASE_COST = 6;
-export const MANA_UPGRADE_BASE_COST = 5;
+export const HEALTH_UPGRADE_BASE_COST = 5;
 export const UPGRADE_COST_MULTIPLIER = 1.8; // Cada nivel cuesta 80% más
 export const BASE_SPELL_DAMAGE = 25;
 export const SPELL_DAMAGE_INCREASE = 12;
-export const BASE_MAX_MANA = 100;
-export const MANA_INCREASE = 20;
+export const BASE_MAX_HEALTH = 100;
+export const HEALTH_INCREASE = 20;
 export const MAX_UPGRADE_LEVEL = 5;
 
 // Nuevas constantes para mejoras avanzadas de hechizos

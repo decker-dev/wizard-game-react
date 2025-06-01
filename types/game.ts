@@ -5,9 +5,9 @@ export interface Vector2 {
 
 export interface PlayerUpgrades {
   spellDamage: number
-  maxMana: number
+  maxHealth: number
   spellLevel: number
-  manaLevel: number
+  healthLevel: number
   projectileCount: number
   projectileSize: number
   castRate: number
@@ -20,8 +20,8 @@ export interface Player {
   width: number
   height: number
   speed: number
-  mana: number
-  maxMana: number
+  health: number
+  maxHealth: number
   angle: number
   sprites: { [key: string]: HTMLImageElement | null }
   lastDamageTime: number

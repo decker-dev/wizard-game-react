@@ -1,5 +1,5 @@
 import { Player, GameState } from '@/types/game'
-import { PLAYER_SPEED, PLAYER_SPRITE_WIDTH, PLAYER_SPRITE_HEIGHT, PLAYER_COLLISION_RADIUS, MAP_WIDTH, MAP_HEIGHT, BASE_MAX_MANA, BASE_SPELL_DAMAGE, BASE_PROJECTILE_COUNT, BASE_PROJECTILE_SIZE, BASE_CAST_RATE, BASE_SPREAD } from '@/constants/game'
+import { PLAYER_SPEED, PLAYER_SPRITE_WIDTH, PLAYER_SPRITE_HEIGHT, PLAYER_COLLISION_RADIUS, MAP_WIDTH, MAP_HEIGHT, BASE_MAX_HEALTH, BASE_SPELL_DAMAGE, BASE_PROJECTILE_COUNT, BASE_PROJECTILE_SIZE, BASE_CAST_RATE, BASE_SPREAD } from '@/constants/game'
 import { getEntityRect, checkAABBCollision } from '@/utils/math'
 
 export const createInitialPlayer = (playerSprites: { [key: string]: HTMLImageElement | null }): Player => ({
@@ -8,8 +8,8 @@ export const createInitialPlayer = (playerSprites: { [key: string]: HTMLImageEle
   width: PLAYER_SPRITE_WIDTH * 0.8,
   height: PLAYER_SPRITE_HEIGHT * 0.8,
   speed: PLAYER_SPEED,
-  mana: BASE_MAX_MANA,
-  maxMana: BASE_MAX_MANA,
+  health: BASE_MAX_HEALTH,
+  maxHealth: BASE_MAX_HEALTH,
   angle: 0,
   sprites: playerSprites,
   lastDamageTime: 0,
@@ -17,9 +17,9 @@ export const createInitialPlayer = (playerSprites: { [key: string]: HTMLImageEle
   crystals: 0,
   upgrades: {
     spellDamage: BASE_SPELL_DAMAGE,
-    maxMana: BASE_MAX_MANA,
+    maxHealth: BASE_MAX_HEALTH,
     spellLevel: 0,
-    manaLevel: 0,
+    healthLevel: 0,
     projectileCount: BASE_PROJECTILE_COUNT,
     projectileSize: BASE_PROJECTILE_SIZE,
     castRate: BASE_CAST_RATE,

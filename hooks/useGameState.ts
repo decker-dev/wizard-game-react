@@ -2,14 +2,14 @@ import { useCallback, useRef } from 'react'
 import { GameState } from '@/types/game'
 import {
   SPELL_DAMAGE_INCREASE,
-  MANA_INCREASE,
+  HEALTH_INCREASE,
   MAX_UPGRADE_LEVEL,
   BASE_CREATURES_PER_WAVE,
   CREATURES_INCREASE_PER_WAVE,
   EXPONENTIAL_SCALING_INTERVAL,
   EXPONENTIAL_SPAWN_MULTIPLIER
 } from '@/constants/game'
-import { getSpellUpgradeCost, getManaUpgradeCost } from '@/utils/marketplace'
+import { getSpellUpgradeCost, getHealthUpgradeCost } from '@/utils/marketplace'
 import { obstaclesData } from '@/data/obstacles'
 import { createInitialPlayer } from '@/game/Player'
 
@@ -173,17 +173,17 @@ export const useGameState = () => {
     if (!gameStateRef.current) return
 
     const player = gameStateRef.current.player
-    const cost = getManaUpgradeCost(player.upgrades.manaLevel)
-    if (player.crystals >= cost && player.upgrades.manaLevel < MAX_UPGRADE_LEVEL) {
+    const cost = getHealthUpgradeCost(player.upgrades.healthLevel)
+    if (player.crystals >= cost && player.upgrades.healthLevel < MAX_UPGRADE_LEVEL) {
       player.crystals -= cost
-      player.upgrades.manaLevel++
-      player.upgrades.maxMana += MANA_INCREASE
+      player.upgrades.healthLevel++
+      player.upgrades.maxHealth += HEALTH_INCREASE
 
-      // Restaurar mana al comprar mejora de mana
-      player.mana = player.upgrades.maxMana
+      // Restaurar vida al comprar mejora de vida
+      player.health = player.upgrades.maxHealth
 
       setPlayerCoins(player.crystals)
-      setPlayerHealth(player.mana)
+      setPlayerHealth(player.health)
     }
   }, [])
 

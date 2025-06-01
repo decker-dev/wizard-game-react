@@ -44,15 +44,15 @@ export const checkCollisions = (
       }
       if (checkAABBCollision(projectileRect, playerRect)) {
         projectiles.splice(i, 1)
-        player.mana -= MAGIC_BOLT_DAMAGE
-        setPlayerHealth(player.mana)
+        player.health -= MAGIC_BOLT_DAMAGE
+        setPlayerHealth(player.health)
 
         // Reproducir sonido de jugador herido
         if (playPlayerHit) {
           playPlayerHit()
         }
 
-        if (player.mana <= 0) {
+        if (player.health <= 0) {
           gameState.gameOver = true
           setGameOver(true)
         }
@@ -154,16 +154,16 @@ export const checkCollisions = (
       const z = creatures[i]
       const creatureRect = getEntityRect(z)
       if (checkAABBCollision(playerRectForCreatureCollision, creatureRect)) {
-        player.mana -= CREATURE_DAMAGE
+        player.health -= CREATURE_DAMAGE
         player.lastDamageTime = now
-        setPlayerHealth(player.mana)
+        setPlayerHealth(player.health)
 
         // Reproducir sonido de jugador herido
         if (playPlayerHit) {
           playPlayerHit()
         }
 
-        if (player.mana <= 0) {
+        if (player.health <= 0) {
           gameState.gameOver = true
           setGameOver(true)
         }
