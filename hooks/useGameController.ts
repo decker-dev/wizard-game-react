@@ -99,16 +99,20 @@ export function useGameController(autoStart: boolean = false) {
     if (success) {
       setTimeout(() => {
         setShowScoreModal(false)
-        navigateToHome()
+        resetGame()
       }, 1000)
     }
     return success
-  }, [submitScore, setShowScoreModal, navigateToHome])
+  }, [submitScore, setShowScoreModal, resetGame])
 
   const handleSkipScore = useCallback(() => {
     setShowScoreModal(false)
-    navigateToHome()
-  }, [setShowScoreModal, navigateToHome])
+    resetGame()
+  }, [setShowScoreModal, resetGame])
+
+  const handleSaveScore = useCallback(() => {
+    setShowScoreModal(true)
+  }, [setShowScoreModal])
 
   // Upgrade handling
   const handleUpgradeWeapon = useCallback(() => {
@@ -162,6 +166,7 @@ export function useGameController(autoStart: boolean = false) {
     // Score actions
     handleScoreSubmit,
     handleSkipScore,
+    handleSaveScore,
 
     // Upgrade actions
     handleUpgradeWeapon,

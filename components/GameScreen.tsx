@@ -35,6 +35,7 @@ interface GameScreenProps {
   onResetGame: () => void
   onReturnHome: () => void
   onShare: () => void
+  onSaveScore: () => void
   
   // Upgrade actions
   onUpgradeWeapon: () => void
@@ -61,6 +62,7 @@ export function GameScreen({
   onResetGame,
   onReturnHome,
   onShare,
+  onSaveScore,
   onUpgradeWeapon,
   onUpgradeHealth,
   onContinueFromMarketplace
@@ -130,6 +132,7 @@ export function GameScreen({
                   showScoreModal={showScoreModal}
                   onResetGame={onResetGame}
                   onReturnHome={onReturnHome}
+                  onSaveScore={onSaveScore}
                 />
               )}
             </div>

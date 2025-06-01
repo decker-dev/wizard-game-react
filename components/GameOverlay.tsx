@@ -9,6 +9,7 @@ interface GameOverlayProps {
   showScoreModal: boolean
   onResetGame: () => void
   onReturnHome: () => void
+  onSaveScore: () => void
 }
 
 export function GameOverlay({
@@ -18,7 +19,8 @@ export function GameOverlay({
   currentWave,
   showScoreModal,
   onResetGame,
-  onReturnHome
+  onReturnHome,
+  onSaveScore
 }: GameOverlayProps) {
   return (
     <div className="absolute inset-0 bg-black/90 backdrop-blur-sm flex flex-col items-center justify-center rounded-lg border border-orange-500/50">
@@ -55,15 +57,21 @@ export function GameOverlay({
           <div className="flex gap-4 justify-center">
             <button
               onClick={onResetGame}
-              className="px-8 py-4 bg-red-600/80 hover:bg-red-600 border border-red-500/50 text-white font-mono font-bold rounded-lg text-xl transition-all duration-200 transform hover:scale-105 hover:border-red-500"
+              className="p-4 bg-green-600/80 hover:bg-green-600 border border-green-500/50 text-white font-mono font-bold rounded-lg text-lg transition-all duration-200 transform hover:scale-105 hover:border-green-500"
             >
-              JUGAR DE NUEVO
+              🔄 JUGAR DE NUEVO
+            </button>
+            <button
+              onClick={onSaveScore}
+              className="p-4 bg-blue-600/80 hover:bg-blue-600 border border-blue-500/50 text-white font-mono font-bold rounded-lg text-lg transition-all duration-200 transform hover:scale-105 hover:border-blue-500"
+            >
+              💾 GUARDAR PUNTAJE
             </button>
             <button
               onClick={onReturnHome}
-              className="px-8 py-4 bg-orange-600/80 hover:bg-orange-600 border border-orange-500/50 text-white font-mono font-bold rounded-lg text-xl transition-all duration-200 transform hover:scale-105 hover:border-orange-500"
+              className="p-4 bg-orange-600/80 hover:bg-orange-600 border border-orange-500/50 text-white font-mono font-bold rounded-lg text-lg transition-all duration-200 transform hover:scale-105 hover:border-orange-500"
             >
-              VOLVER AL INICIO
+              🏠 VOLVER AL INICIO
             </button>
           </div>
         )}

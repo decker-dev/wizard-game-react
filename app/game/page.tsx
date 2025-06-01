@@ -19,9 +19,9 @@ export default function GamePage() {
     handleKeyDownWrapper,
     handleKeyUp,
     setShowShareModal,
-    setShowScoreModal,
     handleScoreSubmit,
-    handleSkipScore
+    handleSkipScore,
+    handleSaveScore
   } = gameController
 
   // Override the navigateToHome to use router
@@ -33,8 +33,7 @@ export default function GamePage() {
   useGameEffects({
     screenState,
     handleKeyDownWrapper,
-    handleKeyUp,
-    setShowScoreModal
+    handleKeyUp
   })
 
   // Loading Screen
@@ -64,6 +63,7 @@ export default function GamePage() {
         onResetGame={gameController.resetGame}
         onReturnHome={handleReturnHome}
         onShare={() => setShowShareModal(true)}
+        onSaveScore={handleSaveScore}
         onUpgradeWeapon={gameController.handleUpgradeWeapon}
         onUpgradeHealth={gameController.handleUpgradeHealth}
         onContinueFromMarketplace={gameController.handleContinueFromMarketplace}
@@ -74,20 +74,8 @@ export default function GamePage() {
         score={screenState.score}
         wavesSurvived={screenState.currentWave}
         isVisible={screenState.showScoreModal}
-        onSubmit={async (scoreData) => {
-          const success = await handleScoreSubmit(scoreData)
-          if (success) {
-            // After successful score submission, go back to home
-            setTimeout(() => {
-              router.push('/')
-            }, 1000)
-          }
-          return success
-        }}
-        onSkip={() => {
-          handleSkipScore()
-          router.push('/')
-        }}
+        onSubmit={handleScoreSubmit}
+        onSkip={handleSkipScore}
         isSubmitting={isSubmitting}
       />
 

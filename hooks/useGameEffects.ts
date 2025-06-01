@@ -6,14 +6,12 @@ interface UseGameEffectsProps {
   screenState: GameScreenState
   handleKeyDownWrapper: (e: KeyboardEvent) => void
   handleKeyUp: (e: KeyboardEvent) => void
-  setShowScoreModal: (show: boolean) => void
 }
 
 export function useGameEffects({
   screenState,
   handleKeyDownWrapper,
-  handleKeyUp,
-  setShowScoreModal
+  handleKeyUp
 }: UseGameEffectsProps) {
   const isMobile = useHandheldDetector()
 
@@ -23,18 +21,6 @@ export function useGameEffects({
       window.location.href = "https://fork-game-jam-paisanos-pvh5o34m1-alejorrojas-projects.vercel.app/"
     }
   }, [isMobile])
-
-  // Handle game over/won modal
-  useEffect(() => {
-    if ((screenState.gameOver || screenState.gameWon) && screenState.currentScreen === 'playing') {
-      // Mostrar modal de score después de un breve delay
-      const timer = setTimeout(() => {
-        setShowScoreModal(true)
-      }, 2000)
-
-      return () => clearTimeout(timer)
-    }
-  }, [screenState.gameOver, screenState.gameWon, screenState.currentScreen, setShowScoreModal])
 
   // Handle keyboard events for playing screen
   useEffect(() => {
