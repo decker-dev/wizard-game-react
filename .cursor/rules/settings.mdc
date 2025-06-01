@@ -3,4 +3,13 @@ description:
 globs: 
 alwaysApply: true
 ---
-Este es un juego de shooter 2d con pixel art. Lo que se busca es que sea un juego innovador de waves de zombies y que a medida que se pasa el nivel las waves sean mas complejas.
+Este es un juego de shooter 2D con pixel art de temática mágica/fantasy. El jugador controla un poderoso mago que defiende el reino místico contra oleadas infinitas de criaturas mitológicas. El juego busca ser innovador con un sistema de hechizos progresivo donde las oleadas se vuelven más complejas y desafiantes a medida que avanza el jugador.
+
+## Características principales:
+- Temática mágica con magos, criaturas y hechizos
+- Sistema de maná en lugar de vida
+- Cristales como moneda en lugar de monedas
+- Tienda arcana para mejoras mágicas
+- Criaturas normales y casters que lanzan hechizos
+- Paleta de colores púrpura/azul para el tema mágico
+- Sprites de pixel art para magos, criaturas y efectos mágicos

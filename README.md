@@ -1,7 +1,7 @@
-# 🧟 ZOMBIE APOCALYPSE SURVIVAL
-### *A 2D zombie survival game with infinite waves*
+# 🔮 MYSTIC REALM DEFENDER
+### *A 2D magical survival game with infinite waves of mythological creatures*
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/lautaro-rebillcoms-projects/v0-2-d-shooter-game)
+[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://mystic.decker.sh)
 [![Built with Next.js](https://img.shields.io/badge/Built%20with-Next.js-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![Powered by Supabase](https://img.shields.io/badge/Powered%20by-Supabase-green?style=for-the-badge&logo=supabase)](https://supabase.com/)
 
@@ -9,7 +9,7 @@
 
 ## 🎮 **About the Game**
 
-**Zombie Apocalypse Survival** is a 2D zombie survival game developed during the **first Vibe Gaming Hackathon in LATAM** as part of Buenos Aires Tech Week. The objective is simple: survive as long as possible by eliminating infinite waves of zombies.
+**Mystic Realm Defender** is a 2D magical survival game developed during the **first Vibe Gaming Hackathon in LATAM** as part of Buenos Aires Tech Week. Control a powerful wizard and defend the mystical realm by surviving infinite waves of mythological creatures using powerful spells and magical abilities.
 
 ### 🏆 **Developed by:**
 - **[Lauti](https://x.com/lautidev_)** - Vibe Developer
@@ -21,26 +21,26 @@
 ## ✨ **Game Features**
 
 ### 🎯 **Gameplay**
-- **Infinite waves** of zombies with progressive difficulty
-- **Upgrade system** for weapons and health
-- **Marketplace** between waves to improve your equipment
-- **Intuitive controls** with keyboard and mouse
-- **Different types of zombies** with unique abilities
+- **Infinite waves** of mythological creatures with progressive difficulty
+- **Spell upgrade system** for magical abilities and mana
+- **Arcane Shop** between waves to enhance your magical powers
+- **Intuitive controls** with keyboard and spacebar spell casting
+- **Different creature types** including normal beasts and magical casters
 
-### 🛠️ **Upgrade System**
-- **Weapons**: 5 upgrade levels with special effects
-  - Level 1: Faster shooting
-  - Level 2: Double shot
-  - Level 3: Larger projectiles
-  - Level 4: Triple shot
-  - Level 5: Quadruple shot with maximum power
-- **Health**: Increase your maximum health and restore HP
+### 🪄 **Magic System**
+- **Spell Power**: 5 upgrade levels with devastating effects
+  - Level 1: Faster spell casting
+  - Level 2: Double spell casting
+  - Level 3: Larger magical projectiles
+  - Level 4: Triple spell barrage
+  - Level 5: Quadruple spell storm with maximum power
+- **Mana Management**: Increase your maximum mana and magical endurance
 
 ### 🏅 **Leaderboard System**
-- **Top 3** best scores
-- **Complete history** of matches
-- **Global statistics** with total games played
-- **Real-time persistence** with Supabase
+- **Top 3** highest scores from the greatest wizards
+- **Complete history** of magical battles
+- **Global statistics** with total realms defended
+- **Real-time persistence** with Supabase magic
 
 ---
 
@@ -48,18 +48,17 @@
 
 ### 🕹️ **Controls**
 ```
-WASD / Arrow Keys  →  Player movement
-Mouse             →  Aim
-Left Click        →  Shoot
-Spacebar          →  Automatic shooting in movement direction
+WASD / Arrow Keys  →  Wizard movement
+Spacebar          →  Cast spells in movement direction
 ESC               →  Exit fullscreen
+F                 →  Toggle fullscreen
 ```
 
 ### 🎯 **Objectives**
-1. **Eliminate zombies** to earn points and coins
-2. **Survive waves** for as long as possible
-3. **Use the marketplace** to upgrade your equipment
-4. **Compete** for the best score on the leaderboard
+1. **Defeat creatures** to earn points and magical crystals
+2. **Survive waves** for as long as possible in the mystical realm
+3. **Use the Arcane Shop** to upgrade your magical abilities
+4. **Compete** for the highest score among all wizards
 
 ---
 
@@ -67,23 +66,23 @@ ESC               →  Exit fullscreen
 
 ### **Frontend**
 - **Next.js 15** - React framework with App Router
-- **TypeScript** - Static typing for better development
-- **Tailwind CSS** - Utility-first styling
-- **HTML5 Canvas** - 2D game rendering
+- **TypeScript** - Static typing for magical code reliability
+- **Tailwind CSS** - Utility-first styling with mystical themes
+- **HTML5 Canvas** - 2D magical realm rendering
 
 ### **Backend & Database**
-- **Supabase** - Real-time PostgreSQL database
-- **Row Level Security (RLS)** - Data security
-- **Edge Functions** - Serverless functionality
+- **Supabase** - Real-time PostgreSQL database for wizard scores
+- **Row Level Security (RLS)** - Magical data protection
+- **Edge Functions** - Serverless spell processing
 
 ### **Deployment & Analytics**
-- **Vercel** - Automatic hosting and deployment
-- **Vercel Analytics** - Performance metrics
+- **Vercel** - Automatic hosting and mystical deployment
+- **Vercel Analytics** - Magical performance metrics
 
 ### **Development Tools**
-- **Bun** - Runtime and package manager
-- **ESLint** - Code linting
-- **PostCSS** - CSS processing
+- **Bun** - Lightning-fast runtime and package manager
+- **ESLint** - Code quality enchantments
+- **PostCSS** - CSS magical processing
 
 ---
 
@@ -92,19 +91,19 @@ ESC               →  Exit fullscreen
 ### **Prerequisites**
 - **Node.js** 18+ or **Bun**
 - **Git**
-- **Supabase** account (for local development)
+- **Supabase** account (for local realm development)
 
 ### **Local Setup**
 
-1. **Clone the repository**
+1. **Clone the mystical repository**
 ```bash
-git clone https://github.com/decker-dev/zombie-game-react
-cd zombie-game-react
+git clone https://github.com/decker-dev/mystic-realm-defender
+cd mystic-realm-defender
 ```
 
-2. **Install dependencies**
+2. **Install magical dependencies**
 ```bash
-# With bun (recommended)
+# With bun (recommended for speed)
 bun install
 
 # Or with npm
@@ -118,19 +117,19 @@ NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
-4. **Set up the database**
+4. **Set up the magical database**
 ```sql
 -- Run the SQL in your Supabase panel:
 -- sql/create_game_stats_table.sql
 ```
 
-5. **Start the development server**
+5. **Start the development realm**
 ```bash
 bun dev
 # or npm run dev
 ```
 
-6. **Open your browser**
+6. **Open your mystical portal**
 ```
 http://localhost:3001
 ```
@@ -166,33 +165,35 @@ CREATE TABLE game_stats (
 ## 🎨 **Project Structure**
 
 ```
-📦 zombie-apocalypse-survival/
+📦 mystic-realm-defender/
 ├── 📁 app/                  # Next.js App Router
-│   ├── 📁 game/            # Game page
+│   ├── 📁 game/            # Game realm page
 │   ├── 📁 credits/         # Credits page
-│   └── page.tsx            # Main page
+│   └── page.tsx            # Main mystical portal
 ├── 📁 components/          # React Components
-│   ├── GameScreen.tsx      # Main game screen
-│   ├── GameCanvas.tsx      # Rendering canvas
-│   ├── GameUI.tsx          # Game UI
-│   ├── Leaderboard.tsx     # Leaderboard component
+│   ├── GameScreen.tsx      # Main game realm screen
+│   ├── GameCanvas.tsx      # Magical rendering canvas
+│   ├── GameUI.tsx          # Wizard interface
+│   ├── Marketplace.tsx     # Arcane shop component
+│   ├── Leaderboard.tsx     # Wizard rankings
 │   └── ...
 ├── 📁 hooks/               # Custom React Hooks
-│   ├── useGameController.ts
-│   ├── useLeaderboard.ts
+│   ├── useGameController.ts # Game orchestration magic
+│   ├── useLeaderboard.ts   # Score persistence spells
 │   └── ...
-├── 📁 game/                # Game logic
-│   ├── Player.ts           # Player system
-│   ├── Zombies.ts          # Zombie system
-│   ├── Collisions.ts       # Collision system
+├── 📁 game/                # Core Game Logic
+│   ├── Player.ts           # Wizard character system
+│   ├── Creatures.ts        # Mythological creature system
+│   ├── Collisions.ts       # Magical collision system
 │   └── ...
-├── 📁 utils/               # Utilities
-├── 📁 types/               # TypeScript definitions
-├── 📁 constants/           # Game constants
-├── 📁 public/              # Static assets
-│   ├── 📁 sprites/         # Character sprites
-│   └── 📁 zombie/          # Zombie sprites
-└── 📁 sql/                 # Database scripts
+├── 📁 utils/               # Magical Utilities
+├── 📁 types/               # TypeScript spell definitions
+├── 📁 constants/           # Magical game constants
+├── 📁 public/              # Static mystical assets
+│   ├── 📁 wizard/          # Wizard character sprites
+│   ├── 📁 creature/        # Creature sprites
+│   └── 📁 mage/            # Magical caster sprites
+└── 📁 sql/                 # Database enchantments
 ```
 
 ---
@@ -201,11 +202,11 @@ CREATE TABLE game_stats (
 
 ```bash
 # Development
-bun dev              # Start development server on port 3001
+bun dev              # Start development realm on port 3001
 
 # Production
-bun build            # Build application for production
-bun start            # Start production server
+bun build            # Build mystical application for production
+bun start            # Start production magical server
 
 ```
 
@@ -213,73 +214,73 @@ bun start            # Start production server
 
 ## 🌟 **Featured Technical Characteristics**
 
-### **🎮 Game Engine**
-- **Custom 2D Engine** built with HTML5 Canvas
-- **60 FPS** optimized rendering loop
-- **Pixel-perfect collision detection** 
-- **Sprite animation system** for characters and enemies
+### **🎮 Magical Game Engine**
+- **Custom 2D Engine** built with HTML5 Canvas magic
+- **60 FPS** optimized mystical rendering loop
+- **Pixel-perfect collision detection** for precise spell impacts
+- **Sprite animation system** for wizards and mythological creatures
 
-### **🔊 Audio System**
-- **Dynamic sound effects** for game actions
-- **Ambient menu music** with volume control
-- **Audio settings** persistent in localStorage
+### **🔊 Mystical Audio System**
+- **Dynamic spell sound effects** for magical actions
+- **Ambient mystical music** with volume enchantments
+- **Audio settings** persistent in localStorage magic
 
-### **📱 Responsive Design**
-- **Mobile detection** with automatic redirection
-- **Fullscreen mode** for immersive experience
-- **Complete keyboard navigation** in menus
+### **📱 Responsive Mystical Design**
+- **Mobile detection** with automatic portal redirection
+- **Fullscreen mode** for immersive magical experience
+- **Complete keyboard navigation** in mystical menus
 
-### **⚡ Performance**
-- **Optimized rendering** with object pooling
-- **Efficient collision detection** using AABB
-- **Memory management** to prevent leaks
-- **60 FPS stable** on modern devices
+### **⚡ Magical Performance**
+- **Optimized rendering** with spell object pooling
+- **Efficient collision detection** using mystical AABB
+- **Memory management** to prevent magical leaks
+- **60 FPS stable** on modern enchanted devices
 
 ---
 
 ## 🏆 **Game Jam Achievement**
 
-This game was developed during the **first Vibe Gaming Hackathon in LATAM**, organized by [Paisanos.io](https://lu.ma/xqvznvg4?locale=es) as part of Buenos Aires Tech Week.
+This mystical game was developed during the **first Vibe Gaming Hackathon in LATAM**, organized by [Paisanos.io](https://lu.ma/xqvznvg4?locale=es) as part of Buenos Aires Tech Week.
 
-### **🎯 Hackathon Achievements:**
-- ✅ **Complete game** developed in 1 day
-- ✅ **Multiplayer leaderboard** with persistence
-- ✅ **Complex upgrade system** balanced gameplay
-- ✅ **Visual polish** with effects and animations
-- ✅ **Full gameplay loop** from menu to game over
+### **🎯 Hackathon Magical Achievements:**
+- ✅ **Complete mystical game** developed in 1 day
+- ✅ **Wizard leaderboard** with magical persistence
+- ✅ **Complex spell upgrade system** with balanced magical gameplay
+- ✅ **Visual polish** with magical effects and animations
+- ✅ **Full gameplay loop** from mystical menu to realm defense
 
 ---
 
 ## 🤝 **Contributing**
 
-Contributions are welcome! If you want to improve the game:
+Contributions to the mystical realm are welcome! If you want to enhance the magical experience:
 
-1. **Fork** the project
-2. **Create** a branch for your feature (`git checkout -b feature/new-feature`)
-3. **Commit** your changes (`git commit -m 'Add new feature'`)
-4. **Push** to the branch (`git push origin feature/new-feature`)
-5. **Open** a Pull Request
+1. **Fork** the mystical project
+2. **Create** a branch for your magical feature (`git checkout -b feature/new-spell`)
+3. **Commit** your magical changes (`git commit -m 'Add new mystical feature'`)
+4. **Push** to the enchanted branch (`git push origin feature/new-spell`)
+5. **Open** a Mystical Pull Request
 
 ---
 
 ## 📄 **License**
 
-This project was developed during a Game Jam and is available for educational and demonstration purposes.
+This mystical project was developed during a Game Jam and is available for educational and demonstration purposes in the magical realm.
 
 ---
 
-## 🔗 **Links**
+## 🔗 **Mystical Links**
 
-- **🎮 Play Now**: [Zombie Apocalypse Survival](zombie-game-react.vercel.app)
+- **🎮 Defend the Realm**: [Mystic Realm Defender](https://mystic.decker.sh)
 - **🏆 Game Jam**: [Paisanos.io Event](https://lu.ma/xqvznvg4?locale=es)
-- **🐦 Developers**: [Lauti](https://x.com/lautidev_) • [Alejo](https://x.com/alejorrojass) • [Decker](https://x.com/0xDecker)
+- **🐦 Mystical Developers**: [Lauti](https://x.com/lautidev_) • [Alejo](https://x.com/alejorrojass) • [Decker](https://x.com/0xDecker)
 
 ---
 
 <div align="center">
 
-**Made with ❤️ in Buenos Aires using Next.js, TypeScript, and creativity**
+**Made with 🔮 mystical magic and ❤️ in Buenos Aires using Next.js, TypeScript, and pure creativity**
 
-*"Come code, design, share and learn with others who are as passionate as you"*
+*"Come code, design, share and learn with others who are as passionate about magic as you"*
 
 </div>

@@ -1,0 +1,237 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# 🔮 MYSTIC REALM DEFENDER - Project Documentation
+
+## 📋 Project Overview
+
+**Mystic Realm Defender** is a 2D magical survival game where players control a powerful wizard defending against infinite waves of mythological creatures. Originally developed during the first Vibe Gaming Hackathon in LATAM, the game has been transformed from a zombie apocalypse theme to an immersive fantasy magical realm.
+
+### 🎯 Core Concept
+- **Genre**: 2D Top-down Magical Survival Shooter
+- **Theme**: Fantasy/Magic with pixel art aesthetics
+- **Gameplay**: Infinite waves with progressive difficulty scaling
+- **Art Style**: Pixel art with magical effects and purple/blue color scheme
+
+## 🏗️ Technical Architecture
+
+### 🎮 Game Engine
+- **Custom 2D Engine** built with HTML5 Canvas
+- **Component-based architecture** with React hooks
+- **60 FPS optimized rendering** with requestAnimationFrame
+- **Pixel-perfect collision detection** using AABB algorithms
+- **Sprite animation system** for wizards, creatures, and mages
+
+### 🔧 Technology Stack
+
+#### Frontend
+- **Next.js 15** - React framework with App Router
+- **TypeScript** - Static typing for robust development
+- **Tailwind CSS** - Utility-first styling with magical theme
+- **HTML5 Canvas** - 2D game rendering and effects
+
+#### Backend & Database
+- **Supabase** - Real-time PostgreSQL database
+- **Row Level Security (RLS)** - Data protection
+- **Edge Functions** - Serverless game logic
+
+#### Development Tools
+- **Bun** - Fast runtime and package manager
+- **ESLint** - Code quality enforcement
+- **Cursor AI** - AI-assisted development
+
+## 🎨 Game Design
+
+### 🧙‍♂️ Player Character
+- **Wizard/Mage** - Magical spellcaster protagonist
+- **Mana System** - Resource management instead of health
+- **Spell Casting** - Projectile-based magic attacks
+- **Movement** - WASD/Arrow key controls with sprite animations
+
+### 🐉 Enemies
+- **Normal Creatures** - Basic mythological beings
+- **Caster Creatures** - Magical enemies that cast spells
+- **Progressive Scaling** - Health, speed, and abilities increase per wave
+- **Exponential Difficulty** - Every 10 waves apply multipliers
+
+### 🪄 Magic System
+- **Spell Levels** (0-5): Progressive power increases
+- **Multi-casting**: 1-4 simultaneous spells
+- **Spell Effects**: Size scaling, spread patterns, cast rate
+- **Mana Management**: Resource-based casting system
+
+### 💎 Economy
+- **Crystals** - Primary currency earned from defeating creatures
+- **Marketplace** - Upgrade system between waves
+- **Spell Upgrades** - Damage, count, size, speed improvements
+- **Mana Upgrades** - Maximum mana and regeneration
+
+## 📁 Project Structure
+
+```
+📦 mystic-realm-defender/
+├── 📁 app/                     # Next.js App Router
+│   ├── 📁 game/               # Game page route
+│   ├── 📁 credits/            # Credits page
+│   ├── layout.tsx             # Root layout
+│   ├── page.tsx               # Home page
+│   └── sitemap.ts             # SEO sitemap
+├── 📁 components/             # React Components
+│   ├── GameScreen.tsx         # Main game container
+│   ├── GameCanvas.tsx         # Canvas rendering component
+│   ├── GameUI.tsx             # Game interface
+│   ├── Marketplace.tsx        # Upgrade shop
+│   ├── Leaderboard.tsx        # Score system
+│   ├── HomeScreen.tsx         # Main menu
+│   ├── LoadingScreen.tsx      # Asset loading
+│   ├── CoinParticles.tsx      # Crystal effects
+│   └── FloatingParticles.tsx  # Background effects
+├── 📁 hooks/                  # Custom React Hooks
+│   ├── useGameController.ts   # Main game orchestration
+│   ├── useGameState.ts        # Game state management
+│   ├── useAssetLoader.ts      # Sprite and texture loading
+│   ├── useInputHandlers.ts    # Keyboard/mouse input
+│   ├── useGameAudio.ts        # Sound effects system
+│   ├── useLeaderboard.ts      # Score persistence
+│   └── useGameScreens.ts      # Screen state management
+├── 📁 game/                   # Core Game Logic
+│   ├── Player.ts              # Wizard character system
+│   ├── Creatures.ts           # Enemy behavior and AI
+│   ├── Projectiles.ts         # Spell projectile physics
+│   ├── Collisions.ts          # Collision detection
+│   └── Renderer.ts            # Canvas rendering engine
+├── 📁 utils/                  # Utility Functions
+│   ├── math.ts                # Vector math and collision
+│   ├── marketplace.ts         # Upgrade calculations
+│   └── coinParticles.ts       # Crystal particle effects
+├── 📁 types/                  # TypeScript Definitions
+│   └── game.ts                # Game entity interfaces
+├── 📁 constants/              # Game Configuration
+│   └── game.ts                # Balancing and settings
+├── 📁 data/                   # Static Game Data
+│   └── obstacles.ts           # Map obstacle definitions
+├── 📁 lib/                    # External Integrations
+│   ├── supabase.ts            # Database client
+│   └── metadata.ts            # SEO metadata
+├── 📁 public/                 # Static Assets
+│   ├── 📁 wizard/             # Player character sprites
+│   ├── 📁 creature/           # Normal enemy sprites
+│   ├── 📁 mage/               # Caster enemy sprites
+│   ├── floor-texture.png      # Game background
+│   └── favicon.ico            # Site icon
+└── 📁 sql/                    # Database Scripts
+    └── create_tables.sql      # Supabase setup
+```
+
+## 🎮 Game Systems
+
+### 🔄 Game Loop
+1. **Input Processing** - Handle keyboard/mouse events
+2. **State Updates** - Update player, creatures, projectiles
+3. **Collision Detection** - Check spell hits and creature contact
+4. **Rendering** - Draw all game entities to canvas
+5. **UI Updates** - Refresh mana, score, wave information
+
+### 🌊 Wave System
+- **Infinite Progression** - No maximum wave limit
+- **Creature Spawning** - Progressive increase in enemy count
+- **Difficulty Scaling** - Health, speed, and abilities grow
+- **Marketplace Breaks** - Upgrade opportunities between waves
+- **Exponential Scaling** - Major boosts every 10 waves
+
+### 🎯 Combat System
+- **Spell Casting** - Spacebar to cast in movement direction
+- **Projectile Physics** - Velocity-based movement with collision
+- **Damage Calculation** - Spell damage vs creature health
+- **Knockback Effects** - Creatures pushed by spell impacts
+- **Invulnerability Frames** - Temporary damage immunity
+
+### 💾 Persistence System
+- **Leaderboard** - Top scores with Supabase
+- **Game Statistics** - Total games played tracking
+- **Audio Settings** - Volume preferences in localStorage
+- **Real-time Updates** - Live score synchronization
+
+## 🎨 Visual Design
+
+### 🎨 Color Palette
+- **Primary**: Purple (#8A2BE2) - Magical theme
+- **Secondary**: Blue (#4A90E2) - Mana and spells
+- **Accent**: Gold (#FFD700) - Crystals and rewards
+- **Background**: Dark gradients with magical effects
+
+### 🖼️ Sprite System
+- **Directional Animation** - N/S/E/W facing sprites
+- **Walking Cycles** - Left/Right foot animation frames
+- **Standing Poses** - Idle animations for all directions
+- **Consistent Style** - Pixel art aesthetic throughout
+
+### ✨ Visual Effects
+- **Particle Systems** - Crystal collection effects
+- **Spell Trails** - Projectile visual feedback
+- **Screen Shake** - Impact feedback
+- **Gradient Backgrounds** - Atmospheric depth
+- **Floating Particles** - Ambient magical atmosphere
+
+## 🔧 Development Guidelines
+
+### 📝 Code Standards
+- **TypeScript** - Strict typing for all components
+- **Functional Components** - React hooks pattern
+- **Custom Hooks** - Separation of concerns
+- **Immutable State** - Predictable state management
+- **Error Boundaries** - Graceful error handling
+
+### 🎯 Performance Optimization
+- **Object Pooling** - Reuse projectile instances
+- **Efficient Rendering** - Only draw visible entities
+- **Memory Management** - Clean up unused resources
+- **60 FPS Target** - Consistent frame rate
+- **Asset Preloading** - Smooth gameplay experience
+
+## 🚀 Deployment
+
+### 🌐 Production Environment
+- **Vercel** - Automatic deployment from Git
+- **Edge Functions** - Global performance
+- **Analytics** - Performance monitoring
+- **Custom Domain** - mystic.decker.sh
+
+
+## 🤝 Contributing
+
+### 📋 Development Setup
+1. Clone repository
+2. Install dependencies with `bun install`
+3. Set up Supabase environment variables
+4. Run development server with `bun dev`
+5. Access game at `http://localhost:3001`
+
+### 🔄 Workflow
+1. Create feature branch
+2. Implement changes with TypeScript
+3. Test gameplay balance
+4. Submit pull request
+5. Code review and merge
+
+## 📚 Resources
+
+### 🎮 Game Design
+- **Balancing Constants** - `/constants/game.ts`
+- **Entity Definitions** - `/types/game.ts`
+- **Sprite Guidelines** - Pixel art standards
+- **Audio Standards** - Sound effect specifications
+
+### 🔧 Technical Documentation
+- **API Reference** - Hook and component docs
+- **Database Schema** - Supabase table structure
+- **Deployment Guide** - Production setup
+- **Performance Guide** - Optimization techniques
+
+---
+
+**Made with 🔮 magic and ❤️ by the Vibe Gaming team**
+
+*"Defend the mystical realm with the power of code and creativity"*
