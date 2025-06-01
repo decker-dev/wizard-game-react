@@ -23,12 +23,15 @@ export const render = (
 ) => {
   const { player } = gameState
 
+  // Clear the entire canvas first
+  ctx.clearRect(0, 0, canvasWidth, canvasHeight)
+
   const cameraX = Math.max(0, Math.min(MAP_WIDTH - canvasWidth, player.position.x - canvasWidth / 2))
   const cameraY = Math.max(0, Math.min(MAP_HEIGHT - canvasHeight, player.position.y - canvasHeight / 2))
 
   // Render floor texture or fallback to solid color
   if (floorTexture) {
-    renderFloorTexture(ctx, floorTexture, cameraX, cameraY)
+    renderFloorTexture(ctx, floorTexture, cameraX, cameraY, canvasWidth, canvasHeight)
   } else {
     // Fallback: Clear canvas with background color
     ctx.fillStyle = "#c2b280"
@@ -256,7 +259,9 @@ const renderFloorTexture = (
   ctx: CanvasRenderingContext2D,
   floorTexture: HTMLImageElement,
   cameraX: number,
-  cameraY: number
+  cameraY: number,
+  canvasWidth: number,
+  canvasHeight: number
 ) => {
   // Get texture dimensions
   const textureWidth = floorTexture.width
@@ -267,8 +272,8 @@ const renderFloorTexture = (
   const startY = Math.floor(cameraY / textureHeight) * textureHeight - cameraY
 
   // Calculate how many tiles we need to cover the screen
-  const tilesX = Math.ceil((CANVAS_WIDTH - startX) / textureWidth) + 1
-  const tilesY = Math.ceil((CANVAS_HEIGHT - startY) / textureHeight) + 1
+  const tilesX = Math.ceil((canvasWidth - startX) / textureWidth) + 1
+  const tilesY = Math.ceil((canvasHeight - startY) / textureHeight) + 1
 
   // Render the tiled texture
   for (let x = 0; x < tilesX; x++) {
@@ -277,7 +282,7 @@ const renderFloorTexture = (
       const drawY = startY + y * textureHeight
 
       // Only draw if the tile is visible on screen
-      if (drawX < CANVAS_WIDTH && drawY < CANVAS_HEIGHT &&
+      if (drawX < canvasWidth && drawY < canvasHeight &&
         drawX + textureWidth > 0 && drawY + textureHeight > 0) {
         ctx.drawImage(floorTexture, drawX, drawY, textureWidth, textureHeight)
       }

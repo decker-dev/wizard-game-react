@@ -67,27 +67,43 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
         let newWidth, newHeight
         if (screenAspectRatio > aspectRatio) {
           // Screen is wider, constrain by height
-          newHeight = screenHeight - 100 // Leave some margin
+          newHeight = Math.min(screenHeight - 100, screenHeight * 0.9) // Leave some margin
           newWidth = newHeight * aspectRatio
         } else {
           // Screen is taller, constrain by width
-          newWidth = screenWidth - 100 // Leave some margin
+          newWidth = Math.min(screenWidth - 100, screenWidth * 0.9) // Leave some margin
           newHeight = newWidth / aspectRatio
         }
         
-        setCanvasDimensions({ width: newWidth, height: newHeight })
+        // Ensure minimum size for playability
+        const minWidth = CANVAS_WIDTH
+        const minHeight = CANVAS_HEIGHT
+        if (newWidth < minWidth || newHeight < minHeight) {
+          newWidth = minWidth
+          newHeight = minHeight
+        }
+        
+        setCanvasDimensions({ width: Math.round(newWidth), height: Math.round(newHeight) })
       } else {
         // Back to normal size
         setCanvasDimensions({ width: CANVAS_WIDTH, height: CANVAS_HEIGHT })
       }
     }
 
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isFullscreen) {
+        document.exitFullscreen().catch(console.error)
+      }
+    }
+
     document.addEventListener('fullscreenchange', handleFullscreenChange)
+    document.addEventListener('keydown', handleKeyDown)
     
     return () => {
       document.removeEventListener('fullscreenchange', handleFullscreenChange)
+      document.removeEventListener('keydown', handleKeyDown)
     }
-  }, [])
+  }, [isFullscreen])
 
   const toggleFullscreen = async () => {
     if (!containerRef.current) return
@@ -145,20 +161,56 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
   useEffect(() => {
     const canvasElement = canvasRef.current
     if (canvasElement) {
-      canvasElement.addEventListener("mousemove", onMouseMove)
-      canvasElement.addEventListener("click", onMouseClick)
+      const handleMouseMove = (e: MouseEvent) => {
+        // Scale mouse coordinates if canvas is scaled
+        const rect = canvasElement.getBoundingClientRect()
+        const scaleX = canvasDimensions.width / rect.width
+        const scaleY = canvasDimensions.height / rect.height
+        
+        // Create a scaled mouse event
+        const scaledEvent = {
+          ...e,
+          clientX: (e.clientX - rect.left) * scaleX + rect.left,
+          clientY: (e.clientY - rect.top) * scaleY + rect.top,
+          offsetX: (e.clientX - rect.left) * scaleX,
+          offsetY: (e.clientY - rect.top) * scaleY
+        } as MouseEvent
+
+        onMouseMove(scaledEvent)
+      }
+
+      const handleMouseClick = (e: MouseEvent) => {
+        // Scale mouse coordinates if canvas is scaled
+        const rect = canvasElement.getBoundingClientRect()
+        const scaleX = canvasDimensions.width / rect.width
+        const scaleY = canvasDimensions.height / rect.height
+        
+        // Create a scaled mouse event
+        const scaledEvent = {
+          ...e,
+          clientX: (e.clientX - rect.left) * scaleX + rect.left,
+          clientY: (e.clientY - rect.top) * scaleY + rect.top,
+          offsetX: (e.clientX - rect.left) * scaleX,
+          offsetY: (e.clientY - rect.top) * scaleY
+        } as MouseEvent
+
+        onMouseClick(scaledEvent)
+      }
+
+      canvasElement.addEventListener("mousemove", handleMouseMove)
+      canvasElement.addEventListener("click", handleMouseClick)
       
       return () => {
-        canvasElement.removeEventListener("mousemove", onMouseMove)
-        canvasElement.removeEventListener("click", onMouseClick)
+        canvasElement.removeEventListener("mousemove", handleMouseMove)
+        canvasElement.removeEventListener("click", handleMouseClick)
       }
     }
-  }, [onMouseMove, onMouseClick])
+  }, [onMouseMove, onMouseClick, canvasDimensions])
 
   return (
     <div 
       ref={containerRef}
-      className={`relative ${isFullscreen ? 'flex items-center justify-center min-h-screen bg-black' : ''}`}
+      className={`relative ${isFullscreen ? 'fixed inset-0 flex items-center justify-center bg-black z-50' : ''}`}
     >
       {/* Fullscreen Toggle Button */}
       <button
@@ -206,11 +258,13 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
           height={canvasDimensions.height}
           className={`${
             isFullscreen 
-              ? 'border-2 border-orange-500/70 bg-gray-300 rounded shadow-2xl' 
-              : 'border-4 border-orange-500/50 bg-gray-300 rounded-lg shadow-lg hover:border-orange-500/70 transition-colors'
+              ? 'border-2 border-orange-500/70 bg-gray-900 rounded shadow-2xl' 
+              : 'border-4 border-orange-500/50 bg-gray-900 rounded-lg shadow-lg hover:border-orange-500/70 transition-colors'
           }`}
           style={{
             imageRendering: 'pixelated', // Maintain pixel art look when scaled
+            maxWidth: '100%',
+            maxHeight: '100%',
           }}
         />
       </div>
