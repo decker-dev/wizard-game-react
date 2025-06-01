@@ -274,7 +274,7 @@ export const updateCreatures = (gameState: GameState) => {
     }
   })
 
-  // Verificar colisiones entre criaturas para evitar superposición (simplificado)
+  // SISTEMA MEJORADO: Verificar colisiones entre criaturas SIN empujarlas dentro de obstáculos
   for (let i = 0; i < creatures.length; i++) {
     for (let j = i + 1; j < creatures.length; j++) {
       const creature1 = creatures[i]
@@ -297,22 +297,158 @@ export const updateCreatures = (gameState: GameState) => {
           separationDirection.y = Math.sin(angle)
         }
 
-        // Separar las criaturas (reducido porque el sistema de IA ya maneja separación)
-        const separationForce = 1.5
-        creature1.position.x -= separationDirection.x * separationForce
-        creature1.position.y -= separationDirection.y * separationForce
-        creature2.position.x += separationDirection.x * separationForce
-        creature2.position.y += separationDirection.y * separationForce
+        // Guardar posiciones originales
+        const originalPos1 = { ...creature1.position }
+        const originalPos2 = { ...creature2.position }
 
-        // Verificar límites del mapa
-        for (const creature of [creature1, creature2]) {
-          creature.position.x = Math.max(creature.width / 2, Math.min(MAP_WIDTH - creature.width / 2, creature.position.x))
-          creature.position.y = Math.max(creature.height / 2, Math.min(MAP_HEIGHT - creature.height / 2, creature.position.y))
+        // Intentar separar las criaturas
+        const separationForce = 2
+        const newPos1 = {
+          x: creature1.position.x - separationDirection.x * separationForce,
+          y: creature1.position.y - separationDirection.y * separationForce
+        }
+        const newPos2 = {
+          x: creature2.position.x + separationDirection.x * separationForce,
+          y: creature2.position.y + separationDirection.y * separationForce
         }
 
-        // Invalidar paths si las criaturas fueron empujadas
-        creature1.currentPath = undefined
-        creature2.currentPath = undefined
+        // Verificar que las nuevas posiciones no colisionen con obstáculos
+        let canMoveBoth = true
+
+        // Verificar criatura 1
+        creature1.position = newPos1
+        let rect1Check = getEntityRect(creature1)
+        for (const obstacle of obstacles) {
+          if (checkAABBCollision(rect1Check, obstacle)) {
+            canMoveBoth = false
+            break
+          }
+        }
+
+        // Verificar criatura 2 solo si criatura 1 puede moverse
+        if (canMoveBoth) {
+          creature2.position = newPos2
+          let rect2Check = getEntityRect(creature2)
+          for (const obstacle of obstacles) {
+            if (checkAABBCollision(rect2Check, obstacle)) {
+              canMoveBoth = false
+              break
+            }
+          }
+        }
+
+        // Si no pueden moverse ambas sin colisionar, revertir posiciones
+        if (!canMoveBoth) {
+          creature1.position = originalPos1
+          creature2.position = originalPos2
+
+          // Intentar mover solo una criatura en diferentes direcciones
+          const directions = [
+            { x: 1, y: 0 }, { x: -1, y: 0 }, { x: 0, y: 1 }, { x: 0, y: -1 },
+            { x: 1, y: 1 }, { x: -1, y: -1 }, { x: 1, y: -1 }, { x: -1, y: 1 }
+          ]
+
+          let moved = false
+          for (const dir of directions) {
+            // Intentar mover criatura 1
+            creature1.position = {
+              x: originalPos1.x + dir.x * separationForce,
+              y: originalPos1.y + dir.y * separationForce
+            }
+
+            let rect1Check = getEntityRect(creature1)
+            let collision = false
+            for (const obstacle of obstacles) {
+              if (checkAABBCollision(rect1Check, obstacle)) {
+                collision = true
+                break
+              }
+            }
+
+            if (!collision) {
+              moved = true
+              break
+            }
+
+            // Si no funcionó, intentar mover criatura 2
+            creature1.position = originalPos1
+            creature2.position = {
+              x: originalPos2.x + dir.x * separationForce,
+              y: originalPos2.y + dir.y * separationForce
+            }
+
+            let rect2Check = getEntityRect(creature2)
+            collision = false
+            for (const obstacle of obstacles) {
+              if (checkAABBCollision(rect2Check, obstacle)) {
+                collision = true
+                break
+              }
+            }
+
+            if (!collision) {
+              moved = true
+              break
+            }
+
+            // Revertir si no funcionó
+            creature2.position = originalPos2
+          }
+
+          // Si no se pudo mover ninguna, mantener posiciones originales
+          if (!moved) {
+            creature1.position = originalPos1
+            creature2.position = originalPos2
+          }
+        }
+
+        // Verificar límites del mapa para ambas criaturas
+        creature1.position.x = Math.max(creature1.width / 2, Math.min(MAP_WIDTH - creature1.width / 2, creature1.position.x))
+        creature1.position.y = Math.max(creature1.height / 2, Math.min(MAP_HEIGHT - creature1.height / 2, creature1.position.y))
+        creature2.position.x = Math.max(creature2.width / 2, Math.min(MAP_WIDTH - creature2.width / 2, creature2.position.x))
+        creature2.position.y = Math.max(creature2.height / 2, Math.min(MAP_HEIGHT - creature2.height / 2, creature2.position.y))
+
+        // Invalidar paths si las criaturas fueron movidas
+        if (creature1.position.x !== originalPos1.x || creature1.position.y !== originalPos1.y) {
+          creature1.currentPath = undefined
+        }
+        if (creature2.position.x !== originalPos2.x || creature2.position.y !== originalPos2.y) {
+          creature2.currentPath = undefined
+        }
+      }
+    }
+  }
+
+  // SISTEMA DE MUERTE AUTOMÁTICA: Eliminar criaturas atrapadas en obstáculos
+  for (let i = creatures.length - 1; i >= 0; i--) {
+    const creature = creatures[i]
+    const creatureRect = getEntityRect(creature)
+
+    // Verificar si la criatura está completamente dentro de un obstáculo
+    let isTrappedInObstacle = false
+    for (const obstacle of obstacles) {
+      if (checkAABBCollision(creatureRect, obstacle)) {
+        // Verificar si está completamente dentro (no solo tocando el borde)
+        const overlapX = Math.min(creatureRect.x + creatureRect.width, obstacle.x + obstacle.width) -
+          Math.max(creatureRect.x, obstacle.x)
+        const overlapY = Math.min(creatureRect.y + creatureRect.height, obstacle.y + obstacle.height) -
+          Math.max(creatureRect.y, obstacle.y)
+
+        // Si el overlap es significativo (más del 70% del tamaño de la criatura), está atrapada
+        if (overlapX > creatureRect.width * 0.7 && overlapY > creatureRect.height * 0.7) {
+          isTrappedInObstacle = true
+          break
+        }
+      }
+    }
+
+    if (isTrappedInObstacle) {
+      console.log(`Criatura ${creature.id} eliminada por estar atrapada en obstáculo`)
+      creatures.splice(i, 1)
+      // Actualizar el contador de criaturas restantes si es necesario
+      if (gameState.creaturesSpawnedThisWave >= gameState.creaturesToSpawnThisWave) {
+        // No contar esta muerte hacia el progreso de la wave
+        // La criatura simplemente desaparece sin dar puntos
       }
     }
   }
