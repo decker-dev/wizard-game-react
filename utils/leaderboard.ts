@@ -47,27 +47,6 @@ export async function getAllScores(): Promise<LeaderboardEntry[]> {
 }
 
 /**
- * Guarda un nuevo score en el leaderboard
- */
-export async function saveScore(scoreData: ScoreSubmission): Promise<boolean> {
-  try {
-    const { error } = await supabase
-      .from('leaderboard')
-      .insert([scoreData])
-
-    if (error) {
-      console.error('Error saving score:', error)
-      return false
-    }
-
-    return true
-  } catch (error) {
-    console.error('Error saving score:', error)
-    return false
-  }
-}
-
-/**
  * Registra que se inició una nueva partida (independientemente de si se guarda el score)
  */
 export async function recordGameStarted(): Promise<boolean> {

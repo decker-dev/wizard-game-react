@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { LeaderboardEntry, ScoreSubmission } from '@/types/game'
-import { getTopScores, getAllScores, saveScore, getScoreRank, recordGameStarted, getTotalGamesPlayed } from '@/utils/leaderboard'
+import { getTopScores, getAllScores, getScoreRank, recordGameStarted, getTotalGamesPlayed } from '@/utils/leaderboard'
 import { generateTimeWindowHash } from '@/utils/security'
 
 export interface SecureScoreSubmission extends ScoreSubmission {
