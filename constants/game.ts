@@ -49,6 +49,7 @@ export const CRYSTAL_REWARD_CASTER_CREATURE = 7;
 export const CRYSTAL_REWARD_TANK_CREATURE = 10;
 export const CRYSTAL_REWARD_SPEED_CREATURE = 5;
 export const CRYSTAL_REWARD_EXPLOSIVE_CREATURE = 8;
+export const CRYSTAL_REWARD_BOSS_CREATURE = 50; // Gran recompensa por derrotar un boss
 
 // Marketplace & Upgrades - Precios base que escalan
 export const SPELL_UPGRADE_BASE_COST = 6;
@@ -120,3 +121,14 @@ export const MAX_SPEED_SPAWN_CHANCE = 0.35 // Máximo 35% de speed
 export const EXPLOSIVE_SPAWN_CHANCE_BASE = 0.03 // 3% base desde wave 4
 export const EXPLOSIVE_SPAWN_CHANCE_INCREASE = 0.008 // +0.8% cada wave  
 export const MAX_EXPLOSIVE_SPAWN_CHANCE = 0.2 // Máximo 20% de explosive
+
+// Boss creature constants - TODO: Cambiar assets del boss más adelante
+export const CREATURE_BOSS_SPEED = 0.2; // Muy lento pero resistente
+export const CREATURE_BOSS_HEALTH_BASE = 300; // Mucha vida base
+export const CREATURE_BOSS_HEALTH_MULTIPLIER = 1.5; // Escala más que otros
+export const BOSS_SIZE_MULTIPLIER = 2.0; // Doble de tamaño que criaturas normales
+export const BOSS_CAST_RATE = 1500; // Dispara cada 1.5 segundos
+export const BOSS_PROJECTILE_SPEED = 3; // Proyectiles más lentos
+export const BOSS_PROJECTILE_DAMAGE = 60; // Más daño que magic bolts normales
+export const BOSS_PROJECTILE_SIZE = 12; // Proyectiles más grandes
+export const BOSS_SPAWN_INTERVAL = 5; // Cada 5 oleadas

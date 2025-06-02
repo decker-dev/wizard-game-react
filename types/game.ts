@@ -40,6 +40,7 @@ export interface Projectile {
   radius: number
   speed: number
   isMagicBolt?: boolean
+  isBossProjectile?: boolean
 }
 
 export interface Creature {
@@ -50,7 +51,7 @@ export interface Creature {
   speed: number
   health: number
   maxHealth: number
-  type: 'normal' | 'caster' | 'tank' | 'speed' | 'explosive'
+  type: 'normal' | 'caster' | 'tank' | 'speed' | 'explosive' | 'boss'
   lastSpellTime?: number
   sprite?: HTMLImageElement | null
   direction: 'N' | 'S' | 'E' | 'O'
@@ -99,6 +100,7 @@ export interface GameState {
   waveTransitioning: boolean
   showMarketplace: boolean
   crystalParticles: CrystalParticle[]
+  mobConfig: MobConfig
 }
 
 export interface LeaderboardEntry {
@@ -113,4 +115,14 @@ export interface ScoreSubmission {
   player_name: string
   score: number
   waves_survived: number
+}
+
+// Configuración para habilitar/deshabilitar tipos de mobs
+export interface MobConfig {
+  normal: boolean
+  caster: boolean
+  tank: boolean
+  speed: boolean
+  explosive: boolean
+  boss: boolean
 } 

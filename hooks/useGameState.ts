@@ -32,6 +32,14 @@ export const useGameState = () => {
       waveTransitioning: false,
       showMarketplace: false,
       crystalParticles: [],
+      mobConfig: {
+        normal: true,
+        caster: true,
+        tank: true,
+        speed: true,
+        explosive: true,
+        boss: true
+      }
     }),
     [],
   )
@@ -187,6 +195,28 @@ export const useGameState = () => {
     }
   }, [])
 
+  // Funciones para manejar configuración de mobs
+  const toggleMobType = useCallback((mobType: 'normal' | 'caster' | 'tank' | 'speed' | 'explosive' | 'boss') => {
+    if (!gameStateRef.current) return
+    gameStateRef.current.mobConfig[mobType] = !gameStateRef.current.mobConfig[mobType]
+  }, [])
+
+  const setMobConfig = useCallback((config: Partial<{ normal: boolean, caster: boolean, tank: boolean, speed: boolean, explosive: boolean, boss: boolean }>) => {
+    if (!gameStateRef.current) return
+    gameStateRef.current.mobConfig = { ...gameStateRef.current.mobConfig, ...config }
+  }, [])
+
+  const getMobConfig = useCallback(() => {
+    return gameStateRef.current?.mobConfig || {
+      normal: true,
+      caster: true,
+      tank: true,
+      speed: true,
+      explosive: true,
+      boss: true
+    }
+  }, [])
+
   return {
     gameStateRef,
     initializeGameState,
@@ -194,6 +224,9 @@ export const useGameState = () => {
     startNextWave,
     continueFromMarketplace,
     upgradeWeapon,
-    upgradeHealth
+    upgradeHealth,
+    toggleMobType,
+    setMobConfig,
+    getMobConfig
   }
 } 

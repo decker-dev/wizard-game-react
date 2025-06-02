@@ -10,7 +10,9 @@ import {
   CRYSTAL_REWARD_CASTER_CREATURE,
   CRYSTAL_REWARD_TANK_CREATURE,
   CRYSTAL_REWARD_SPEED_CREATURE,
-  CRYSTAL_REWARD_EXPLOSIVE_CREATURE
+  CRYSTAL_REWARD_EXPLOSIVE_CREATURE,
+  CRYSTAL_REWARD_BOSS_CREATURE,
+  BOSS_PROJECTILE_DAMAGE
 } from '@/constants/game'
 import { checkAABBCollision, getEntityRect, normalize } from '@/utils/math'
 import { createCoinParticle } from '@/utils/coinParticles'
@@ -23,7 +25,7 @@ export const checkCollisions = (
   setPlayerHealth: (health: number) => void,
   setGameOver: (gameOver: boolean) => void,
   setPlayerCoins?: (coins: number) => void,
-  playCreatureDeath?: (creatureType: 'normal' | 'caster' | 'tank' | 'speed' | 'explosive') => void,
+  playCreatureDeath?: (creatureType: 'normal' | 'caster' | 'tank' | 'speed' | 'explosive' | 'boss') => void,
   playPlayerHit?: () => void
 ) => {
   const { projectiles, creatures, player, creaturesSpawnedThisWave, creaturesToSpawnThisWave } = gameState
@@ -48,7 +50,10 @@ export const checkCollisions = (
       }
       if (checkAABBCollision(projectileRect, playerRect)) {
         projectiles.splice(i, 1)
-        player.health -= MAGIC_BOLT_DAMAGE
+
+        // Determinar daño según el tipo de proyectil
+        const damage = p.isBossProjectile ? BOSS_PROJECTILE_DAMAGE : MAGIC_BOLT_DAMAGE
+        player.health -= damage
         setPlayerHealth(player.health)
 
         // Reproducir sonido de jugador herido
@@ -134,6 +139,8 @@ export const checkCollisions = (
               crystalsEarned = CRYSTAL_REWARD_SPEED_CREATURE
             } else if (z.type === 'explosive') {
               crystalsEarned = CRYSTAL_REWARD_EXPLOSIVE_CREATURE
+            } else if (z.type === 'boss') {
+              crystalsEarned = CRYSTAL_REWARD_BOSS_CREATURE
             } else {
               crystalsEarned = CRYSTAL_REWARD_NORMAL_CREATURE
             }

@@ -42,7 +42,17 @@ import {
   MAX_SPEED_SPAWN_CHANCE,
   EXPLOSIVE_SPAWN_CHANCE_BASE,
   EXPLOSIVE_SPAWN_CHANCE_INCREASE,
-  MAX_EXPLOSIVE_SPAWN_CHANCE
+  MAX_EXPLOSIVE_SPAWN_CHANCE,
+  // Constantes del Boss
+  CREATURE_BOSS_SPEED,
+  CREATURE_BOSS_HEALTH_BASE,
+  CREATURE_BOSS_HEALTH_MULTIPLIER,
+  BOSS_SIZE_MULTIPLIER,
+  BOSS_CAST_RATE,
+  BOSS_PROJECTILE_SPEED,
+  BOSS_PROJECTILE_DAMAGE,
+  BOSS_PROJECTILE_SIZE,
+  BOSS_SPAWN_INTERVAL
 } from '@/constants/game'
 import { normalize, getEntityRect, checkAABBCollision, distance } from '@/utils/math'
 import { CreatureAI } from './AIBehaviors'
@@ -51,37 +61,48 @@ import { pathfinder } from './Pathfinding'
 export const createCreature = (
   x: number,
   y: number,
-  currentWave: number
+  currentWave: number,
+  mobConfig?: { normal: boolean, caster: boolean, tank: boolean, speed: boolean, explosive: boolean, boss: boolean }
 ): Creature => {
   // Calcular multiplicador exponencial para waves altas
   const exponentialBonus = Math.floor(currentWave / EXPONENTIAL_SCALING_INTERVAL)
   const healthMultiplier = Math.pow(EXPONENTIAL_HEALTH_MULTIPLIER, exponentialBonus)
   const speedMultiplier = Math.pow(EXPONENTIAL_SPEED_MULTIPLIER, exponentialBonus)
 
-  // Calcular probabilidades de spawn para cada tipo
-  const casterChance = Math.min(
+  // Configuración por defecto (todos habilitados)
+  const config = mobConfig || {
+    normal: true,
+    caster: true,
+    tank: true,
+    speed: true,
+    explosive: true,
+    boss: true
+  }
+
+  // Calcular probabilidades de spawn para cada tipo (solo si están habilitados)
+  const casterChance = config.caster && currentWave >= 2 ? Math.min(
     0.1 + (currentWave - 1) * CASTER_SPAWN_CHANCE_INCREASE,
     MAX_CASTER_SPAWN_CHANCE
-  )
+  ) : 0
 
-  const tankChance = currentWave >= 3 ? Math.min(
+  const tankChance = config.tank && currentWave >= 3 ? Math.min(
     TANK_SPAWN_CHANCE_BASE + (currentWave - 3) * TANK_SPAWN_CHANCE_INCREASE,
     MAX_TANK_SPAWN_CHANCE
   ) : 0
 
-  const speedChance = currentWave >= 2 ? Math.min(
+  const speedChance = config.speed && currentWave >= 2 ? Math.min(
     SPEED_SPAWN_CHANCE_BASE + (currentWave - 2) * SPEED_SPAWN_CHANCE_INCREASE,
     MAX_SPEED_SPAWN_CHANCE
   ) : 0
 
-  const explosiveChance = currentWave >= 4 ? Math.min(
+  const explosiveChance = config.explosive && currentWave >= 4 ? Math.min(
     EXPLOSIVE_SPAWN_CHANCE_BASE + (currentWave - 4) * EXPLOSIVE_SPAWN_CHANCE_INCREASE,
     MAX_EXPLOSIVE_SPAWN_CHANCE
   ) : 0
 
   // Determinar tipo de criatura basado en probabilidades
   const random = Math.random()
-  let creatureType: 'normal' | 'caster' | 'tank' | 'speed' | 'explosive' = 'normal'
+  let creatureType: 'normal' | 'caster' | 'tank' | 'speed' | 'explosive' | 'boss' = 'normal'
 
   if (random < explosiveChance) {
     creatureType = 'explosive'
@@ -93,6 +114,17 @@ export const createCreature = (
     creatureType = 'caster'
   }
 
+  // Si el tipo seleccionado no está habilitado, usar normal (si está habilitado)
+  if (!config[creatureType] && config.normal) {
+    creatureType = 'normal'
+  } else if (!config[creatureType] && !config.normal) {
+    // Si ni el tipo seleccionado ni normal están habilitados, buscar el primer tipo habilitado
+    const enabledTypes = Object.entries(config).filter(([_, enabled]) => enabled).map(([type, _]) => type)
+    if (enabledTypes.length > 0) {
+      creatureType = enabledTypes[0] as any
+    }
+  }
+
   // Configurar estadísticas base según el tipo
   let baseHealth: number
   let baseSpeed: number
@@ -100,6 +132,14 @@ export const createCreature = (
   let height = CREATURE_HEIGHT
 
   switch (creatureType) {
+    case 'boss':
+      // Los boss se crean con la función específica, esto es solo fallback
+      const bossWaveMultiplier = Math.floor(currentWave / BOSS_SPAWN_INTERVAL)
+      baseHealth = CREATURE_BOSS_HEALTH_BASE + (bossWaveMultiplier * CREATURE_BOSS_HEALTH_BASE * CREATURE_BOSS_HEALTH_MULTIPLIER)
+      baseSpeed = CREATURE_BOSS_SPEED
+      width = CREATURE_WIDTH * BOSS_SIZE_MULTIPLIER
+      height = CREATURE_HEIGHT * BOSS_SIZE_MULTIPLIER
+      break
     case 'tank':
       baseHealth = CREATURE_TANK_HEALTH + currentWave * CREATURE_HEALTH_INCREASE_PER_WAVE * 2
       baseSpeed = CREATURE_TANK_SPEED + currentWave * CREATURE_SPEED_INCREASE_PER_WAVE * 0.5
@@ -155,7 +195,7 @@ export const createCreature = (
 }
 
 export const spawnCreature = (gameState: GameState): boolean => {
-  const { creaturesSpawnedThisWave, creaturesToSpawnThisWave, creatures, currentWave } = gameState
+  const { creaturesSpawnedThisWave, creaturesToSpawnThisWave, creatures, currentWave, mobConfig } = gameState
 
   if (creaturesSpawnedThisWave < creaturesToSpawnThisWave && creatures.length < 20 && Math.random() < 0.05) {
     const side = Math.floor(Math.random() * 4)
@@ -180,7 +220,22 @@ export const spawnCreature = (gameState: GameState): boolean => {
         break
     }
 
-    const newCreature = createCreature(x, y, currentWave)
+    // Verificar si es una wave de boss
+    if (shouldSpawnBoss(currentWave) && mobConfig.boss) {
+      const bossCount = getBossCount(currentWave)
+      const currentBossCount = creatures.filter(c => c.type === 'boss').length
+
+      // Solo spawnear boss si no hemos alcanzado el límite para esta wave
+      if (currentBossCount < bossCount) {
+        const newBoss = createBoss(x, y, currentWave)
+        creatures.push(newBoss)
+        gameState.creaturesSpawnedThisWave++
+        return true
+      }
+    }
+
+    // Spawn criatura normal usando la configuración de mobs
+    const newCreature = createCreature(x, y, currentWave, mobConfig)
     creatures.push(newCreature)
     gameState.creaturesSpawnedThisWave++
     return true
@@ -209,6 +264,15 @@ export const updateCreatures = (gameState: GameState) => {
     // Usar el nuevo sistema de IA con Steering Behaviors y Pathfinding
     let steeringForce
     if (creature.type === 'caster') {
+      steeringForce = CreatureAI.updateCasterCreature(
+        creature,
+        player.position,
+        creatures,
+        obstacles,
+        distanceToPlayer
+      )
+    } else if (creature.type === 'boss') {
+      // Boss usa comportamiento similar a caster pero más lento y agresivo
       steeringForce = CreatureAI.updateCasterCreature(
         creature,
         player.position,
@@ -353,6 +417,35 @@ export const updateCreatures = (gameState: GameState) => {
           radius: magicBoltSize,
           speed: scaledMagicBoltSpeed,
           isMagicBolt: true
+        })
+        creature.lastSpellTime = now
+      }
+    }
+
+    // Lógica de disparo para Boss - Proyectiles que atraviesan estructuras
+    if (creature.type === 'boss') {
+      const now = Date.now()
+
+      // Boss dispara más lento pero sin necesidad de línea de vista
+      if (distanceToPlayer <= 600 && // Rango más largo que casters
+        now - (creature.lastSpellTime || 0) > BOSS_CAST_RATE) {
+
+        const bossProjectileDirection = normalize({
+          x: player.position.x - creature.position.x,
+          y: player.position.y - creature.position.y
+        })
+
+        // Crear proyectil del boss que atraviesa estructuras
+        projectiles.push({
+          position: { ...creature.position },
+          velocity: {
+            x: bossProjectileDirection.x * BOSS_PROJECTILE_SPEED,
+            y: bossProjectileDirection.y * BOSS_PROJECTILE_SPEED
+          },
+          radius: BOSS_PROJECTILE_SIZE,
+          speed: BOSS_PROJECTILE_SPEED,
+          isMagicBolt: true,
+          isBossProjectile: true // Marca especial para atravesar estructuras
         })
         creature.lastSpellTime = now
       }
@@ -550,7 +643,13 @@ export const updateCreatures = (gameState: GameState) => {
 
 export const getCreatureSprite = (creature: Creature, creatureSprites: { [key: string]: HTMLImageElement | null }) => {
   // Determinar el prefijo del sprite según el tipo de criatura
-  const spritePrefix = creature.type === 'caster' ? 'mage' : creature.type === 'tank' ? 'tank' : creature.type === 'speed' ? 'speed' : creature.type === 'explosive' ? 'explosive' : 'creature'
+  // TODO: Cambiar 'mage' por 'boss' cuando tengamos sprites específicos del boss
+  const spritePrefix = creature.type === 'caster' ? 'mage'
+    : creature.type === 'boss' ? 'mage' // Temporalmente usa sprites de mage
+      : creature.type === 'tank' ? 'tank'
+        : creature.type === 'speed' ? 'speed'
+          : creature.type === 'explosive' ? 'explosive'
+            : 'creature'
 
   // Construir el nombre del sprite
   const spriteName = `${spritePrefix}_${creature.direction}_${creature.isMoving ? `W_${creature.animationFrame}` : 'S'}`
@@ -595,4 +694,58 @@ export const handleExplosiveCreatureDeath = (
       }
     }
   })
+}
+
+// Función específica para crear Boss
+export const createBoss = (
+  x: number,
+  y: number,
+  currentWave: number
+): Creature => {
+  // Calcular multiplicador exponencial para waves altas
+  const exponentialBonus = Math.floor(currentWave / EXPONENTIAL_SCALING_INTERVAL)
+  const healthMultiplier = Math.pow(EXPONENTIAL_HEALTH_MULTIPLIER, exponentialBonus)
+  const speedMultiplier = Math.pow(EXPONENTIAL_SPEED_MULTIPLIER, exponentialBonus)
+
+  // Calcular vida del boss escalable
+  const bossWaveMultiplier = Math.floor(currentWave / BOSS_SPAWN_INTERVAL) // Cuántas veces ha aparecido un boss
+  const baseHealth = CREATURE_BOSS_HEALTH_BASE + (bossWaveMultiplier * CREATURE_BOSS_HEALTH_BASE * CREATURE_BOSS_HEALTH_MULTIPLIER)
+  const bossHealth = Math.floor(baseHealth * healthMultiplier)
+
+  // Velocidad del boss (siempre lento)
+  const bossSpeed = Math.min(CREATURE_BOSS_SPEED * speedMultiplier, CREATURE_BOSS_SPEED * 1.5) // Máximo 50% más rápido
+
+  return {
+    id: `boss-${Date.now()}-${Math.random()}`,
+    position: { x, y },
+    width: CREATURE_WIDTH * BOSS_SIZE_MULTIPLIER,
+    height: CREATURE_HEIGHT * BOSS_SIZE_MULTIPLIER,
+    speed: bossSpeed,
+    health: bossHealth,
+    maxHealth: bossHealth,
+    type: 'boss',
+    lastSpellTime: Date.now(),
+    sprite: null,
+    direction: 'S',
+    isMoving: false,
+    animationFrame: 'S',
+    lastAnimationTime: Date.now(),
+    lastPosition: { x, y },
+    // Inicializar campos de pathfinding
+    currentPath: undefined,
+    currentPathIndex: 0,
+    lastPathUpdate: 0,
+    targetPosition: undefined
+  }
+}
+
+// Función para determinar si debe aparecer un boss en esta wave
+export const shouldSpawnBoss = (currentWave: number): boolean => {
+  return currentWave > 0 && currentWave % BOSS_SPAWN_INTERVAL === 0
+}
+
+// Función para calcular cuántos boss deben aparecer
+export const getBossCount = (currentWave: number): number => {
+  if (!shouldSpawnBoss(currentWave)) return 0
+  return Math.floor(currentWave / BOSS_SPAWN_INTERVAL)
 } 

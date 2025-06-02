@@ -114,7 +114,12 @@ export const render = (
       screenY >= 0 &&
       screenY <= canvasHeight
     ) {
-      ctx.fillStyle = p.isMagicBolt ? '#8A2BE2' : '#5752ff'
+      // Color diferente para proyectiles del Boss
+      if (p.isBossProjectile) {
+        ctx.fillStyle = '#4B0082' // Púrpura oscuro para proyectiles del Boss
+      } else {
+        ctx.fillStyle = p.isMagicBolt ? '#8A2BE2' : '#5752ff'
+      }
       ctx.beginPath()
       ctx.arc(screenX, screenY, p.radius, 0, Math.PI * 2)
       ctx.fill()
@@ -148,6 +153,8 @@ export const render = (
         let creatureColor = '#228B22' // Verde por defecto (normal)
         if (c.type === 'caster') {
           creatureColor = '#8A2BE2' // Púrpura para casters
+        } else if (c.type === 'boss') {
+          creatureColor = '#4B0082' // Púrpura más oscuro para boss
         } else if (c.type === 'tank') {
           creatureColor = '#DC143C' // Rojo para tanks
         } else if (c.type === 'speed') {
@@ -250,6 +257,8 @@ const renderMinimap = (
     // Usar diferentes colores según el tipo de criatura
     if (c.type === 'caster') {
       ctx.fillStyle = "#8A2BE2" // Púrpura para casters
+    } else if (c.type === 'boss') {
+      ctx.fillStyle = "#4B0082" // Púrpura más oscuro para boss
     } else if (c.type === 'tank') {
       ctx.fillStyle = "#DC143C" // Rojo para tanks
     } else if (c.type === 'speed') {

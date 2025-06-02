@@ -28,19 +28,22 @@ export const updateProjectiles = (gameState: GameState) => {
       continue
     }
 
-    // Check collision with obstacles
-    const projectileRect = {
-      x: p.position.x - p.radius,
-      y: p.position.y - p.radius,
-      width: p.radius * 2,
-      height: p.radius * 2,
-    }
+    // Check collision with obstacles (SOLO si NO es proyectil del Boss)
+    if (!p.isBossProjectile) {
+      const projectileRect = {
+        x: p.position.x - p.radius,
+        y: p.position.y - p.radius,
+        width: p.radius * 2,
+        height: p.radius * 2,
+      }
 
-    for (const obs of obstacles) {
-      if (checkAABBCollision(projectileRect, obs)) {
-        projectiles.splice(i, 1)
-        break
+      for (const obs of obstacles) {
+        if (checkAABBCollision(projectileRect, obs)) {
+          projectiles.splice(i, 1)
+          break
+        }
       }
     }
+    // Los proyectiles del Boss (isBossProjectile: true) atraviesan obstáculos
   }
 } 

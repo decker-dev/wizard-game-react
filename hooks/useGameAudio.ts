@@ -186,10 +186,34 @@ export function useGameAudio() {
     setAudioSettings(getAudioSettings())
   }, [])
 
-  const playCreatureDeath = useCallback((creatureType: 'normal' | 'caster' | 'tank' | 'speed' | 'explosive' = 'normal') => {
+  const playCreatureDeath = useCallback((creatureType: 'normal' | 'caster' | 'tank' | 'speed' | 'explosive' | 'boss' = 'normal') => {
     if (!isClient || !audioSettings.sfxEnabled) return
 
-    if (creatureType === 'caster') {
+    if (creatureType === 'boss') {
+      // Sonido especial para Boss (más dramático y largo)
+      createBeep(80, 0.3, 0.12) // Sonido grave y fuerte
+      setTimeout(() => createNoiseSound(0.4, 0.08), 100) // Ruido más intenso
+      setTimeout(() => {
+        const context = initAudioContext()
+        if (!context) return
+        try {
+          const oscillator = context.createOscillator()
+          const gainNode = context.createGain()
+          oscillator.connect(gainNode)
+          gainNode.connect(context.destination)
+          oscillator.frequency.setValueAtTime(120, context.currentTime)
+          oscillator.frequency.exponentialRampToValueAtTime(30, context.currentTime + 0.6)
+          oscillator.type = 'sawtooth'
+          gainNode.gain.setValueAtTime(0, context.currentTime)
+          gainNode.gain.linearRampToValueAtTime(0.1, context.currentTime + 0.02)
+          gainNode.gain.exponentialRampToValueAtTime(0.001, context.currentTime + 0.6)
+          oscillator.start(context.currentTime)
+          oscillator.stop(context.currentTime + 0.6)
+        } catch (error) {
+          console.warn('Audio playback error:', error)
+        }
+      }, 200)
+    } else if (creatureType === 'caster') {
       createCasterCreatureDeathSound()
     } else {
       createCreatureDeathSound()
