@@ -426,10 +426,8 @@ export const updateCreatures = (gameState: GameState) => {
     if (creature.type === 'boss') {
       const now = Date.now()
 
-      // Boss dispara más lento pero sin necesidad de línea de vista
-      if (distanceToPlayer <= 600 && // Rango más largo que casters
-        now - (creature.lastSpellTime || 0) > BOSS_CAST_RATE) {
-
+      // Boss tiene visión omnipresente - puede disparar desde cualquier distancia
+      if (now - (creature.lastSpellTime || 0) > BOSS_CAST_RATE) {
         const bossProjectileDirection = normalize({
           x: player.position.x - creature.position.x,
           y: player.position.y - creature.position.y
