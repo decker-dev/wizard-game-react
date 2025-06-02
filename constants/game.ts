@@ -4,6 +4,9 @@ export const CANVAS_HEIGHT = 600;
 export const MAP_WIDTH = 2000;
 export const MAP_HEIGHT = 1500;
 
+// Development/Testing constants
+export const STARTING_WAVE = 1;
+
 // Player constants
 export const PLAYER_SPEED = 3;
 export const PLAYER_SPRITE_WIDTH = 36;

@@ -7,7 +7,8 @@ import {
   BASE_CREATURES_PER_WAVE,
   CREATURES_INCREASE_PER_WAVE,
   EXPONENTIAL_SCALING_INTERVAL,
-  EXPONENTIAL_SPAWN_MULTIPLIER
+  EXPONENTIAL_SPAWN_MULTIPLIER,
+  STARTING_WAVE
 } from '@/constants/game'
 import { getSpellUpgradeCost, getHealthUpgradeCost } from '@/utils/marketplace'
 import { obstaclesData } from '@/data/obstacles'
@@ -21,7 +22,7 @@ export const useGameState = () => {
       creatures: [],
       obstacles: obstaclesData,
       score: 0,
-      currentWave: 0,
+      currentWave: STARTING_WAVE - 1,
       creaturesToSpawnThisWave: 0,
       creaturesRemainingInWave: 0,
       creaturesSpawnedThisWave: 0,
@@ -35,9 +36,9 @@ export const useGameState = () => {
       mobConfig: {
         normal: true,
         caster: true,
-        tank: true,
-        speed: true,
-        explosive: true,
+        tank: false,
+        speed: false,
+        explosive: false,
         boss: true
       }
     }),
@@ -208,12 +209,12 @@ export const useGameState = () => {
 
   const getMobConfig = useCallback(() => {
     return gameStateRef.current?.mobConfig || {
-      normal: true,
-      caster: true,
-      tank: true,
-      speed: true,
-      explosive: true,
-      boss: true
+      normal: true,    // ✅ Tiene sprites
+      caster: true,    // ✅ Tiene sprites (mage)
+      tank: false,     // ❌ Sin sprites aún
+      speed: false,    // ❌ Sin sprites aún
+      explosive: false,// ❌ Sin sprites aún
+      boss: true       // ✅ Usa sprites de mage temporalmente
     }
   }, [])
 
