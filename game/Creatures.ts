@@ -22,7 +22,27 @@ import {
   EXPONENTIAL_SPEED_MULTIPLIER,
   MAX_CREATURE_SPEED,
   MAX_MAGIC_BOLT_SPEED,
-  MIN_CASTER_CAST_RATE
+  MIN_CASTER_CAST_RATE,
+  // Nuevas constantes para tipos de criaturas
+  CREATURE_TANK_SPEED,
+  CREATURE_TANK_HEALTH,
+  TANK_SIZE_MULTIPLIER,
+  CREATURE_SPEED_FAST,
+  CREATURE_SPEED_HEALTH,
+  SPEED_SIZE_MULTIPLIER,
+  CREATURE_EXPLOSIVE_SPEED,
+  CREATURE_EXPLOSIVE_HEALTH,
+  EXPLOSION_RADIUS,
+  EXPLOSION_DAMAGE,
+  TANK_SPAWN_CHANCE_BASE,
+  TANK_SPAWN_CHANCE_INCREASE,
+  MAX_TANK_SPAWN_CHANCE,
+  SPEED_SPAWN_CHANCE_BASE,
+  SPEED_SPAWN_CHANCE_INCREASE,
+  MAX_SPEED_SPAWN_CHANCE,
+  EXPLOSIVE_SPAWN_CHANCE_BASE,
+  EXPLOSIVE_SPAWN_CHANCE_INCREASE,
+  MAX_EXPLOSIVE_SPAWN_CHANCE
 } from '@/constants/game'
 import { normalize, getEntityRect, checkAABBCollision, distance } from '@/utils/math'
 import { CreatureAI } from './AIBehaviors'
@@ -38,33 +58,83 @@ export const createCreature = (
   const healthMultiplier = Math.pow(EXPONENTIAL_HEALTH_MULTIPLIER, exponentialBonus)
   const speedMultiplier = Math.pow(EXPONENTIAL_SPEED_MULTIPLIER, exponentialBonus)
 
-  // Calcular probabilidad de caster que aumenta con cada wave
+  // Calcular probabilidades de spawn para cada tipo
   const casterChance = Math.min(
     0.1 + (currentWave - 1) * CASTER_SPAWN_CHANCE_INCREASE,
     MAX_CASTER_SPAWN_CHANCE
   )
 
-  // Determinar si crear una criatura normal o caster (desde wave 2)
-  const isCaster = currentWave >= 2 && Math.random() < casterChance
-  const creatureType = isCaster ? 'caster' : 'normal'
+  const tankChance = currentWave >= 3 ? Math.min(
+    TANK_SPAWN_CHANCE_BASE + (currentWave - 3) * TANK_SPAWN_CHANCE_INCREASE,
+    MAX_TANK_SPAWN_CHANCE
+  ) : 0
 
-  // Escalado progresivo de salud con boost exponencial
-  const baseHealth = isCaster
-    ? CREATURE_CASTER_HEALTH + currentWave * CREATURE_HEALTH_INCREASE_PER_WAVE * 1.5
-    : INITIAL_CREATURE_HEALTH + currentWave * CREATURE_HEALTH_INCREASE_PER_WAVE
+  const speedChance = currentWave >= 2 ? Math.min(
+    SPEED_SPAWN_CHANCE_BASE + (currentWave - 2) * SPEED_SPAWN_CHANCE_INCREASE,
+    MAX_SPEED_SPAWN_CHANCE
+  ) : 0
+
+  const explosiveChance = currentWave >= 4 ? Math.min(
+    EXPLOSIVE_SPAWN_CHANCE_BASE + (currentWave - 4) * EXPLOSIVE_SPAWN_CHANCE_INCREASE,
+    MAX_EXPLOSIVE_SPAWN_CHANCE
+  ) : 0
+
+  // Determinar tipo de criatura basado en probabilidades
+  const random = Math.random()
+  let creatureType: 'normal' | 'caster' | 'tank' | 'speed' | 'explosive' = 'normal'
+
+  if (random < explosiveChance) {
+    creatureType = 'explosive'
+  } else if (random < explosiveChance + tankChance) {
+    creatureType = 'tank'
+  } else if (random < explosiveChance + tankChance + speedChance) {
+    creatureType = 'speed'
+  } else if (random < explosiveChance + tankChance + speedChance + casterChance) {
+    creatureType = 'caster'
+  }
+
+  // Configurar estadísticas base según el tipo
+  let baseHealth: number
+  let baseSpeed: number
+  let width = CREATURE_WIDTH
+  let height = CREATURE_HEIGHT
+
+  switch (creatureType) {
+    case 'tank':
+      baseHealth = CREATURE_TANK_HEALTH + currentWave * CREATURE_HEALTH_INCREASE_PER_WAVE * 2
+      baseSpeed = CREATURE_TANK_SPEED + currentWave * CREATURE_SPEED_INCREASE_PER_WAVE * 0.5
+      width = CREATURE_WIDTH * TANK_SIZE_MULTIPLIER
+      height = CREATURE_HEIGHT * TANK_SIZE_MULTIPLIER
+      break
+    case 'speed':
+      baseHealth = CREATURE_SPEED_HEALTH + currentWave * CREATURE_HEALTH_INCREASE_PER_WAVE * 0.5
+      baseSpeed = CREATURE_SPEED_FAST + currentWave * CREATURE_SPEED_INCREASE_PER_WAVE * 1.2
+      width = CREATURE_WIDTH * SPEED_SIZE_MULTIPLIER
+      height = CREATURE_HEIGHT * SPEED_SIZE_MULTIPLIER
+      break
+    case 'explosive':
+      baseHealth = CREATURE_EXPLOSIVE_HEALTH + currentWave * CREATURE_HEALTH_INCREASE_PER_WAVE * 0.8
+      baseSpeed = CREATURE_EXPLOSIVE_SPEED + currentWave * CREATURE_SPEED_INCREASE_PER_WAVE * 1.0
+      break
+    case 'caster':
+      baseHealth = CREATURE_CASTER_HEALTH + currentWave * CREATURE_HEALTH_INCREASE_PER_WAVE * 1.5
+      baseSpeed = CREATURE_CASTER_SPEED + currentWave * CREATURE_SPEED_INCREASE_PER_WAVE * 0.8
+      break
+    default: // normal
+      baseHealth = INITIAL_CREATURE_HEALTH + currentWave * CREATURE_HEALTH_INCREASE_PER_WAVE
+      baseSpeed = CREATURE_SPEED_BASE + currentWave * CREATURE_SPEED_INCREASE_PER_WAVE
+      break
+  }
+
+  // Aplicar multiplicadores exponenciales
   const creatureHealth = Math.floor(baseHealth * healthMultiplier)
-
-  // Escalado progresivo de velocidad con boost exponencial y límite
-  const baseSpeed = isCaster
-    ? CREATURE_CASTER_SPEED + currentWave * CREATURE_SPEED_INCREASE_PER_WAVE * 0.8
-    : CREATURE_SPEED_BASE + currentWave * CREATURE_SPEED_INCREASE_PER_WAVE
   const creatureSpeed = Math.min(baseSpeed * speedMultiplier, MAX_CREATURE_SPEED)
 
   return {
     id: `creature-${Date.now()}-${Math.random()}`,
     position: { x, y },
-    width: CREATURE_WIDTH,
-    height: CREATURE_HEIGHT,
+    width,
+    height,
     speed: creatureSpeed,
     health: creatureHealth,
     maxHealth: creatureHealth,
@@ -75,7 +145,7 @@ export const createCreature = (
     isMoving: false,
     animationFrame: 'S',
     lastAnimationTime: Date.now(),
-    lastPosition: { x, y }, // Inicializar posición anterior para IA
+    lastPosition: { x, y },
     // Inicializar campos de pathfinding
     currentPath: undefined,
     currentPathIndex: 0,
@@ -145,6 +215,30 @@ export const updateCreatures = (gameState: GameState) => {
         creatures,
         obstacles,
         distanceToPlayer
+      )
+    } else if (creature.type === 'tank') {
+      // Tanks son más agresivos y van directo al jugador
+      steeringForce = CreatureAI.updateNormalCreature(
+        creature,
+        player.position,
+        creatures,
+        obstacles
+      )
+    } else if (creature.type === 'speed') {
+      // Speed demons usan la misma IA pero son más rápidos
+      steeringForce = CreatureAI.updateNormalCreature(
+        creature,
+        player.position,
+        creatures,
+        obstacles
+      )
+    } else if (creature.type === 'explosive') {
+      // Explosives van directo al jugador sin importar obstáculos
+      steeringForce = CreatureAI.updateNormalCreature(
+        creature,
+        player.position,
+        creatures,
+        obstacles
       )
     } else {
       steeringForce = CreatureAI.updateNormalCreature(
@@ -456,10 +550,49 @@ export const updateCreatures = (gameState: GameState) => {
 
 export const getCreatureSprite = (creature: Creature, creatureSprites: { [key: string]: HTMLImageElement | null }) => {
   // Determinar el prefijo del sprite según el tipo de criatura
-  const spritePrefix = creature.type === 'caster' ? 'mage' : 'creature'
+  const spritePrefix = creature.type === 'caster' ? 'mage' : creature.type === 'tank' ? 'tank' : creature.type === 'speed' ? 'speed' : creature.type === 'explosive' ? 'explosive' : 'creature'
 
   // Construir el nombre del sprite
   const spriteName = `${spritePrefix}_${creature.direction}_${creature.isMoving ? `W_${creature.animationFrame}` : 'S'}`
 
   return creatureSprites[spriteName] || null
+}
+
+// Función para manejar explosiones de criaturas explosivas
+export const handleExplosiveCreatureDeath = (
+  explosiveCreature: Creature,
+  gameState: GameState,
+  setPlayerHealth?: (health: number) => void,
+  playPlayerHit?: () => void
+) => {
+  const { player, creatures } = gameState
+
+  // Verificar si el jugador está en el radio de explosión
+  const distanceToPlayer = distance(explosiveCreature.position, player.position)
+  if (distanceToPlayer <= EXPLOSION_RADIUS) {
+    // Aplicar daño al jugador si no está en invulnerabilidad
+    const now = Date.now()
+    const canTakeDamage = now - player.lastDamageTime >= 1000 // 1 segundo de invulnerabilidad
+
+    if (canTakeDamage) {
+      player.health -= EXPLOSION_DAMAGE
+      player.lastDamageTime = now
+      if (setPlayerHealth) {
+        setPlayerHealth(player.health)
+      }
+      if (playPlayerHit) {
+        playPlayerHit()
+      }
+    }
+  }
+
+  // Dañar otras criaturas en el radio de explosión
+  creatures.forEach(creature => {
+    if (creature.id !== explosiveCreature.id) {
+      const distanceToCreature = distance(explosiveCreature.position, creature.position)
+      if (distanceToCreature <= EXPLOSION_RADIUS) {
+        creature.health -= EXPLOSION_DAMAGE * 0.5 // Medio daño a otras criaturas
+      }
+    }
+  })
 } 

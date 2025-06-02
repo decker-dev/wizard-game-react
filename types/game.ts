@@ -50,7 +50,7 @@ export interface Creature {
   speed: number
   health: number
   maxHealth: number
-  type: 'normal' | 'caster'
+  type: 'normal' | 'caster' | 'tank' | 'speed' | 'explosive'
   lastSpellTime?: number
   sprite?: HTMLImageElement | null
   direction: 'N' | 'S' | 'E' | 'O'

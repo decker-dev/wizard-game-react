@@ -145,7 +145,18 @@ export const render = (
         )
       } else {
         // Fallback: usar colores como antes si no hay sprite
-        ctx.fillStyle = c.type === 'caster' ? '#8A2BE2' : '#228B22'
+        let creatureColor = '#228B22' // Verde por defecto (normal)
+        if (c.type === 'caster') {
+          creatureColor = '#8A2BE2' // Púrpura para casters
+        } else if (c.type === 'tank') {
+          creatureColor = '#DC143C' // Rojo para tanks
+        } else if (c.type === 'speed') {
+          creatureColor = '#FFD700' // Amarillo para speed
+        } else if (c.type === 'explosive') {
+          creatureColor = '#FF4500' // Naranja para explosive
+        }
+
+        ctx.fillStyle = creatureColor
         ctx.fillRect(screenX - c.width / 2, screenY - c.height / 2, c.width, c.height)
       }
 
@@ -235,8 +246,20 @@ const renderMinimap = (
   })
 
   // Criaturas en el minimapa
-  ctx.fillStyle = "#FF0000"
   gameState.creatures.forEach((c) => {
+    // Usar diferentes colores según el tipo de criatura
+    if (c.type === 'caster') {
+      ctx.fillStyle = "#8A2BE2" // Púrpura para casters
+    } else if (c.type === 'tank') {
+      ctx.fillStyle = "#DC143C" // Rojo para tanks
+    } else if (c.type === 'speed') {
+      ctx.fillStyle = "#FFD700" // Amarillo para speed
+    } else if (c.type === 'explosive') {
+      ctx.fillStyle = "#FF4500" // Naranja para explosive
+    } else {
+      ctx.fillStyle = "#FF0000" // Rojo por defecto para normal
+    }
+
     ctx.fillRect(
       canvasWidth - minimapSize - minimapPadding + c.position.x * minimapScaleX - 1,
       minimapPadding + c.position.y * minimapScaleY - 1,

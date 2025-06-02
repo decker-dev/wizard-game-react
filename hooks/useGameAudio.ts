@@ -186,7 +186,7 @@ export function useGameAudio() {
     setAudioSettings(getAudioSettings())
   }, [])
 
-  const playCreatureDeath = useCallback((creatureType: 'normal' | 'caster' = 'normal') => {
+  const playCreatureDeath = useCallback((creatureType: 'normal' | 'caster' | 'tank' | 'speed' | 'explosive' = 'normal') => {
     if (!isClient || !audioSettings.sfxEnabled) return
 
     if (creatureType === 'caster') {

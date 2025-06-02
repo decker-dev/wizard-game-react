@@ -27,9 +27,28 @@ export const MAGIC_BOLT_SPEED = 5;
 export const MAGIC_BOLT_DAMAGE = 50;
 export const CASTER_CAST_RATE = 2000;
 
+// Tank creature constants
+export const CREATURE_TANK_SPEED = 0.3;
+export const CREATURE_TANK_HEALTH = 120;
+export const TANK_SIZE_MULTIPLIER = 1.5; // 50% más grande
+
+// Speed creature constants  
+export const CREATURE_SPEED_FAST = 1.8;
+export const CREATURE_SPEED_HEALTH = 15;
+export const SPEED_SIZE_MULTIPLIER = 0.8; // 20% más pequeño
+
+// Explosive creature constants
+export const CREATURE_EXPLOSIVE_SPEED = 0.6;
+export const CREATURE_EXPLOSIVE_HEALTH = 25;
+export const EXPLOSION_RADIUS = 80;
+export const EXPLOSION_DAMAGE = 40;
+
 // Crystal rewards
 export const CRYSTAL_REWARD_NORMAL_CREATURE = 3;
 export const CRYSTAL_REWARD_CASTER_CREATURE = 7;
+export const CRYSTAL_REWARD_TANK_CREATURE = 10;
+export const CRYSTAL_REWARD_SPEED_CREATURE = 5;
+export const CRYSTAL_REWARD_EXPLOSIVE_CREATURE = 8;
 
 // Marketplace & Upgrades - Precios base que escalan
 export const SPELL_UPGRADE_BASE_COST = 6;
@@ -88,3 +107,16 @@ export const MINIMAP_SCALE_Y = MINIMAP_SIZE / MAP_HEIGHT;
 
 // Wall rendering constants
 export const WALL_BLOCK_SIZE = 32; // Tamaño de cada bloque individual de pared
+
+// Spawn chances para nuevos tipos de criaturas
+export const TANK_SPAWN_CHANCE_BASE = 0.05 // 5% base desde wave 3
+export const TANK_SPAWN_CHANCE_INCREASE = 0.01 // +1% cada wave
+export const MAX_TANK_SPAWN_CHANCE = 0.25 // Máximo 25% de tanks
+
+export const SPEED_SPAWN_CHANCE_BASE = 0.08 // 8% base desde wave 2  
+export const SPEED_SPAWN_CHANCE_INCREASE = 0.015 // +1.5% cada wave
+export const MAX_SPEED_SPAWN_CHANCE = 0.35 // Máximo 35% de speed
+
+export const EXPLOSIVE_SPAWN_CHANCE_BASE = 0.03 // 3% base desde wave 4
+export const EXPLOSIVE_SPAWN_CHANCE_INCREASE = 0.008 // +0.8% cada wave  
+export const MAX_EXPLOSIVE_SPAWN_CHANCE = 0.2 // Máximo 20% de explosive

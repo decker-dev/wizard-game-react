@@ -7,10 +7,14 @@ import {
   MAP_WIDTH,
   MAP_HEIGHT,
   CRYSTAL_REWARD_NORMAL_CREATURE,
-  CRYSTAL_REWARD_CASTER_CREATURE
+  CRYSTAL_REWARD_CASTER_CREATURE,
+  CRYSTAL_REWARD_TANK_CREATURE,
+  CRYSTAL_REWARD_SPEED_CREATURE,
+  CRYSTAL_REWARD_EXPLOSIVE_CREATURE
 } from '@/constants/game'
 import { checkAABBCollision, getEntityRect, normalize } from '@/utils/math'
 import { createCoinParticle } from '@/utils/coinParticles'
+import { handleExplosiveCreatureDeath } from './Creatures'
 
 export const checkCollisions = (
   gameState: GameState,
@@ -19,7 +23,7 @@ export const checkCollisions = (
   setPlayerHealth: (health: number) => void,
   setGameOver: (gameOver: boolean) => void,
   setPlayerCoins?: (coins: number) => void,
-  playCreatureDeath?: (creatureType: 'normal' | 'caster') => void,
+  playCreatureDeath?: (creatureType: 'normal' | 'caster' | 'tank' | 'speed' | 'explosive') => void,
   playPlayerHit?: () => void
 ) => {
   const { projectiles, creatures, player, creaturesSpawnedThisWave, creaturesToSpawnThisWave } = gameState
@@ -110,13 +114,29 @@ export const checkCollisions = (
           projectiles.splice(i, 1)
           z.health -= player.upgrades.spellDamage
           if (z.health <= 0) {
+            // Manejar explosión si es una criatura explosiva
+            if (z.type === 'explosive') {
+              handleExplosiveCreatureDeath(z, gameState, setPlayerHealth, playPlayerHit)
+            }
+
             // Reproducir sonido de muerte de criatura según su tipo
             if (playCreatureDeath) {
               playCreatureDeath(z.type)
             }
 
             // Recompensar cristales según el tipo de criatura
-            const crystalsEarned = z.type === 'caster' ? CRYSTAL_REWARD_CASTER_CREATURE : CRYSTAL_REWARD_NORMAL_CREATURE
+            let crystalsEarned = 0
+            if (z.type === 'caster') {
+              crystalsEarned = CRYSTAL_REWARD_CASTER_CREATURE
+            } else if (z.type === 'tank') {
+              crystalsEarned = CRYSTAL_REWARD_TANK_CREATURE
+            } else if (z.type === 'speed') {
+              crystalsEarned = CRYSTAL_REWARD_SPEED_CREATURE
+            } else if (z.type === 'explosive') {
+              crystalsEarned = CRYSTAL_REWARD_EXPLOSIVE_CREATURE
+            } else {
+              crystalsEarned = CRYSTAL_REWARD_NORMAL_CREATURE
+            }
             player.crystals += crystalsEarned
             if (setPlayerCoins) {
               setPlayerCoins(player.crystals)

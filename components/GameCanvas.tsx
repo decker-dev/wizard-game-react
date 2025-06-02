@@ -21,7 +21,7 @@ interface GameCanvasProps {
   setGameOver: (gameOver: boolean) => void
   onMouseMove: (e: MouseEvent) => void
   onMouseClick: (e: MouseEvent) => void
-  playCreatureDeath: (creatureType: 'normal' | 'caster') => void
+  playCreatureDeath: (creatureType: 'normal' | 'caster' | 'tank' | 'speed' | 'explosive') => void
   playPlayerShoot: () => void
   playPlayerHit: () => void
 }
