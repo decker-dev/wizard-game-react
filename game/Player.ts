@@ -1,5 +1,5 @@
 import { Player, GameState } from '@/types/game'
-import { PLAYER_SPEED, PLAYER_SPRITE_WIDTH, PLAYER_SPRITE_HEIGHT, PLAYER_COLLISION_RADIUS, MAP_WIDTH, MAP_HEIGHT, BASE_MAX_HEALTH, BASE_SPELL_DAMAGE, BASE_PROJECTILE_COUNT, BASE_PROJECTILE_SIZE, BASE_CAST_RATE, BASE_SPREAD } from '@/constants/game'
+import { PLAYER_SPEED, PLAYER_SPRITE_WIDTH, PLAYER_SPRITE_HEIGHT, PLAYER_COLLISION_RADIUS, MAP_WIDTH, MAP_HEIGHT, BASE_MAX_HEALTH, BASE_SPELL_DAMAGE, BASE_PROJECTILE_COUNT, BASE_PROJECTILE_SIZE, BASE_CAST_RATE, BASE_SPREAD, STARTING_CRYSTALS } from '@/constants/game'
 import { getEntityRect, checkAABBCollision } from '@/utils/math'
 
 export const createInitialPlayer = (playerSprites: { [key: string]: HTMLImageElement | null }): Player => ({
@@ -14,7 +14,7 @@ export const createInitialPlayer = (playerSprites: { [key: string]: HTMLImageEle
   sprites: playerSprites,
   lastDamageTime: 0,
   lastMovementDirection: { x: 1, y: 0 },
-  crystals: 0,
+  crystals: STARTING_CRYSTALS,
   upgrades: {
     spellDamage: BASE_SPELL_DAMAGE,
     maxHealth: BASE_MAX_HEALTH,
