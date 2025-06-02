@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 
 const siteUrl = 'https://mystic.decker.sh'
 
-export const metadata = {
+export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
     default: 'MYSTIC REALM DEFENDER - 2D Pixel Art Fantasy Game',
