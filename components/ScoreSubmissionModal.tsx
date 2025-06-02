@@ -41,6 +41,18 @@ export function ScoreSubmissionModal({
       return;
     }
 
+    console.log('🎮 === SCORE MODAL SUBMISSION START ===');
+    console.log('🎯 Game stats:', {
+      playerName: playerName.trim(),
+      score,
+      wavesSurvived,
+      clientId: clientId.substring(0, 8) + '...',
+      gameStartTime: new Date(gameStartTime).toISOString(),
+      crystalsEarned,
+      spellLevel: player.upgrades.spellLevel,
+      healthLevel: player.upgrades.healthLevel
+    });
+
     setIsSubmittingState(true);
     setSubmitSuccess(null);
 
@@ -59,8 +71,17 @@ export function ScoreSubmissionModal({
       healthLevel: player.upgrades.healthLevel
     };
 
+    console.log('📊 Calculated game data:', {
+      gameDuration: `${Math.floor(gameData.gameDuration / 1000)}s`,
+      avgSecondsPerWave: Math.floor(gameData.gameDuration / 1000 / wavesSurvived),
+      totalUpgrades: gameData.spellLevel + gameData.healthLevel
+    });
+
     try {
+      console.log('🚀 Calling onSubmit with secure data...');
       const success = await onSubmit(scoreData, clientId, gameData);
+      
+      console.log('📝 Submission result:', success ? '✅ Success' : '❌ Failed');
       setSubmitSuccess(success);
       
       if (success) {
@@ -69,9 +90,11 @@ export function ScoreSubmissionModal({
         }, 1500);
       }
     } catch (error) {
+      console.error('💥 Modal submission error:', error);
       setSubmitSuccess(false);
     } finally {
       setIsSubmittingState(false);
+      console.log('🎮 === SCORE MODAL SUBMISSION END ===\n');
     }
   }, [playerName, score, wavesSurvived, onSubmit, onSkip, clientId, player, gameStartTime, crystalsEarned]);
 

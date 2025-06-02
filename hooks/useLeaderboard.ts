@@ -89,6 +89,15 @@ export function useLeaderboard() {
       healthLevel: number;
     }
   ): Promise<boolean> => {
+    console.log('🔮 === SECURE SCORE SUBMISSION START ===');
+    console.log('📤 Submitting secure score:', {
+      player: scoreData.player_name,
+      score: scoreData.score,
+      waves: scoreData.waves_survived,
+      clientId: clientId.substring(0, 8) + '...',
+      gameData
+    });
+
     setIsSubmitting(true);
     try {
       const timestamp = Date.now();
@@ -112,7 +121,14 @@ export function useLeaderboard() {
         game_start_time: gameData.gameStartTime
       };
 
+      console.log('🔐 Payload prepared:', {
+        timestamp: new Date(timestamp).toISOString(),
+        hash: timeWindowHash.substring(0, 10) + '...',
+        payloadSize: JSON.stringify(securePayload).length
+      });
+
       // Enviar al API route de Next.js
+      console.log('📡 Sending to /api/validate-score...');
       const response = await fetch('/api/validate-score', {
         method: 'POST',
         headers: {
@@ -121,14 +137,27 @@ export function useLeaderboard() {
         body: JSON.stringify(securePayload)
       });
 
+      const responseData = await response.json();
+      console.log('📬 Server response:', {
+        status: response.status,
+        ok: response.ok,
+        data: responseData
+      });
+
       const success = response.ok;
       if (success) {
+        console.log('✅ Score accepted! Refreshing leaderboard...');
         await loadTopScores();
         await loadAllScores();
+      } else {
+        console.log('❌ Score rejected:', responseData.error);
       }
+
+      console.log('🔮 === SECURE SCORE SUBMISSION END ===\n');
       return success;
     } catch (error) {
-      console.error('Error submitting secure score:', error);
+      console.error('💥 Error submitting secure score:', error);
+      console.log('🔮 === SECURE SCORE SUBMISSION FAILED ===\n');
       return false;
     } finally {
       setIsSubmitting(false);
