@@ -4,11 +4,13 @@ interface AssetLoaderReturn {
   loadAssets: () => Promise<{
     playerSprites: { [key: string]: HTMLImageElement | null },
     creatureSprites: { [key: string]: HTMLImageElement | null },
-    floorTexture: HTMLImageElement | null
+    floorTexture: HTMLImageElement | null,
+    healthPackSprite: HTMLImageElement | null
   }>
   creatureSpritesRef: React.RefObject<{ [key: string]: HTMLImageElement | null }>
   playerSpritesRef: React.RefObject<{ [key: string]: HTMLImageElement | null }>
   floorTextureRef: React.RefObject<HTMLImageElement | null>
+  healthPackSpriteRef: React.RefObject<HTMLImageElement | null>
 }
 
 export function useAssetLoader(): AssetLoaderReturn {
@@ -59,6 +61,7 @@ export function useAssetLoader(): AssetLoaderReturn {
   })
 
   const floorTextureRef = useRef<HTMLImageElement | null>(null)
+  const healthPackSpriteRef = useRef<HTMLImageElement | null>(null)
 
   const loadAssets = useCallback(async () => {
     // Cargar sprites del wizard para el player
@@ -132,12 +135,24 @@ export function useAssetLoader(): AssetLoaderReturn {
       img.src = '/floor-texture.png'
     })
 
-    await Promise.all([...playerPromises, ...magePromises, ...creaturePromises, floorPromise])
+    // Cargar sprite del pack de vida
+    const healthPackPromise = new Promise<void>((resolve, reject) => {
+      const img = new Image()
+      img.onload = () => {
+        healthPackSpriteRef.current = img
+        resolve()
+      }
+      img.onerror = reject
+      img.src = '/health/health.png'
+    })
+
+    await Promise.all([...playerPromises, ...magePromises, ...creaturePromises, floorPromise, healthPackPromise])
 
     return {
       playerSprites: playerSpritesRef.current,
       creatureSprites: creatureSpritesRef.current,
-      floorTexture: floorTextureRef.current
+      floorTexture: floorTextureRef.current,
+      healthPackSprite: healthPackSpriteRef.current
     }
   }, [])
 
@@ -145,6 +160,7 @@ export function useAssetLoader(): AssetLoaderReturn {
     loadAssets,
     creatureSpritesRef,
     playerSpritesRef,
-    floorTextureRef
+    floorTextureRef,
+    healthPackSpriteRef
   }
 } 

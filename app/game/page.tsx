@@ -55,6 +55,7 @@ export default function GamePage() {
         canvasRef={gameController.canvasRef}
         creatureSpritesRef={gameController.creatureSpritesRef}
         floorTextureRef={gameController.floorTextureRef}
+        healthPackSpriteRef={gameController.healthPackSpriteRef}
         playCreatureDeath={gameController.playCreatureDeath}
         playPlayerCast={gameController.playPlayerCast}
         playPlayerHit={gameController.playPlayerHit}
