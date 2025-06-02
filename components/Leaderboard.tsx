@@ -40,7 +40,7 @@ export function Leaderboard({ topScores, allScores, totalGamesPlayed, isLoading 
   if (isLoading) {
     return (
       <div className="bg-gray-800 border border-gray-600 rounded-lg p-6">
-        <h2 className="text-2xl font-bold text-white mb-4 text-center">
+        <h2 className="text-2xl font-bold mb-4 text-center text-purple-600">
           📊 Leaderboard
         </h2>
         <div className="text-center text-gray-400">
@@ -52,7 +52,7 @@ export function Leaderboard({ topScores, allScores, totalGamesPlayed, isLoading 
 
   return (
     <div className="bg-gray-800 border border-gray-600 rounded-lg p-6">
-      <h2 className="text-2xl font-bold text-white mb-4 text-center">
+      <h2 className="text-2xl font-bold text-purple-600 mb-4 text-center">
         📊 Leaderboard
       </h2>
 
