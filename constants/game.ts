@@ -5,8 +5,8 @@ export const MAP_WIDTH = 2000;
 export const MAP_HEIGHT = 1500;
 
 // Development/Testing constants
-export const STARTING_WAVE = 5;
-export const STARTING_CRYSTALS = 500;
+export const STARTING_WAVE = 1;
+export const STARTING_CRYSTALS = 0;
 
 // Player constants
 export const PLAYER_SPEED = 3;
