@@ -78,6 +78,76 @@ export function GameScreen({
     showScoreModal
   } = screenState
 
+  // Detect if we're on mobile
+  const [isMobile, setIsMobile] = React.useState(false)
+
+  React.useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  // Mobile version - only canvas
+  if (isMobile) {
+    return (
+      <div className="min-h-screen w-full bg-black flex items-center justify-center overflow-hidden">
+        {/* Game Canvas - Full screen on mobile */}
+        <div className="w-full h-full flex items-center justify-center">
+          <GameCanvas
+            gameState={gameStateRef.current}
+            creatureSprites={creatureSpritesRef.current}
+            floorTexture={floorTextureRef.current}
+            waveMessage={waveMessage}
+            startNextWave={onStartNextWave}
+            setScore={setScore}
+            setPlayerHealth={setPlayerHealth}
+            setPlayerCoins={setPlayerCoins}
+            setGameOver={setGameOver}
+            onMouseMove={onMouseMove}
+            onMouseClick={onMouseClick}
+            playCreatureDeath={playCreatureDeath}
+            playPlayerShoot={playPlayerCast}
+            playPlayerHit={playPlayerHit}
+          />
+        </div>
+
+        {/* Game Over/Won Overlay - Still needed for mobile */}
+        {(gameOver || gameWon) && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <GameOverlay
+              gameWon={gameWon}
+              score={score}
+              playerCoins={playerCoins}
+              currentWave={currentWave}
+              showScoreModal={showScoreModal}
+              onResetGame={onResetGame}
+              onReturnHome={onReturnHome}
+              onSaveScore={onSaveScore}
+            />
+          </div>
+        )}
+
+        {/* Marketplace - Still needed for mobile */}
+        {gameStateRef.current?.showMarketplace && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <Marketplace
+              player={gameStateRef.current.player}
+              onUpgradeWeapon={onUpgradeWeapon}
+              onUpgradeHealth={onUpgradeHealth}
+              onContinue={onContinueFromMarketplace}
+            />
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  // Desktop version - original layout
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-black">
       {/* Animated Background Elements */}
