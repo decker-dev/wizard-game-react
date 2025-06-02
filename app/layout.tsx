@@ -53,7 +53,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: '/',
+    url: 'https://mystic.decker.sh',
     title: 'MYSTIC REALM DEFENDER - 2D Pixel Art Fantasy Game',
     description: 'Master the arcane arts in MYSTIC REALM DEFENDER! Control with WASD, cast spells with mouse and survive as long as possible in this intense 2D fantasy game.',
     siteName: 'MYSTIC REALM DEFENDER',
@@ -95,10 +95,6 @@ export const metadata: Metadata = {
     'application-name': 'MYSTIC REALM DEFENDER',
     'msapplication-TileColor': '#8A2BE2',
     'theme-color': '#8A2BE2',
-    // WhatsApp specific meta tags
-    'og:image:width': '1200',
-    'og:image:height': '630',
-    'og:image:type': 'image/png',
   },
 }
 
@@ -110,7 +106,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* Additional WhatsApp-friendly meta tags */}
+        {/* Open Graph meta tags optimizados */}
         <meta property="og:image" content="https://mystic.decker.sh/og-image.png" />
         <meta property="og:image:secure_url" content="https://mystic.decker.sh/og-image.png" />
         <meta property="og:image:width" content="1200" />
@@ -118,10 +114,11 @@ export default function RootLayout({
         <meta property="og:image:alt" content="MYSTIC REALM DEFENDER - Gameplay Screenshot" />
         <meta property="og:image:type" content="image/png" />
         
-        {/* WhatsApp specific */}
-        <meta name="thumbnail" content="https://mystic.decker.sh/og-image.png" />
+        {/* Twitter Card meta tags */}
+        <meta name="twitter:image" content="https://mystic.decker.sh/og-image.png" />
         
-        {/* Additional fallbacks */}
+        {/* WhatsApp y otras plataformas */}
+        <meta name="thumbnail" content="https://mystic.decker.sh/og-image.png" />
         <link rel="image_src" href="https://mystic.decker.sh/og-image.png" />
       </head>
       <body className={pressStart2P.variable}>{children}</body>
