@@ -28,13 +28,15 @@ export function useGameController(autoStart: boolean = false) {
     isLoading: isLoadingScores,
     isSubmitting,
     submitScore,
+    submitSecureScore,
     recordNewGame
   } = useLeaderboard()
   const { playCreatureDeath, playPlayerCast, playPlayerHit } = useGameAudio()
 
-  // Screen and UI state management
+  // Screen and UI state management (includes gameTracking)
   const {
     screenState,
+    gameTracking,
     navigateToHome,
     navigateToGame,
     setGameReady,
@@ -81,7 +83,8 @@ export function useGameController(autoStart: boolean = false) {
       // Registrar nueva partida iniciada
       await recordNewGame()
 
-      setGameReady()
+      // Pasar los cristales iniciales al tracking
+      setGameReady(gameState.player.crystals)
       handleStartNextWave()
     } catch (error) {
       console.error("Failed to load game assets:", error)
@@ -98,12 +101,15 @@ export function useGameController(autoStart: boolean = false) {
 
   const resetGame = useCallback(async () => {
     const gameState = resetGameState(playerSpritesRef.current)
-    resetScreenState()
 
     // Initialize playerHealth with player's mana
     if (gameState) {
       setPlayerHealth(gameState.player.mana)
       setPlayerCoins(gameState.player.crystals)
+      // Reiniciar tracking con los cristales iniciales
+      resetScreenState(gameState.player.crystals)
+    } else {
+      resetScreenState(0)
     }
 
     // Registrar nueva partida iniciada (reinicio cuenta como nueva partida)
@@ -112,9 +118,9 @@ export function useGameController(autoStart: boolean = false) {
     handleStartNextWave()
   }, [resetGameState, playerSpritesRef, resetScreenState, handleStartNextWave, recordNewGame, setPlayerHealth, setPlayerCoins])
 
-  // Score handling
-  const handleScoreSubmit = useCallback(async (scoreData: any) => {
-    const success = await submitScore(scoreData)
+  // Score handling seguro
+  const handleScoreSubmit = useCallback(async (scoreData: any, clientId: string, gameData: any) => {
+    const success = await submitSecureScore(scoreData, clientId, gameData)
     if (success) {
       setTimeout(() => {
         setShowScoreModal(false)
@@ -122,7 +128,7 @@ export function useGameController(autoStart: boolean = false) {
       }, 1000)
     }
     return success
-  }, [submitScore, setShowScoreModal, resetGame])
+  }, [submitSecureScore, setShowScoreModal, resetGame])
 
   const handleSkipScore = useCallback(() => {
     setShowScoreModal(false)
@@ -168,6 +174,9 @@ export function useGameController(autoStart: boolean = false) {
     playCreatureDeath,
     playPlayerCast,
     playPlayerHit,
+
+    // Game tracking (for security)
+    gameTracking,
 
     // Actions
     startGame,

@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react'
 import { BASE_MAX_HEALTH } from '@/constants/game'
+import { useGameTracking } from './useGameTracking'
 
 export type GameScreen = 'home' | 'playing' | 'gameOver'
 
@@ -32,6 +33,8 @@ export function useGameScreens() {
     showShareModal: false
   })
 
+  const gameTracking = useGameTracking()
+
   const updateScreenState = useCallback((updates: Partial<GameScreenState>) => {
     setScreenState(prev => ({ ...prev, ...updates }))
   }, [])
@@ -43,7 +46,8 @@ export function useGameScreens() {
       gameOver: false,
       gameWon: false
     })
-  }, [updateScreenState])
+    gameTracking.stopTracking()
+  }, [updateScreenState, gameTracking])
 
   const navigateToGame = useCallback(() => {
     updateScreenState({
@@ -52,7 +56,7 @@ export function useGameScreens() {
     })
   }, [updateScreenState])
 
-  const setGameReady = useCallback(() => {
+  const setGameReady = useCallback((initialCrystals: number = 0) => {
     updateScreenState({
       isLoading: false,
       score: 0,
@@ -64,9 +68,10 @@ export function useGameScreens() {
       waveMessage: "",
       showScoreModal: false
     })
-  }, [updateScreenState])
+    gameTracking.startTracking(initialCrystals)
+  }, [updateScreenState, gameTracking])
 
-  const resetGameState = useCallback(() => {
+  const resetGameState = useCallback((initialCrystals: number = 0) => {
     updateScreenState({
       score: 0,
       currentWave: 0,
@@ -77,7 +82,8 @@ export function useGameScreens() {
       waveMessage: "",
       showScoreModal: false
     })
-  }, [updateScreenState])
+    gameTracking.startTracking(initialCrystals)
+  }, [updateScreenState, gameTracking])
 
   const setScore = useCallback((score: number) => {
     updateScreenState({ score })
@@ -97,11 +103,20 @@ export function useGameScreens() {
 
   const setGameOver = useCallback((gameOver: boolean) => {
     updateScreenState({ gameOver })
-  }, [updateScreenState])
+    if (gameOver) {
+      gameTracking.stopTracking()
+      if (screenState.score > 0) {
+        updateScreenState({ showScoreModal: true })
+      }
+    }
+  }, [updateScreenState, gameTracking, screenState.score])
 
   const setGameWon = useCallback((gameWon: boolean) => {
     updateScreenState({ gameWon })
-  }, [updateScreenState])
+    if (gameWon) {
+      gameTracking.stopTracking()
+    }
+  }, [updateScreenState, gameTracking])
 
   const setWaveMessage = useCallback((waveMessage: string) => {
     updateScreenState({ waveMessage })
@@ -117,6 +132,7 @@ export function useGameScreens() {
 
   return {
     screenState,
+    gameTracking,
     updateScreenState,
     navigateToHome,
     navigateToGame,

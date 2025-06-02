@@ -1,6 +1,18 @@
 import { useState, useEffect, useCallback } from 'react'
 import { LeaderboardEntry, ScoreSubmission } from '@/types/game'
 import { getTopScores, getAllScores, saveScore, getScoreRank, recordGameStarted, getTotalGamesPlayed } from '@/utils/leaderboard'
+import { generateTimeWindowHash } from '@/utils/security'
+
+export interface SecureScoreSubmission extends ScoreSubmission {
+  client_id: string;
+  timestamp: number;
+  time_window_hash: string;
+  game_duration: number;
+  crystals_earned: number;
+  spell_level: number;
+  health_level: number;
+  game_start_time: number;
+}
 
 export function useLeaderboard() {
   const [topScores, setTopScores] = useState<LeaderboardEntry[]>([])
@@ -45,7 +57,7 @@ export function useLeaderboard() {
     }
   }, [])
 
-  // Enviar nuevo score
+  // Enviar nuevo score (legacy - mantener compatibilidad)
   const submitScore = useCallback(async (scoreData: ScoreSubmission): Promise<boolean> => {
     setIsSubmitting(true)
     try {
@@ -63,6 +75,65 @@ export function useLeaderboard() {
       setIsSubmitting(false)
     }
   }, [loadTopScores, loadAllScores])
+
+  // Enviar score seguro (nueva función)
+  const submitSecureScore = useCallback(async (
+    scoreData: ScoreSubmission,
+    clientId: string,
+    gameData: {
+      wavesSurvived: number;
+      crystalsEarned: number;
+      gameStartTime: number;
+      gameDuration: number;
+      spellLevel: number;
+      healthLevel: number;
+    }
+  ): Promise<boolean> => {
+    setIsSubmitting(true);
+    try {
+      const timestamp = Date.now();
+
+      const timeWindowHash = generateTimeWindowHash(
+        scoreData.score,
+        timestamp,
+        clientId,
+        gameData
+      );
+
+      const securePayload: SecureScoreSubmission = {
+        ...scoreData,
+        client_id: clientId,
+        timestamp,
+        time_window_hash: timeWindowHash,
+        game_duration: gameData.gameDuration,
+        crystals_earned: gameData.crystalsEarned,
+        spell_level: gameData.spellLevel,
+        health_level: gameData.healthLevel,
+        game_start_time: gameData.gameStartTime
+      };
+
+      // Enviar al API route de Next.js
+      const response = await fetch('/api/validate-score', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(securePayload)
+      });
+
+      const success = response.ok;
+      if (success) {
+        await loadTopScores();
+        await loadAllScores();
+      }
+      return success;
+    } catch (error) {
+      console.error('Error submitting secure score:', error);
+      return false;
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [loadTopScores, loadAllScores]);
 
   // Registrar nueva partida iniciada
   const recordNewGame = useCallback(async (): Promise<boolean> => {
@@ -106,6 +177,7 @@ export function useLeaderboard() {
     loadAllScores,
     loadTotalGamesPlayed,
     submitScore,
+    submitSecureScore,
     recordNewGame,
     getRankForScore
   }

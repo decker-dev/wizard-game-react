@@ -15,6 +15,7 @@ export default function GamePage() {
   
   const {
     screenState,
+    gameTracking,
     isSubmitting,
     handleKeyDownWrapper,
     handleKeyUp,
@@ -40,6 +41,10 @@ export default function GamePage() {
   if (screenState.isLoading) {
     return <LoadingScreen />
   }
+
+  // Calculate crystals earned for security
+  const player = gameController.gameStateRef.current?.player
+  const crystalsEarned = player ? player.crystals - (gameTracking.gameStartTime > 0 ? 0 : player.crystals) : 0
 
   // Game Screen
   return (
@@ -69,15 +74,21 @@ export default function GamePage() {
         onContinueFromMarketplace={gameController.handleContinueFromMarketplace}
       />
 
-      {/* Score Submission Modal */}
-      <ScoreSubmissionModal
-        score={screenState.score}
-        wavesSurvived={screenState.currentWave}
-        isVisible={screenState.showScoreModal}
-        onSubmit={handleScoreSubmit}
-        onSkip={handleSkipScore}
-        isSubmitting={isSubmitting}
-      />
+      {/* Score Submission Modal with secure props */}
+      {player && (
+        <ScoreSubmissionModal
+          score={screenState.score}
+          wavesSurvived={screenState.currentWave}
+          isVisible={screenState.showScoreModal}
+          onSubmit={handleScoreSubmit}
+          onSkip={handleSkipScore}
+          isSubmitting={isSubmitting}
+          clientId={gameTracking.clientId}
+          player={player}
+          gameStartTime={gameTracking.gameStartTime}
+          crystalsEarned={crystalsEarned}
+        />
+      )}
 
       {/* Share Modal */}
       <ShareModal

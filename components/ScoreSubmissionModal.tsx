@@ -1,13 +1,21 @@
 import { useState, useCallback } from 'react'
-import { ScoreSubmission } from '@/types/game'
+import { ScoreSubmission, Player } from '@/types/game'
 
 interface ScoreSubmissionModalProps {
   score: number
   wavesSurvived: number
   isVisible: boolean
-  onSubmit: (scoreData: ScoreSubmission) => Promise<boolean>
+  onSubmit: (
+    scoreData: ScoreSubmission, 
+    clientId: string, 
+    gameData: any
+  ) => Promise<boolean>
   onSkip: () => void
   isSubmitting: boolean
+  clientId: string
+  player: Player
+  gameStartTime: number
+  crystalsEarned: number
 }
 
 export function ScoreSubmissionModal({
@@ -16,44 +24,56 @@ export function ScoreSubmissionModal({
   isVisible,
   onSubmit,
   onSkip,
-  isSubmitting
+  isSubmitting,
+  clientId,
+  player,
+  gameStartTime,
+  crystalsEarned
 }: ScoreSubmissionModalProps) {
   const [playerName, setPlayerName] = useState('')
   const [isSubmittingState, setIsSubmittingState] = useState(false)
   const [submitSuccess, setSubmitSuccess] = useState<boolean | null>(null)
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     
     if (!playerName.trim()) {
-      return
+      return;
     }
 
-    setIsSubmittingState(true)
-    setSubmitSuccess(null)
+    setIsSubmittingState(true);
+    setSubmitSuccess(null);
 
     const scoreData: ScoreSubmission = {
       player_name: playerName.trim(),
       score,
       waves_survived: wavesSurvived
-    }
+    };
+
+    const gameData = {
+      wavesSurvived,
+      crystalsEarned,
+      gameStartTime,
+      gameDuration: Date.now() - gameStartTime,
+      spellLevel: player.upgrades.spellLevel,
+      healthLevel: player.upgrades.healthLevel
+    };
 
     try {
-      const success = await onSubmit(scoreData)
-      setSubmitSuccess(success)
+      const success = await onSubmit(scoreData, clientId, gameData);
+      setSubmitSuccess(success);
       
       if (success) {
-        // Wait a moment to show success message
         setTimeout(() => {
-          onSkip() // Close the modal
-        }, 1500)
+          onSkip();
+        }, 1500);
       }
     } catch (error) {
-      setSubmitSuccess(false)
+      setSubmitSuccess(false);
     } finally {
-      setIsSubmittingState(false)
+      setIsSubmittingState(false);
     }
-  }, [playerName, score, wavesSurvived, onSubmit, onSkip])
+  }, [playerName, score, wavesSurvived, onSubmit, onSkip, clientId, player, gameStartTime, crystalsEarned]);
 
   const handleSkip = useCallback(() => {
     setPlayerName('')
@@ -78,6 +98,9 @@ export function ScoreSubmissionModal({
           </div>
           <div className="text-blue-400 text-lg">
             Waves Survived: {wavesSurvived}
+          </div>
+          <div className="text-purple-400 text-sm mt-2">
+            Crystals Earned: {crystalsEarned} | Upgrades: {player.upgrades.spellLevel + player.upgrades.healthLevel}
           </div>
         </div>
 
@@ -137,6 +160,9 @@ export function ScoreSubmissionModal({
           <div className="text-center space-y-4">
             <div className="text-red-400 text-lg font-semibold">
               Error saving score
+            </div>
+            <div className="text-red-300 text-sm">
+              This could be due to security validation or network issues.
             </div>
             <div className="flex gap-3">
               <button
