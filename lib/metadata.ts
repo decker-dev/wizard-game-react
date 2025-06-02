@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     siteName: 'MYSTIC REALM DEFENDER',
     images: [
       {
-        url: '/og-image.png',
+        url: '/og.png',
         width: 1200,
         height: 630,
         alt: 'MYSTIC REALM DEFENDER - Gameplay Screenshot',
@@ -61,7 +61,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: '🎮 Play MYSTIC REALM DEFENDER!',
     description: 'Master the arcane arts in MYSTIC REALM DEFENDER! 2D pixel art fantasy game.',
-    images: ['/og-image.png'],
+    images: ['/og.png'],
   },
   other: {
     'game:credits': 'Meet the team behind MYSTIC REALM DEFENDER: Lauti, Alejo and Decker. Developed during the first Vibe Gaming Hackathon in LATAM.',

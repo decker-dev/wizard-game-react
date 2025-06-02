@@ -59,7 +59,7 @@ export const metadata: Metadata = {
     siteName: 'MYSTIC REALM DEFENDER',
     images: [
       {
-        url: '/og-image.png',
+        url: '/og.png',
         width: 1200,
         height: 630,
         alt: 'MYSTIC REALM DEFENDER - Gameplay Screenshot',
@@ -71,8 +71,8 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: '🎮 Play MYSTIC REALM DEFENDER!',
     description: 'Master the arcane arts in MYSTIC REALM DEFENDER! 2D pixel art fantasy game.',
-    images: ['/og-image.png'],
-    creator: '@lautidev_',
+    images: ['/og.png'],
+    creator: '0xDecker',
   },
   robots: {
     index: true,
@@ -105,22 +105,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        {/* Open Graph meta tags optimizados */}
-        <meta property="og:image" content="https://mystic.decker.sh/og-image.png" />
-        <meta property="og:image:secure_url" content="https://mystic.decker.sh/og-image.png" />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
-        <meta property="og:image:alt" content="MYSTIC REALM DEFENDER - Gameplay Screenshot" />
-        <meta property="og:image:type" content="image/png" />
-        
-        {/* Twitter Card meta tags */}
-        <meta name="twitter:image" content="https://mystic.decker.sh/og-image.png" />
-        
-        {/* WhatsApp y otras plataformas */}
-        <meta name="thumbnail" content="https://mystic.decker.sh/og-image.png" />
-        <link rel="image_src" href="https://mystic.decker.sh/og-image.png" />
-      </head>
       <body className={pressStart2P.variable}>{children}</body>
       <Analytics />
     </html>
