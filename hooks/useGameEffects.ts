@@ -13,6 +13,12 @@ export function useGameEffects({
   handleKeyDownWrapper,
   handleKeyUp
 }: UseGameEffectsProps) {
+  const isMobile = useHandheldDetector()
+  useEffect(() => {
+    if (isMobile) {
+      window.location.href = "https://fork-game-jam-paisanos-pvh5o34m1-alejorrojas-projects.vercel.app/"
+    }
+  }, [isMobile])
   // Handle keyboard events for playing screen
   useEffect(() => {
     if (screenState.currentScreen === 'playing') {
