@@ -164,7 +164,7 @@ export async function POST(request: NextRequest) {
 
     // Validación 6: Duración mínima del juego
     console.log('✅ Step 6: Checking game duration...');
-    const minGameDuration = waves_survived * 20 * 1000;
+    const minGameDuration = waves_survived * 15 * 1000; // 15 seg por wave mínimo
     const durationValid = game_duration >= minGameDuration;
 
     console.log('⏱️ Duration validation:', {
