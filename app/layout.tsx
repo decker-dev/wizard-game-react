@@ -1,6 +1,14 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import { Analytics } from '@vercel/analytics/react'
+import { Press_Start_2P } from 'next/font/google'
+
+const pressStart2P = Press_Start_2P({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-pixel',
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: {
@@ -116,7 +124,7 @@ export default function RootLayout({
         {/* Additional fallbacks */}
         <link rel="image_src" href="https://mystic.decker.sh/og-image.png" />
       </head>
-      <body>{children}</body>
+      <body className={pressStart2P.variable}>{children}</body>
       <Analytics />
     </html>
   )

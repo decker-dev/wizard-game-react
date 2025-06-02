@@ -114,7 +114,7 @@ export const render = (
       screenY >= 0 &&
       screenY <= canvasHeight
     ) {
-      ctx.fillStyle = p.isMagicBolt ? '#8A2BE2' : '#FFFF00'
+      ctx.fillStyle = p.isMagicBolt ? '#8A2BE2' : '#5752ff'
       ctx.beginPath()
       ctx.arc(screenX, screenY, p.radius, 0, Math.PI * 2)
       ctx.fill()

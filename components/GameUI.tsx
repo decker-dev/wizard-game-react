@@ -35,7 +35,7 @@ export const GameUI: React.FC<GameUIProps> = ({
     <div className="space-y-4">
       {/* Game Title Header */}
       <div className="bg-black/60 backdrop-blur-sm border border-purple-500/30 rounded-lg p-4 hover:border-purple-500/50 transition-colors">
-        <h1 className="text-2xl font-bold font-mono text-transparent bg-clip-text bg-gradient-to-b from-purple-400 to-blue-600 text-center mb-2">
+        <h1 className="text-2xl font-bold font-pixel text-transparent bg-clip-text bg-gradient-to-b from-purple-400 to-blue-600 text-center mb-2">
           MYSTIC REALM
         </h1>
         <div className="text-center text-gray-400 font-mono text-xs">

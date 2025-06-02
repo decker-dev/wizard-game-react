@@ -56,7 +56,7 @@ export default function CreditsPage() {
         <div className="bg-black/60 backdrop-blur-sm border border-purple-500/30 rounded-lg p-8 w-full max-w-4xl hover:border-purple-500/50 transition-colors">
           {/* Header */}
           <div className="text-center mb-8">
-            <h1 className="text-5xl font-bold font-mono text-transparent bg-clip-text bg-gradient-to-b from-purple-400 to-blue-600 mb-4">
+            <h1 className="text-5xl font-bold font-pixel text-transparent bg-clip-text bg-gradient-to-b from-purple-400 to-blue-600 mb-4">
               CREDITS
             </h1>
             <p className="text-gray-300 font-mono text-lg">
@@ -66,7 +66,7 @@ export default function CreditsPage() {
 
           {/* Game Info */}
           <div className="text-center mb-8 bg-black/40 border border-purple-500/20 rounded-lg p-6">
-            <h2 className="text-3xl font-bold text-purple-400 font-mono mb-2">
+            <h2 className="text-3xl font-bold text-purple-400 font-pixel mb-2">
               MYSTIC REALM DEFENDER
             </h2>
             <p className="text-gray-300 font-mono mb-2">Developed in 1 day</p>

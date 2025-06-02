@@ -148,10 +148,10 @@ export function HomeScreen({
           <div className="flex-1 text-center lg:text-left">
             {/* Title */}
             <div className={`mb-8 ${animateTitle ? 'animate-fade-in-up' : 'opacity-0'}`}>
-              <h1 className="text-6xl lg:text-8xl font-bold font-mono text-transparent bg-clip-text bg-gradient-to-b from-purple-400 to-blue-600 mb-4 tracking-wider">
+              <h1 className="text-6xl lg:text-8xl font-bold font-pixel text-transparent bg-clip-text bg-gradient-to-b from-purple-400 to-blue-600 mb-4 tracking-wider">
                 MYSTIC
               </h1>
-              <h2 className="text-2xl lg:text-4xl font-mono text-purple-300 mb-2">
+              <h2 className="text-2xl lg:text-4xl font-pixel text-purple-300 mb-2">
                 REALM DEFENDER
               </h2>
               <p className="text-gray-400 text-lg font-mono">
