@@ -34,12 +34,12 @@ export const useGameState = () => {
       showMarketplace: false,
       crystalParticles: [],
       mobConfig: {
-        normal: true,
-        caster: true,
-        tank: false,
-        speed: false,
-        explosive: false,
-        boss: true
+        normal: true,    // ✅ Tiene sprites
+        caster: true,    // ✅ Tiene sprites (mage)
+        tank: true,      // ✅ Habilitado - usa sprites de normal pero más grande
+        speed: false,    // ❌ Sin sprites aún
+        explosive: false,// ❌ Sin sprites aún
+        boss: true       // ✅ Usa sprites de mage temporalmente
       }
     }),
     [],
@@ -211,7 +211,7 @@ export const useGameState = () => {
     return gameStateRef.current?.mobConfig || {
       normal: true,    // ✅ Tiene sprites
       caster: true,    // ✅ Tiene sprites (mage)
-      tank: false,     // ❌ Sin sprites aún
+      tank: true,      // ✅ Habilitado - usa sprites de normal pero más grande
       speed: false,    // ❌ Sin sprites aún
       explosive: false,// ❌ Sin sprites aún
       boss: true       // ✅ Usa sprites de mage temporalmente

@@ -12,7 +12,8 @@ import {
   CRYSTAL_REWARD_SPEED_CREATURE,
   CRYSTAL_REWARD_EXPLOSIVE_CREATURE,
   CRYSTAL_REWARD_BOSS_CREATURE,
-  BOSS_PROJECTILE_DAMAGE
+  BOSS_PROJECTILE_DAMAGE,
+  BOSS_CONTACT_DAMAGE
 } from '@/constants/game'
 import { checkAABBCollision, getEntityRect, normalize } from '@/utils/math'
 import { createCoinParticle } from '@/utils/coinParticles'
@@ -181,7 +182,9 @@ export const checkCollisions = (
       const z = creatures[i]
       const creatureRect = getEntityRect(z)
       if (checkAABBCollision(playerRectForCreatureCollision, creatureRect)) {
-        player.health -= CREATURE_DAMAGE
+        // Determinar daño según el tipo de criatura
+        const contactDamage = z.type === 'boss' ? BOSS_CONTACT_DAMAGE : CREATURE_DAMAGE
+        player.health -= contactDamage
         player.lastDamageTime = now
         setPlayerHealth(player.health)
 

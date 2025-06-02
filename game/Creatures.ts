@@ -646,7 +646,7 @@ export const getCreatureSprite = (creature: Creature, creatureSprites: { [key: s
   // TODO: Cambiar 'mage' por 'boss' cuando tengamos sprites específicos del boss
   const spritePrefix = creature.type === 'caster' ? 'mage'
     : creature.type === 'boss' ? 'mage' // Temporalmente usa sprites de mage
-      : creature.type === 'tank' ? 'tank'
+      : creature.type === 'tank' ? 'creature' // Tank usa sprites de criatura normal
         : creature.type === 'speed' ? 'speed'
           : creature.type === 'explosive' ? 'explosive'
             : 'creature'

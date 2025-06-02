@@ -5,7 +5,7 @@ export const MAP_WIDTH = 2000;
 export const MAP_HEIGHT = 1500;
 
 // Development/Testing constants
-export const STARTING_WAVE = 1;
+export const STARTING_WAVE = 5;
 
 // Player constants
 export const PLAYER_SPEED = 3;
@@ -132,6 +132,7 @@ export const CREATURE_BOSS_HEALTH_MULTIPLIER = 1.5; // Escala más que otros
 export const BOSS_SIZE_MULTIPLIER = 2.0; // Doble de tamaño que criaturas normales
 export const BOSS_CAST_RATE = 1500; // Dispara cada 1.5 segundos
 export const BOSS_PROJECTILE_SPEED = 3; // Proyectiles más lentos
-export const BOSS_PROJECTILE_DAMAGE = 60; // Más daño que magic bolts normales
+export const BOSS_PROJECTILE_DAMAGE = 120; // MUCHO más daño - casi mata de un golpe
 export const BOSS_PROJECTILE_SIZE = 12; // Proyectiles más grandes
 export const BOSS_SPAWN_INTERVAL = 5; // Cada 5 oleadas
+export const BOSS_CONTACT_DAMAGE = 80; // Daño por contacto físico del Boss
