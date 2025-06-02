@@ -57,26 +57,7 @@ export function useLeaderboard() {
     }
   }, [])
 
-  // Enviar nuevo score (legacy - mantener compatibilidad)
-  const submitScore = useCallback(async (scoreData: ScoreSubmission): Promise<boolean> => {
-    setIsSubmitting(true)
-    try {
-      const success = await saveScore(scoreData)
-      if (success) {
-        // Recargar los scores después de enviar uno nuevo
-        await loadTopScores()
-        await loadAllScores()
-      }
-      return success
-    } catch (error) {
-      console.error('Error submitting score:', error)
-      return false
-    } finally {
-      setIsSubmitting(false)
-    }
-  }, [loadTopScores, loadAllScores])
-
-  // Enviar score seguro (nueva función)
+  // Enviar score seguro (función principal)
   const submitSecureScore = useCallback(async (
     scoreData: ScoreSubmission,
     clientId: string,
@@ -205,7 +186,6 @@ export function useLeaderboard() {
     loadTopScores,
     loadAllScores,
     loadTotalGamesPlayed,
-    submitScore,
     submitSecureScore,
     recordNewGame,
     getRankForScore
