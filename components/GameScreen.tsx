@@ -4,6 +4,7 @@ import { GameUI } from '@/components/GameUI'
 import { Marketplace } from '@/components/Marketplace'
 import { GameOverlay } from '@/components/GameOverlay'
 import { FloatingParticles } from '@/components/FloatingParticles'
+import { MobileControls } from '@/components/MobileControls'
 import { GameScreenState } from '@/hooks/useGameScreens'
 
 interface GameScreenProps {
@@ -92,7 +93,80 @@ export function GameScreen({
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
-  // Mobile version - only canvas
+  // Mobile control handlers
+  const handleMobileMove = React.useCallback((direction: { x: number; y: number }) => {
+    if (!gameStateRef.current?.player) return
+    
+    const player = gameStateRef.current.player
+    const speed = 3 // Adjust speed as needed
+    
+    // Update player movement direction
+    player.dx = direction.x * speed
+    player.dy = direction.y * speed
+    
+    // Update player direction for sprite animation
+    if (direction.x !== 0 || direction.y !== 0) {
+      if (Math.abs(direction.x) > Math.abs(direction.y)) {
+        player.direction = direction.x > 0 ? 'E' : 'W'
+      } else {
+        player.direction = direction.y > 0 ? 'S' : 'N'
+      }
+    }
+  }, [gameStateRef])
+
+  const handleMobileShoot = React.useCallback(() => {
+    if (!gameStateRef.current?.player) return
+    
+    const player = gameStateRef.current.player
+    const gameState = gameStateRef.current
+    
+    // Check if player can cast (has mana and not on cooldown)
+    if (player.mana < player.spellCost) return
+    if (gameState.lastCastTime && Date.now() - gameState.lastCastTime < player.castRate) return
+    
+    // Cast spell in current direction
+    const directions = {
+      'N': { x: 0, y: -1 },
+      'S': { x: 0, y: 1 },
+      'E': { x: 1, y: 0 },
+      'W': { x: -1, y: 0 }
+    }
+    
+    const dir = directions[player.direction as keyof typeof directions] || { x: 0, y: -1 }
+    
+    // Create projectiles based on spell count
+    for (let i = 0; i < player.spellCount; i++) {
+      const spreadAngle = (i - (player.spellCount - 1) / 2) * 0.3 // Spread angle
+      const cos = Math.cos(spreadAngle)
+      const sin = Math.sin(spreadAngle)
+      
+      // Rotate direction by spread angle
+      const finalDir = {
+        x: dir.x * cos - dir.y * sin,
+        y: dir.x * sin + dir.y * cos
+      }
+      
+      gameState.projectiles.push({
+        x: player.x,
+        y: player.y,
+        dx: finalDir.x * player.spellSpeed,
+        dy: finalDir.y * player.spellSpeed,
+        damage: player.spellDamage,
+        size: player.spellSize,
+        color: '#9333ea', // Purple color for magic
+        lifetime: 120 // frames
+      })
+    }
+    
+    // Consume mana and set cooldown
+    player.mana -= player.spellCost
+    gameState.lastCastTime = Date.now()
+    
+    // Play cast sound
+    playPlayerCast()
+  }, [gameStateRef, playPlayerCast])
+
+  // Mobile version - only canvas with controls
   if (isMobile) {
     return (
       <div className="min-h-screen w-full bg-black flex items-center justify-center overflow-hidden">
@@ -115,6 +189,12 @@ export function GameScreen({
             playPlayerHit={playPlayerHit}
           />
         </div>
+
+        {/* Mobile Controls */}
+        <MobileControls
+          onMove={handleMobileMove}
+          onShoot={handleMobileShoot}
+        />
 
         {/* Game Over/Won Overlay - Still needed for mobile */}
         {(gameOver || gameWon) && (

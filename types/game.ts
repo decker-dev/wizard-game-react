@@ -32,6 +32,9 @@ export interface Player {
   isMoving: boolean
   animationFrame: 'L' | 'R' | 'S'
   lastAnimationTime: number
+  // Mobile joystick movement
+  dx?: number
+  dy?: number
 }
 
 export interface Projectile {
