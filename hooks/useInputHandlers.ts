@@ -11,6 +11,12 @@ export const useInputHandlers = (
   const handleKeyDown = useCallback((e: KeyboardEvent, isLoading: boolean, waveTransitioning: boolean) => {
     if (!gameStateRef.current) return
 
+    // Prevenir el comportamiento por defecto para teclas de movimiento y acción
+    const movementKeys = ['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright', ' ', 'spacebar']
+    if (movementKeys.includes(e.key.toLowerCase())) {
+      e.preventDefault()
+    }
+
     gameStateRef.current.keys[e.key.toLowerCase()] = true
 
     if (e.key === ' ' || e.key === 'Spacebar') {
@@ -20,7 +26,7 @@ export const useInputHandlers = (
         isLoading,
         waveTransitioning
       })
-      e.preventDefault()
+      
       if (
         !gameStateRef.current.gameOver &&
         !gameStateRef.current.gameWon &&
@@ -102,6 +108,13 @@ export const useInputHandlers = (
 
   const handleKeyUp = useCallback((e: KeyboardEvent) => {
     if (!gameStateRef.current) return
+    
+    // Prevenir el comportamiento por defecto para teclas de movimiento
+    const movementKeys = ['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright']
+    if (movementKeys.includes(e.key.toLowerCase())) {
+      e.preventDefault()
+    }
+    
     gameStateRef.current.keys[e.key.toLowerCase()] = false
   }, [gameStateRef])
 

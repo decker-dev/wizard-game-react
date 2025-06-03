@@ -16,6 +16,7 @@ interface GameScreenProps {
   // Assets
   creatureSpritesRef: any
   floorTextureRef: any
+  healthPackSpriteRef: any
   
   // Audio
   playCreatureDeath: () => void
@@ -31,7 +32,7 @@ interface GameScreenProps {
   setScore: (score: number) => void
   setPlayerHealth: (health: number) => void
   setPlayerCoins: (coins: number) => void
-  setGameOver: (gameOver: boolean) => void
+  setGameOver: (gameOver: boolean, score: number) => void
   
   // Actions
   onResetGame: () => void
@@ -51,6 +52,7 @@ export function GameScreen({
   canvasRef,
   creatureSpritesRef,
   floorTextureRef,
+  healthPackSpriteRef,
   playCreatureDeath,
   playPlayerCast,
   playPlayerHit,
@@ -322,6 +324,7 @@ export function GameScreen({
                   gameState={gameStateRef.current}
                   creatureSprites={creatureSpritesRef.current}
                   floorTexture={floorTextureRef.current}
+                  healthPackSprite={healthPackSpriteRef.current}
                   waveMessage={waveMessage}
                   startNextWave={onStartNextWave}
                   setScore={setScore}

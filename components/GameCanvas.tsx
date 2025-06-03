@@ -8,17 +8,19 @@ import { checkCollisions } from '@/game/Collisions'
 import { render } from '@/game/Renderer'
 import { updateCoinParticles } from '@/utils/coinParticles'
 import { CoinParticles } from './CoinParticles'
+import { updateHealthPacks } from '@/game/HealthPacks'
 
 interface GameCanvasProps {
   gameState: GameState | null
   creatureSprites: {[key: string]: HTMLImageElement | null}
   floorTexture?: HTMLImageElement | null
+  healthPackSprite?: HTMLImageElement | null
   waveMessage: string
   startNextWave: () => void
   setScore: (score: number) => void
   setPlayerHealth: (health: number) => void
   setPlayerCoins: (coins: number) => void
-  setGameOver: (gameOver: boolean) => void
+  setGameOver: (gameOver: boolean, score: number) => void
   onMouseMove: (e: MouseEvent) => void
   onMouseClick: (e: MouseEvent) => void
   playCreatureDeath: (creatureType: 'normal' | 'caster' | 'tank' | 'speed' | 'explosive' | 'boss') => void
@@ -30,6 +32,7 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
   gameState,
   creatureSprites,
   floorTexture,
+  healthPackSprite,
   waveMessage,
   startNextWave,
   setScore,
@@ -126,6 +129,7 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
       updatePlayer(gameState)
       updateCreatures(gameState)
       updateProjectiles(gameState)
+      updateHealthPacks(gameState, setPlayerHealth)
       gameState.crystalParticles = updateCoinParticles(gameState.crystalParticles)
       checkCollisions(gameState, startNextWave, setScore, setPlayerHealth, setGameOver, setPlayerCoins, playCreatureDeath, playPlayerHit)
     }
@@ -134,12 +138,12 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
     if (canvas) {
       const ctx = canvas.getContext("2d")
       if (ctx) {
-        render(ctx, gameState, creatureSprites, waveMessage, canvasDimensions.width, canvasDimensions.height, floorTexture)
+        render(ctx, gameState, creatureSprites, waveMessage, canvasDimensions.width, canvasDimensions.height, floorTexture, healthPackSprite)
       }
     }
 
     animationFrameRef.current = requestAnimationFrame(gameLoop)
-  }, [gameState, creatureSprites, floorTexture, waveMessage, startNextWave, setScore, setPlayerHealth, setGameOver, setPlayerCoins, canvasDimensions, playCreatureDeath, playPlayerHit])
+  }, [gameState, creatureSprites, floorTexture, healthPackSprite, waveMessage, startNextWave, setScore, setPlayerHealth, setGameOver, setPlayerCoins, canvasDimensions, playCreatureDeath, playPlayerHit])
 
   useEffect(() => {
     if (gameState && !gameState.gameOver && !gameState.gameWon) {

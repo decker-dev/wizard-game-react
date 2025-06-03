@@ -182,31 +182,8 @@ export async function POST(request: NextRequest) {
     }
     console.log('✅ Game duration valid');
 
-    // Validación 7: Consistencia de upgrades
-    console.log('✅ Step 7: Checking upgrade consistency...');
-    const maxUpgrades = Math.floor(waves_survived / 2);
-    const totalUpgrades = spell_level + health_level;
-    const upgradesValid = totalUpgrades <= maxUpgrades + 2;
-
-    console.log('📈 Upgrade validation:', {
-      spellLevel: spell_level,
-      healthLevel: health_level,
-      totalUpgrades,
-      maxAllowed: maxUpgrades + 2,
-      isValid: upgradesValid
-    });
-
-    if (!upgradesValid) {
-      console.log('❌ Too many upgrades for waves survived');
-      return NextResponse.json(
-        { error: 'Too many upgrades for waves survived' },
-        { status: 400 }
-      );
-    }
-    console.log('✅ Upgrades consistent');
-
-    // Validación 8: Rate limiting por client_id
-    console.log('✅ Step 8: Checking rate limiting...');
+    // Validación 7: Rate limiting por client_id
+    console.log('✅ Step 7: Checking rate limiting...');
     const { data: recentSubmissions } = await supabase
       .from('score_submissions')
       .select('*')

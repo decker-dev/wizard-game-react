@@ -13,6 +13,7 @@ import {
 import { getSpellUpgradeCost, getHealthUpgradeCost } from '@/utils/marketplace'
 import { obstaclesData } from '@/data/obstacles'
 import { createInitialPlayer } from '@/game/Player'
+import { spawnHealthPacksForWave } from '@/game/HealthPacks'
 
 export const useGameState = () => {
   const createInitialGameState = useCallback(
@@ -21,6 +22,7 @@ export const useGameState = () => {
       projectiles: [],
       creatures: [],
       obstacles: obstaclesData,
+      healthPacks: [],
       score: 0,
       currentWave: STARTING_WAVE - 1,
       creaturesToSpawnThisWave: 0,
@@ -60,7 +62,8 @@ export const useGameState = () => {
   const startNextWave = useCallback((
     setCurrentWave: (wave: number) => void,
     setWaveMessage: (message: string) => void,
-    setGameWon: (won: boolean) => void
+    setGameWon: (won: boolean) => void,
+    healthPackSprite?: HTMLImageElement | null
   ) => {
     if (!gameStateRef.current || gameStateRef.current.waveTransitioning ||
       gameStateRef.current.gameWon || gameStateRef.current.gameOver) {
@@ -90,6 +93,10 @@ export const useGameState = () => {
     gameStateRef.current.creaturesRemainingInWave = gameStateRef.current.creaturesToSpawnThisWave
     gameStateRef.current.creaturesSpawnedThisWave = 0
     gameStateRef.current.creatures = []
+    gameStateRef.current.healthPacks = []
+
+    // Generar packs de vida para esta oleada
+    spawnHealthPacksForWave(gameStateRef.current, gameStateRef.current.currentWave, healthPackSprite)
 
     setWaveMessage(`Wave ${gameStateRef.current.currentWave} starting...`)
     setTimeout(() => {
@@ -101,7 +108,8 @@ export const useGameState = () => {
   }, [])
 
   const continueFromMarketplace = useCallback((
-    setWaveMessage: (message: string) => void
+    setWaveMessage: (message: string) => void,
+    healthPackSprite?: HTMLImageElement | null
   ) => {
     if (!gameStateRef.current) return
 
@@ -116,6 +124,10 @@ export const useGameState = () => {
     gameStateRef.current.creaturesRemainingInWave = gameStateRef.current.creaturesToSpawnThisWave
     gameStateRef.current.creaturesSpawnedThisWave = 0
     gameStateRef.current.creatures = []
+    gameStateRef.current.healthPacks = []
+
+    // Generar packs de vida para esta oleada
+    spawnHealthPacksForWave(gameStateRef.current, gameStateRef.current.currentWave, healthPackSprite)
 
     setWaveMessage(`Wave ${gameStateRef.current.currentWave} starting...`)
     setTimeout(() => {
@@ -188,8 +200,10 @@ export const useGameState = () => {
       player.upgrades.healthLevel++
       player.upgrades.maxHealth += HEALTH_INCREASE
 
+      player.maxHealth += HEALTH_INCREASE
+
       // Restaurar vida al comprar mejora de vida
-      player.health = player.upgrades.maxHealth
+      player.health = player.maxHealth
 
       setPlayerCoins(player.crystals)
       setPlayerHealth(player.health)
