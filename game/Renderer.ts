@@ -20,7 +20,8 @@ export const render = (
   canvasWidth: number = CANVAS_WIDTH,
   canvasHeight: number = CANVAS_HEIGHT,
   floorTexture?: HTMLImageElement | null,
-  healthPackSprite?: HTMLImageElement | null
+  healthPackSprite?: HTMLImageElement | null,
+  isMobile: boolean = false
 ) => {
   const { player } = gameState
 
@@ -29,6 +30,9 @@ export const render = (
 
   const cameraX = Math.max(0, Math.min(MAP_WIDTH - canvasWidth, player.position.x - canvasWidth / 2))
   const cameraY = Math.max(0, Math.min(MAP_HEIGHT - canvasHeight, player.position.y - canvasHeight / 2))
+
+  // Calculate sprite size multiplier for mobile (2% larger)
+  const spriteScale = isMobile ? 1.3  : 1.0
 
   // Render floor texture or fallback to solid color
   if (floorTexture) {
@@ -114,12 +118,17 @@ export const render = (
     if (isInvulnerable) {
       ctx.globalAlpha = 0.5 + Math.sin(now * 0.01) * 0.3
     }
+    
+    // Apply mobile scaling to player sprite
+    const scaledPlayerWidth = PLAYER_SPRITE_WIDTH * spriteScale
+    const scaledPlayerHeight = PLAYER_SPRITE_HEIGHT * spriteScale
+    
     ctx.drawImage(
       currentPlayerSprite,
-      player.position.x - cameraX - PLAYER_SPRITE_WIDTH / 2,
-      player.position.y - cameraY - PLAYER_SPRITE_HEIGHT / 2,
-      PLAYER_SPRITE_WIDTH,
-      PLAYER_SPRITE_HEIGHT
+      player.position.x - cameraX - scaledPlayerWidth / 2,
+      player.position.y - cameraY - scaledPlayerHeight / 2,
+      scaledPlayerWidth,
+      scaledPlayerHeight
     )
     ctx.restore()
     ctx.globalAlpha = 1.0
@@ -127,30 +136,35 @@ export const render = (
     // Debug: If no sprite found, render a fallback rectangle
     console.log('No player sprite found, rendering fallback. Player direction:', player.direction, 'isMoving:', player.isMoving, 'animationFrame:', player.animationFrame)
     ctx.fillStyle = '#4A90E2' // Blue color for wizard
+    
+    // Apply mobile scaling to fallback rectangle too
+    const scaledPlayerWidth = PLAYER_SPRITE_WIDTH * spriteScale
+    const scaledPlayerHeight = PLAYER_SPRITE_HEIGHT * spriteScale
+    
     ctx.fillRect(
-      player.position.x - cameraX - PLAYER_SPRITE_WIDTH / 2,
-      player.position.y - cameraY - PLAYER_SPRITE_HEIGHT / 2,
-      PLAYER_SPRITE_WIDTH,
-      PLAYER_SPRITE_HEIGHT
+      player.position.x - cameraX - scaledPlayerWidth / 2,
+      player.position.y - cameraY - scaledPlayerHeight / 2,
+      scaledPlayerWidth,
+      scaledPlayerHeight
     )
   }
 
   // Render player health bar
   const playerScreenX = player.position.x - cameraX
   const playerScreenY = player.position.y - cameraY
-  const playerHealthBarWidth = PLAYER_SPRITE_WIDTH
+  const playerHealthBarWidth = PLAYER_SPRITE_WIDTH * spriteScale
   const playerHealthBarHeight = 6
   ctx.fillStyle = "rgba(255,0,0,0.5)"
   ctx.fillRect(
     playerScreenX - playerHealthBarWidth / 2,
-    playerScreenY - PLAYER_SPRITE_HEIGHT / 2 - 15,
+    playerScreenY - (PLAYER_SPRITE_HEIGHT * spriteScale) / 2 - 15,
     playerHealthBarWidth,
     playerHealthBarHeight
   )
   ctx.fillStyle = "rgba(0,255,0,0.8)"
   ctx.fillRect(
     playerScreenX - playerHealthBarWidth / 2,
-    playerScreenY - PLAYER_SPRITE_HEIGHT / 2 - 15,
+    playerScreenY - (PLAYER_SPRITE_HEIGHT * spriteScale) / 2 - 15,
     playerHealthBarWidth * Math.max(0, player.health / player.maxHealth),
     playerHealthBarHeight
   )
@@ -190,14 +204,18 @@ export const render = (
     ) {
       const creatureSprite = getCreatureSprite(c, creatureSprites)
 
+      // Apply mobile scaling to creature sprites
+      const scaledCreatureWidth = c.width * spriteScale
+      const scaledCreatureHeight = c.height * spriteScale
+
       if (creatureSprite) {
         // Renderizar el sprite de la criatura
         ctx.drawImage(
           creatureSprite,
-          screenX - c.width / 2,
-          screenY - c.height / 2,
-          c.width,
-          c.height
+          screenX - scaledCreatureWidth / 2,
+          screenY - scaledCreatureHeight / 2,
+          scaledCreatureWidth,
+          scaledCreatureHeight
         )
       } else {
         // Fallback: usar colores como antes si no hay sprite
@@ -215,23 +233,23 @@ export const render = (
         }
 
         ctx.fillStyle = creatureColor
-        ctx.fillRect(screenX - c.width / 2, screenY - c.height / 2, c.width, c.height)
+        ctx.fillRect(screenX - scaledCreatureWidth / 2, screenY - scaledCreatureHeight / 2, scaledCreatureWidth, scaledCreatureHeight)
       }
 
-      // Barra de vida de la criatura
-      const healthBarWidth = c.width * 0.8
+      // Barra de vida de la criatura (también escalada)
+      const healthBarWidth = scaledCreatureWidth * 0.8
       const healthBarHeight = 5
       ctx.fillStyle = "rgba(255,0,0,0.5)"
       ctx.fillRect(
         screenX - healthBarWidth / 2,
-        screenY - c.height / 2 - 10,
+        screenY - scaledCreatureHeight / 2 - 10,
         healthBarWidth,
         healthBarHeight
       )
       ctx.fillStyle = "rgba(0,255,0,0.8)"
       ctx.fillRect(
         screenX - healthBarWidth / 2,
-        screenY - c.height / 2 - 10,
+        screenY - scaledCreatureHeight / 2 - 10,
         healthBarWidth * Math.max(0, c.health / c.maxHealth),
         healthBarHeight
       )

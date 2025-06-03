@@ -53,6 +53,20 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
     width: CANVAS_WIDTH,
     height: CANVAS_HEIGHT
   })
+  
+  // Detect if we're on mobile
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   // Handle fullscreen change events
   useEffect(() => {
@@ -138,12 +152,12 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
     if (canvas) {
       const ctx = canvas.getContext("2d")
       if (ctx) {
-        render(ctx, gameState, creatureSprites, waveMessage, canvasDimensions.width, canvasDimensions.height, floorTexture, healthPackSprite)
+        render(ctx, gameState, creatureSprites, waveMessage, canvasDimensions.width, canvasDimensions.height, floorTexture, healthPackSprite, isMobile)
       }
     }
 
     animationFrameRef.current = requestAnimationFrame(gameLoop)
-  }, [gameState, creatureSprites, floorTexture, healthPackSprite, waveMessage, startNextWave, setScore, setPlayerHealth, setGameOver, setPlayerCoins, canvasDimensions, playCreatureDeath, playPlayerHit])
+  }, [gameState, creatureSprites, floorTexture, healthPackSprite, waveMessage, startNextWave, setScore, setPlayerHealth, setGameOver, setPlayerCoins, canvasDimensions, playCreatureDeath, playPlayerHit, isMobile])
 
   useEffect(() => {
     if (gameState && !gameState.gameOver && !gameState.gameWon) {
