@@ -329,7 +329,7 @@ const renderMinimap = (
   })
 
   // Packs de vida en el minimapa
-  ctx.fillStyle = "#FF69B4" // Rosa para packs de vida (más visible y temático)
+  ctx.fillStyle = "#00FFFF" // Cyan para packs de vida (más visible y contrastante)
   gameState.healthPacks.forEach((healthPack) => {
     ctx.fillRect(
       canvasWidth - minimapSize - minimapPadding + healthPack.position.x * minimapScaleX - 1,
