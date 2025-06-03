@@ -54,5 +54,5 @@ export function generateTimeWindowHash(
 }
 
 export function generateClientId(): string {
-  return 'crypto.randomUUID()';
+  return crypto.randomUUID();
 } 
