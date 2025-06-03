@@ -20,7 +20,7 @@ interface GameCanvasProps {
   setScore: (score: number) => void
   setPlayerHealth: (health: number) => void
   setPlayerCoins: (coins: number) => void
-  setGameOver: (gameOver: boolean) => void
+  setGameOver: (gameOver: boolean, score: number) => void
   onMouseMove: (e: MouseEvent) => void
   onMouseClick: (e: MouseEvent) => void
   playCreatureDeath: (creatureType: 'normal' | 'caster' | 'tank' | 'speed' | 'explosive' | 'boss') => void

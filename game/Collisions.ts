@@ -24,7 +24,7 @@ export const checkCollisions = (
   startNextWave: () => void,
   setScore: (score: number) => void,
   setPlayerHealth: (health: number) => void,
-  setGameOver: (gameOver: boolean) => void,
+  setGameOver: (gameOver: boolean, score: number) => void,
   setPlayerCoins?: (coins: number) => void,
   playCreatureDeath?: (creatureType: 'normal' | 'caster' | 'tank' | 'speed' | 'explosive' | 'boss') => void,
   playPlayerHit?: () => void
@@ -64,7 +64,7 @@ export const checkCollisions = (
 
         if (player.health <= 0) {
           gameState.gameOver = true
-          setGameOver(true)
+          setGameOver(true, gameState.score)
         }
         continue
       }
@@ -195,7 +195,7 @@ export const checkCollisions = (
 
         if (player.health <= 0) {
           gameState.gameOver = true
-          setGameOver(true)
+          setGameOver(true, gameState.score)
         }
         break
       }
