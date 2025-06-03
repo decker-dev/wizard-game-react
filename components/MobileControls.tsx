@@ -3,9 +3,11 @@ import React, { useRef, useState, useEffect } from 'react'
 interface MobileControlsProps {
   onMove: (direction: { x: number; y: number }) => void
   onShoot: () => void
+  onShootStart?: () => void
+  onShootEnd?: () => void
 }
 
-export function MobileControls({ onMove, onShoot }: MobileControlsProps) {
+export function MobileControls({ onMove, onShoot, onShootStart, onShootEnd }: MobileControlsProps) {
   const joystickRef = useRef<HTMLDivElement>(null)
   const [isDragging, setIsDragging] = useState(false)
   const [knobPosition, setKnobPosition] = useState({ x: 0, y: 0 })
@@ -140,11 +142,38 @@ export function MobileControls({ onMove, onShoot }: MobileControlsProps) {
           }}
           onTouchStart={(e) => {
             e.stopPropagation()
-            onShoot()
+            if (onShootStart) {
+              onShootStart()
+            } else {
+              onShoot()
+            }
+          }}
+          onTouchEnd={(e) => {
+            e.stopPropagation()
+            if (onShootEnd) {
+              onShootEnd()
+            }
+          }}
+          onMouseDown={(e) => {
+            e.stopPropagation()
+            if (onShootStart) {
+              onShootStart()
+            } else {
+              onShoot()
+            }
+          }}
+          onMouseUp={(e) => {
+            e.stopPropagation()
+            if (onShootEnd) {
+              onShootEnd()
+            }
           }}
           onClick={(e) => {
             e.stopPropagation()
-            onShoot()
+            // Fallback for simple click if no start/end handlers
+            if (!onShootStart && !onShootEnd) {
+              onShoot()
+            }
           }}
         >
           <div className="text-white text-3xl font-bold">🔮</div>

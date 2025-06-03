@@ -6,6 +6,7 @@ import { GameOverlay } from '@/components/GameOverlay'
 import { FloatingParticles } from '@/components/FloatingParticles'
 import { MobileControls } from '@/components/MobileControls'
 import { GameScreenState } from '@/hooks/useGameScreens'
+import { PROJECTILE_SPEED } from '@/constants/game'
 
 interface GameScreenProps {
   screenState: GameScreenState
@@ -114,57 +115,118 @@ export function GameScreen({
     }
   }, [gameStateRef])
 
-  const handleMobileShoot = React.useCallback(() => {
-    if (!gameStateRef.current?.player) return
+  // Mobile shoot handler with proper cooldown and click-based shooting
+  const lastMobileCastTimeRef = React.useRef<number>(0)
+  const shootButtonPressedRef = React.useRef<boolean>(false)
+  const shootIntervalRef = React.useRef<NodeJS.Timeout | null>(null)
+
+  const performShoot = React.useCallback(() => {
+    if (!gameStateRef.current?.player) return false
     
     const player = gameStateRef.current.player
     const gameState = gameStateRef.current
+    const now = Date.now()
     
-    // Check if player can cast (has mana and not on cooldown)
-    if (player.mana < player.spellCost) return
-    if (gameState.lastCastTime && Date.now() - gameState.lastCastTime < player.castRate) return
-    
-    // Cast spell in current direction
-    const directions = {
-      'N': { x: 0, y: -1 },
-      'S': { x: 0, y: 1 },
-      'E': { x: 1, y: 0 },
-      'W': { x: -1, y: 0 }
+    // Check cooldown using player's cast rate
+    if (now - lastMobileCastTimeRef.current < player.upgrades.castRate) {
+      return false
     }
     
-    const dir = directions[player.direction as keyof typeof directions] || { x: 0, y: -1 }
+    // Use the same shooting logic as keyboard input
+    const baseDirection = { ...player.lastMovementDirection }
+    const projectileCount = player.upgrades.projectileCount
+    const spread = player.upgrades.spread
+    const projectileSize = player.upgrades.projectileSize
     
-    // Create projectiles based on spell count
-    for (let i = 0; i < player.spellCount; i++) {
-      const spreadAngle = (i - (player.spellCount - 1) / 2) * 0.3 // Spread angle
-      const cos = Math.cos(spreadAngle)
-      const sin = Math.sin(spreadAngle)
-      
-      // Rotate direction by spread angle
-      const finalDir = {
-        x: dir.x * cos - dir.y * sin,
-        y: dir.x * sin + dir.y * cos
+    if (projectileCount === 1) {
+      // Single spell
+      const newProjectile = {
+        position: { ...player.position },
+        velocity: { 
+          x: baseDirection.x * PROJECTILE_SPEED, 
+          y: baseDirection.y * PROJECTILE_SPEED 
+        },
+        radius: 4 * projectileSize,
+        speed: PROJECTILE_SPEED,
+        isMagicBolt: false
       }
+      gameState.projectiles.push(newProjectile)
+    } else {
+      // Multiple spells with spread
+      const baseAngle = Math.atan2(baseDirection.y, baseDirection.x)
       
-      gameState.projectiles.push({
-        x: player.x,
-        y: player.y,
-        dx: finalDir.x * player.spellSpeed,
-        dy: finalDir.y * player.spellSpeed,
-        damage: player.spellDamage,
-        size: player.spellSize,
-        color: '#9333ea', // Purple color for magic
-        lifetime: 120 // frames
-      })
+      for (let i = 0; i < projectileCount; i++) {
+        let angleOffset = 0
+        
+        if (projectileCount === 2) {
+          angleOffset = (i - 0.5) * spread
+        } else {
+          angleOffset = (i - (projectileCount - 1) / 2) * (spread / (projectileCount - 1))
+        }
+        
+        const finalAngle = baseAngle + angleOffset
+        const direction = {
+          x: Math.cos(finalAngle),
+          y: Math.sin(finalAngle)
+        }
+        
+        const newProjectile = {
+          position: { ...player.position },
+          velocity: { 
+            x: direction.x * PROJECTILE_SPEED, 
+            y: direction.y * PROJECTILE_SPEED 
+          },
+          radius: 4 * projectileSize,
+          speed: PROJECTILE_SPEED,
+          isMagicBolt: false
+        }
+        gameState.projectiles.push(newProjectile)
+      }
     }
     
-    // Consume mana and set cooldown
-    player.mana -= player.spellCost
-    gameState.lastCastTime = Date.now()
-    
-    // Play cast sound
+    lastMobileCastTimeRef.current = now
     playPlayerCast()
+    return true
   }, [gameStateRef, playPlayerCast])
+
+  const handleMobileShoot = React.useCallback(() => {
+    // Single shot on tap/click
+    performShoot()
+  }, [performShoot])
+
+  const handleMobileShootStart = React.useCallback(() => {
+    if (shootButtonPressedRef.current) return
+    
+    shootButtonPressedRef.current = true
+    
+    // First shot immediately
+    performShoot()
+    
+    // Set up interval for continuous shooting while held
+    shootIntervalRef.current = setInterval(() => {
+      if (shootButtonPressedRef.current) {
+        performShoot()
+      }
+    }, 150) // Shoot every 150ms while held (but still respects cast rate)
+  }, [performShoot])
+
+  const handleMobileShootEnd = React.useCallback(() => {
+    shootButtonPressedRef.current = false
+    
+    if (shootIntervalRef.current) {
+      clearInterval(shootIntervalRef.current)
+      shootIntervalRef.current = null
+    }
+  }, [])
+
+  // Cleanup interval on unmount
+  React.useEffect(() => {
+    return () => {
+      if (shootIntervalRef.current) {
+        clearInterval(shootIntervalRef.current)
+      }
+    }
+  }, [])
 
   // Mobile version - only canvas with controls
   if (isMobile) {
@@ -194,6 +256,8 @@ export function GameScreen({
         <MobileControls
           onMove={handleMobileMove}
           onShoot={handleMobileShoot}
+          onShootStart={handleMobileShootStart}
+          onShootEnd={handleMobileShootEnd}
         />
 
         {/* Game Over/Won Overlay - Still needed for mobile */}

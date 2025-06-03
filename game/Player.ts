@@ -48,8 +48,9 @@ export const updatePlayer = (gameState: GameState) => {
   if (keys["a"] || keys["arrowleft"]) dx -= speed
   if (keys["d"] || keys["arrowright"]) dx += speed
 
-  // Mobile joystick input (overrides keyboard if present)
-  if (player.dx !== undefined && player.dy !== undefined) {
+  // Mobile joystick input (only override if joystick is actually being used)
+  if (player.dx !== undefined && player.dy !== undefined &&
+    (player.dx !== 0 || player.dy !== 0)) {
     dx = player.dx
     dy = player.dy
   }
