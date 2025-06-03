@@ -200,8 +200,10 @@ export const useGameState = () => {
       player.upgrades.healthLevel++
       player.upgrades.maxHealth += HEALTH_INCREASE
 
+      player.maxHealth += HEALTH_INCREASE
+
       // Restaurar vida al comprar mejora de vida
-      player.health = player.upgrades.maxHealth
+      player.health = player.maxHealth
 
       setPlayerCoins(player.crystals)
       setPlayerHealth(player.health)
