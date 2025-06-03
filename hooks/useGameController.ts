@@ -27,7 +27,6 @@ export function useGameController(autoStart: boolean = false) {
     totalGamesPlayed,
     isLoading: isLoadingScores,
     isSubmitting,
-    submitScore,
     submitSecureScore,
     recordNewGame
   } = useLeaderboard()
@@ -124,16 +123,16 @@ export function useGameController(autoStart: boolean = false) {
     if (success) {
       setTimeout(() => {
         setShowScoreModal(false)
-        resetGame()
+        // No reseteamos automáticamente, volvemos al game over screen
       }, 1000)
     }
     return success
-  }, [submitSecureScore, setShowScoreModal, resetGame])
+  }, [submitSecureScore, setShowScoreModal])
 
   const handleSkipScore = useCallback(() => {
     setShowScoreModal(false)
-    resetGame()
-  }, [setShowScoreModal, resetGame])
+    // No reseteamos el juego, solo cerramos el modal y volvemos al game over
+  }, [setShowScoreModal])
 
   const handleSaveScore = useCallback(() => {
     setShowScoreModal(true)
