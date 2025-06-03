@@ -230,8 +230,8 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
       <button
         onClick={toggleFullscreen}
         className={`absolute ${
-          isFullscreen ? 'top-4 right-4 z-50' : 'top-2 right-2 z-10'
-        } bg-purple-600/80 hover:bg-purple-600 border border-purple-500/50 text-white p-2 rounded font-mono font-bold transition-all duration-200 transform hover:scale-105 hover:border-purple-500 hidden md:block`}
+          isFullscreen ? 'top-4 left-4 z-50' : 'top-2 left-2 z-10'
+        } bg-purple-600/30 hover:bg-purple-600/50 border border-purple-500/20 hover:border-purple-500/40 text-white/80 hover:text-white p-2 rounded font-mono font-bold transition-all duration-200 transform hover:scale-105 hidden md:block`}
         title={isFullscreen ? "Exit fullscreen (ESC)" : "Fullscreen"}
       >
         {isFullscreen ? (
@@ -247,7 +247,7 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
 
       {/* Instructions for fullscreen mode */}
       {isFullscreen && (
-        <div className="absolute top-4 left-4 z-40 bg-black/80 backdrop-blur-sm border border-purple-500/30 rounded-lg p-3">
+        <div className="absolute top-4 right-4 z-40 bg-black/80 backdrop-blur-sm border border-purple-500/30 rounded-lg p-3">
           <p className="text-purple-400 font-mono text-sm">Press ESC to exit fullscreen</p>
         </div>
       )}
