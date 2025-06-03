@@ -230,41 +230,59 @@ export function GameScreen({
     }
   }, [])
 
-  // Mobile version - only canvas with controls
+  // Mobile version - Nintendo DS style layout
   if (isMobile) {
     return (
-      <div className="min-h-screen w-full bg-black flex items-center justify-center overflow-hidden">
-        {/* Game Canvas - Full screen on mobile */}
-        <div className="w-full h-full flex items-center justify-center">
-          <GameCanvas
-            gameState={gameStateRef.current}
-            creatureSprites={creatureSpritesRef.current}
-            floorTexture={floorTextureRef.current}
-            waveMessage={waveMessage}
-            startNextWave={onStartNextWave}
-            setScore={setScore}
-            setPlayerHealth={setPlayerHealth}
-            setPlayerCoins={setPlayerCoins}
-            setGameOver={setGameOver}
-            onMouseMove={onMouseMove}
-            onMouseClick={onMouseClick}
-            playCreatureDeath={playCreatureDeath}
-            playPlayerShoot={playPlayerCast}
-            playPlayerHit={playPlayerHit}
-          />
+      <div className="min-h-screen w-full bg-black flex flex-col overflow-hidden">
+        {/* Game Canvas Area - 70% of screen height */}
+        <div className="flex-1 flex items-center justify-center bg-black" style={{ height: '70vh' }}>
+          <div className="w-full h-full flex items-center justify-center p-2">
+            <div className="relative w-full h-full max-w-[95vw] max-h-[65vh]">
+              <GameCanvas
+                gameState={gameStateRef.current}
+                creatureSprites={creatureSpritesRef.current}
+                floorTexture={floorTextureRef.current}
+                waveMessage={waveMessage}
+                startNextWave={onStartNextWave}
+                setScore={setScore}
+                setPlayerHealth={setPlayerHealth}
+                setPlayerCoins={setPlayerCoins}
+                setGameOver={setGameOver}
+                onMouseMove={onMouseMove}
+                onMouseClick={onMouseClick}
+                playCreatureDeath={playCreatureDeath}
+                playPlayerShoot={playPlayerCast}
+                playPlayerHit={playPlayerHit}
+              />
+            </div>
+          </div>
         </div>
 
-        {/* Mobile Controls */}
-        <MobileControls
-          onMove={handleMobileMove}
-          onShoot={handleMobileShoot}
-          onShootStart={handleMobileShootStart}
-          onShootEnd={handleMobileShootEnd}
-        />
+        {/* Controls Area - 30% of screen height */}
+        <div className="bg-gray-900/80 border-t-2 border-purple-500/30" style={{ height: '30vh', minHeight: '200px' }}>
+          {/* Mobile Controls with Nintendo DS style */}
+          <MobileControls
+            onMove={handleMobileMove}
+            onShoot={handleMobileShoot}
+            onShootStart={handleMobileShootStart}
+            onShootEnd={handleMobileShootEnd}
+          />
+          
+          {/* Game Info in Controls Area */}
+          <div className="absolute top-2 left-1/2 transform -translate-x-1/2 z-40">
+            <div className="bg-black/60 backdrop-blur-sm border border-purple-500/30 rounded-lg px-4 py-2">
+              <div className="flex items-center gap-4 text-sm font-mono">
+                <span className="text-purple-400">Wave {currentWave}</span>
+                <span className="text-green-400">HP {playerHealth}</span>
+                <span className="text-blue-400">Score {score}</span>
+              </div>
+            </div>
+          </div>
+        </div>
 
-        {/* Game Over/Won Overlay - Still needed for mobile */}
+        {/* Game Over/Won Overlay */}
         {(gameOver || gameWon) && (
-          <div className="absolute inset-0 flex items-center justify-center">
+          <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-50">
             <GameOverlay
               gameWon={gameWon}
               score={score}
@@ -278,9 +296,9 @@ export function GameScreen({
           </div>
         )}
 
-        {/* Marketplace - Still needed for mobile */}
+        {/* Marketplace */}
         {gameStateRef.current?.showMarketplace && (
-          <div className="absolute inset-0 flex items-center justify-center">
+          <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-50">
             <Marketplace
               player={gameStateRef.current.player}
               onUpgradeWeapon={onUpgradeWeapon}

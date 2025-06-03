@@ -93,7 +93,7 @@ export function MobileControls({ onMove, onShoot, onShootStart, onShootEnd }: Mo
 
   return (
     <div 
-      className="fixed inset-0 pointer-events-none z-50 game-interface"
+      className="absolute inset-0 pointer-events-none z-30 game-interface"
       style={{
         userSelect: 'none',
         WebkitUserSelect: 'none',
@@ -104,8 +104,8 @@ export function MobileControls({ onMove, onShoot, onShootStart, onShootEnd }: Mo
         touchAction: 'none'
       }}
     >
-      {/* Joystick */}
-      <div className="absolute bottom-8 left-8 pointer-events-auto">
+      {/* Joystick - Positioned for DS-style controls area */}
+      <div className="absolute bottom-4 left-6 pointer-events-auto">
         <div
           ref={joystickRef}
           className="relative bg-gray-800/80 border-2 border-purple-400 rounded-full mobile-joystick"
@@ -171,10 +171,15 @@ export function MobileControls({ onMove, onShoot, onShootStart, onShootEnd }: Mo
             }}
           />
         </div>
+        
+        {/* Joystick Label */}
+        <div className="mt-2 text-center">
+          <span className="text-purple-300 font-mono text-xs">MOVE</span>
+        </div>
       </div>
 
-      {/* Shoot Button */}
-      <div className="absolute bottom-8 right-8 pointer-events-auto">
+      {/* Shoot Button - Positioned for DS-style controls area */}
+      <div className="absolute bottom-4 right-6 pointer-events-auto">
         <button
           className="w-24 h-24 bg-purple-900/50 hover:bg-purple-900/70 active:bg-purple-900/70 border-4 border-purple-300 rounded-full shadow-lg active:scale-95 transition-all mobile-shoot-button"
           style={{
@@ -244,16 +249,14 @@ export function MobileControls({ onMove, onShoot, onShootStart, onShootEnd }: Mo
             }}
           >🔮</div>
         </button>
+        
+        {/* Shoot Button Label */}
+        <div className="mt-2 text-center">
+          <span className="text-purple-300 font-mono text-xs">CAST</span>
+        </div>
       </div>
 
-      {/* Debug */}
-      {process.env.NODE_ENV === 'development' && (
-        <div className="absolute top-4 left-4 bg-black/70 text-white p-3 rounded text-sm">
-          <div>Dragging: {isDragging ? 'YES' : 'NO'}</div>
-          <div>Knob: {knobPosition.x.toFixed(1)}, {knobPosition.y.toFixed(1)}</div>
-          <div>Direction: {(knobPosition.x / MAX_DISTANCE).toFixed(2)}, {(knobPosition.y / MAX_DISTANCE).toFixed(2)}</div>
-        </div>
-      )}
+     
     </div>
   )
 } 
