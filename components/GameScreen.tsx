@@ -234,10 +234,32 @@ export function GameScreen({
   if (isMobile) {
     return (
       <div className="min-h-screen w-full bg-black flex flex-col overflow-hidden">
-        {/* Game Canvas Area - 70% of screen height */}
-        <div className="flex-1 flex items-center justify-center bg-black" style={{ height: '70vh' }}>
+        {/* Game Stats - Fixed at top */}
+        <div className="flex-shrink-0 p-3 bg-gray-900/80 border-b-2 border-purple-500/30">
+          <div 
+            className="bg-black/60 backdrop-blur-sm border border-purple-500/30 rounded-lg px-4 py-2 mx-auto max-w-sm"
+            style={{
+              userSelect: 'none',
+              WebkitUserSelect: 'none',
+              MozUserSelect: 'none',
+              msUserSelect: 'none',
+              WebkitTouchCallout: 'none',
+              WebkitTapHighlightColor: 'transparent',
+              touchAction: 'none'
+            }}
+          >
+            <div className="flex items-center justify-center gap-4 text-sm font-mono">
+              <span className="text-purple-400">Wave {currentWave}</span>
+              <span className="text-green-400">HP {playerHealth}</span>
+              <span className="text-blue-400">Score {score}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Game Canvas Area */}
+        <div className="flex-1 flex items-center justify-center bg-black">
           <div className="w-full h-full flex items-center justify-center p-2">
-            <div className="relative w-full h-full max-w-[95vw] max-h-[65vh]">
+            <div className="relative w-full h-full max-w-[95vw] max-h-[60vh]">
               <GameCanvas
                 gameState={gameStateRef.current}
                 creatureSprites={creatureSpritesRef.current}
@@ -258,26 +280,14 @@ export function GameScreen({
           </div>
         </div>
 
-        {/* Controls Area - 30% of screen height */}
-        <div className="bg-gray-900/80 border-t-2 border-purple-500/30" style={{ height: '30vh', minHeight: '200px' }}>
-          {/* Mobile Controls with Nintendo DS style */}
+        {/* Controls Area */}
+        <div className="bg-gray-900/80 border-t-2 border-purple-500/30 relative" style={{ height: '30vh', minHeight: '200px' }}>
           <MobileControls
             onMove={handleMobileMove}
             onShoot={handleMobileShoot}
             onShootStart={handleMobileShootStart}
             onShootEnd={handleMobileShootEnd}
           />
-          
-          {/* Game Info in Controls Area */}
-          <div className="absolute top-2 left-1/2 transform -translate-x-1/2 z-40">
-            <div className="bg-black/60 backdrop-blur-sm border border-purple-500/30 rounded-lg px-4 py-2">
-              <div className="flex items-center gap-4 text-sm font-mono">
-                <span className="text-purple-400">Wave {currentWave}</span>
-                <span className="text-green-400">HP {playerHealth}</span>
-                <span className="text-blue-400">Score {score}</span>
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* Game Over/Won Overlay */}

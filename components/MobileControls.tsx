@@ -174,7 +174,7 @@ export function MobileControls({ onMove, onShoot, onShootStart, onShootEnd }: Mo
         
         {/* Joystick Label */}
         <div className="mt-2 text-center">
-          <span className="text-purple-300 font-mono text-xs">MOVE</span>
+          <span className="text-purple-300 font-mono text-xs"></span>
         </div>
       </div>
 
@@ -250,9 +250,8 @@ export function MobileControls({ onMove, onShoot, onShootStart, onShootEnd }: Mo
           >🔮</div>
         </button>
         
-        {/* Shoot Button Label */}
         <div className="mt-2 text-center">
-          <span className="text-purple-300 font-mono text-xs">CAST</span>
+          <span className="text-purple-300 font-mono text-xs"></span>
         </div>
       </div>
 
