@@ -89,7 +89,7 @@ export const useInputHandlers = (
               const newProjectile = {
                 position: { ...player.position },
                 velocity: { x: direction.x * PROJECTILE_SPEED, y: direction.y * PROJECTILE_SPEED },
-                radius: 4.2 * projectileSize,
+                radius: 4.5 * projectileSize,
                 speed: PROJECTILE_SPEED,
                 isMagicBolt: false // Player spells are not magic bolts
               }
