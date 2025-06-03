@@ -169,7 +169,7 @@ export const render = (
       if (p.isBossProjectile) {
         ctx.fillStyle = '#4B0082' // Púrpura oscuro para proyectiles del Boss
       } else {
-        ctx.fillStyle = p.isMagicBolt ? '#8A2BE2' : '#5752ff'
+        ctx.fillStyle = p.isMagicBolt ? '#8A2BE2' : '#4444FF'
       }
       ctx.beginPath()
       ctx.arc(screenX, screenY, p.radius, 0, Math.PI * 2)
