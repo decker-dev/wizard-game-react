@@ -145,22 +145,22 @@ export function HomeScreen({
         <div className="flex flex-col lg:flex-row items-center gap-8 w-full max-w-7xl">
           
           {/* Left Section - Title and Menu */}
-          <div className="flex-1 text-center lg:text-left px-4 sm:px-6 lg:px-0">
+          <div className="flex-1 text-center lg:text-left p-4 sm:p-6 lg:p-0">
             {/* Title */}
             <div className={`mb-8 mt-8 sm:mb-12 lg:mb-8 ${animateTitle ? 'animate-fade-in-up' : 'opacity-0'}`}>
-              <h1 className="text-6xl lg:text-8xl font-bold font-pixel text-transparent bg-clip-text bg-gradient-to-b from-purple-400 to-blue-600 mb-4 tracking-wider px-2 sm:px-4 lg:px-0">
+              <h1 className="text-6xl lg:text-8xl font-bold font-pixel text-transparent bg-clip-text bg-gradient-to-b from-purple-400 to-blue-600 mb-4 tracking-wider">
                 MYSTIC
               </h1>
-              <h2 className="text-2xl lg:text-4xl font-pixel text-purple-300 mb-2 px-2 sm:px-4 lg:px-0">
+              <h2 className="text-2xl lg:text-4xl font-pixel text-purple-300 mb-2">
                 REALM DEFENDER
               </h2>
-              <p className="text-gray-400 text-lg font-mono px-2 sm:px-4 lg:px-0">
+              <p className="text-gray-400 text-lg font-mono">
                 Master the arcane arts. Defend against mythical beasts.
               </p>
             </div>
 
             {/* Menu */}
-            <div className="space-y-4 px-4 lg:px-0">
+            <div className="space-y-4">
               {menuItems.map((item, index) => {
                 const isSelected = index === currentMenuItem
                 const baseClassName = `
@@ -229,7 +229,7 @@ export function HomeScreen({
           </div>
 
           {/* Right Section - Leaderboard */}
-          <div className="flex-1 w-full max-w-lg">
+          <div className="flex-1 w-full max-w-lg p-4 sm:p-6 lg:p-0">
             <Leaderboard 
               topScores={topScores}
               allScores={allScores}
