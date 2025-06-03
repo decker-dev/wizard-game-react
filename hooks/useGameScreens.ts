@@ -101,15 +101,12 @@ export function useGameScreens() {
     updateScreenState({ playerCoins })
   }, [updateScreenState])
 
-  const setGameOver = useCallback((gameOver: boolean) => {
+  const setGameOver = useCallback((gameOver: boolean, currentScore: number) => {
     updateScreenState({ gameOver })
     if (gameOver) {
       gameTracking.stopTracking()
-      if (screenState.score > 0) {
-        updateScreenState({ showScoreModal: true })
-      }
     }
-  }, [updateScreenState, gameTracking, screenState.score])
+  }, [updateScreenState, gameTracking])
 
   const setGameWon = useCallback((gameWon: boolean) => {
     updateScreenState({ gameWon })

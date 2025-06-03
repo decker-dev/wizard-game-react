@@ -30,7 +30,7 @@ interface GameScreenProps {
   setScore: (score: number) => void
   setPlayerHealth: (health: number) => void
   setPlayerCoins: (coins: number) => void
-  setGameOver: (gameOver: boolean) => void
+  setGameOver: (gameOver: boolean, score: number) => void
   
   // Actions
   onResetGame: () => void
