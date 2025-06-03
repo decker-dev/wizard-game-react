@@ -19,7 +19,8 @@ export const render = (
   waveMessage: string,
   canvasWidth: number = CANVAS_WIDTH,
   canvasHeight: number = CANVAS_HEIGHT,
-  floorTexture?: HTMLImageElement | null
+  floorTexture?: HTMLImageElement | null,
+  healthPackSprite?: HTMLImageElement | null
 ) => {
   const { player } = gameState
 
@@ -51,6 +52,56 @@ export const render = (
     ) {
       // Renderizar muros con bloques grises
       renderWallBlocks(ctx, screenX, screenY, obs.width, obs.height)
+    }
+  })
+
+  // Render health packs ANTES del jugador para que el jugador esté siempre visible
+  gameState.healthPacks.forEach((healthPack) => {
+    const screenX = healthPack.position.x - cameraX
+    const screenY = healthPack.position.y - cameraY
+
+    if (
+      screenX + healthPack.width >= 0 &&
+      screenX - healthPack.width <= canvasWidth &&
+      screenY + healthPack.height >= 0 &&
+      screenY - healthPack.height <= canvasHeight
+    ) {
+      if (healthPackSprite) {
+        // Renderizar el sprite del pack de vida
+        ctx.drawImage(
+          healthPackSprite,
+          screenX - healthPack.width / 2,
+          screenY - healthPack.height / 2,
+          healthPack.width,
+          healthPack.height
+        )
+      } else {
+        // Fallback: renderizar como rectángulo rojo con cruz blanca
+        ctx.fillStyle = '#FF4444'
+        ctx.fillRect(
+          screenX - healthPack.width / 2,
+          screenY - healthPack.height / 2,
+          healthPack.width,
+          healthPack.height
+        )
+        
+        // Dibujar cruz blanca
+        ctx.fillStyle = '#FFFFFF'
+        // Línea horizontal de la cruz
+        ctx.fillRect(
+          screenX - healthPack.width / 2 + 4,
+          screenY - 2,
+          healthPack.width - 8,
+          4
+        )
+        // Línea vertical de la cruz
+        ctx.fillRect(
+          screenX - 2,
+          screenY - healthPack.height / 2 + 4,
+          4,
+          healthPack.height - 8
+        )
+      }
     }
   })
 
@@ -272,6 +323,17 @@ const renderMinimap = (
     ctx.fillRect(
       canvasWidth - minimapSize - minimapPadding + c.position.x * minimapScaleX - 1,
       minimapPadding + c.position.y * minimapScaleY - 1,
+      2,
+      2
+    )
+  })
+
+  // Packs de vida en el minimapa
+  ctx.fillStyle = "#FF69B4" // Rosa para packs de vida (más visible y temático)
+  gameState.healthPacks.forEach((healthPack) => {
+    ctx.fillRect(
+      canvasWidth - minimapSize - minimapPadding + healthPack.position.x * minimapScaleX - 1,
+      minimapPadding + healthPack.position.y * minimapScaleY - 1,
       2,
       2
     )

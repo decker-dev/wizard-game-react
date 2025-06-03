@@ -83,11 +83,21 @@ export interface CrystalParticle {
   crystals: number
 }
 
+export interface HealthPack {
+  id: string
+  position: Vector2
+  width: number
+  height: number
+  healAmount: number
+  sprite?: HTMLImageElement | null
+}
+
 export interface GameState {
   player: Player
   projectiles: Projectile[]
   creatures: Creature[]
   obstacles: Obstacle[]
+  healthPacks: HealthPack[]
   score: number
   currentWave: number
   creaturesToSpawnThisWave: number

@@ -20,7 +20,7 @@ export function useGameController(autoStart: boolean = false) {
     upgradeHealth
   } = useGameState()
 
-  const { loadAssets, creatureSpritesRef, playerSpritesRef, floorTextureRef } = useAssetLoader()
+  const { loadAssets, creatureSpritesRef, playerSpritesRef, floorTextureRef, healthPackSpriteRef } = useAssetLoader()
   const {
     topScores,
     allScores,
@@ -57,8 +57,8 @@ export function useGameController(autoStart: boolean = false) {
 
   // Game lifecycle methods
   const handleStartNextWave = useCallback(() => {
-    startNextWave(setCurrentWave, setWaveMessage, setGameWon)
-  }, [startNextWave, setCurrentWave, setWaveMessage, setGameWon])
+    startNextWave(setCurrentWave, setWaveMessage, setGameWon, healthPackSpriteRef.current)
+  }, [startNextWave, setCurrentWave, setWaveMessage, setGameWon, healthPackSpriteRef])
 
   const handleMouseMoveWrapper = useCallback((e: MouseEvent) => {
     handleMouseMove(e, canvasRef)
@@ -76,8 +76,8 @@ export function useGameController(autoStart: boolean = false) {
       const { playerSprites } = await loadAssets()
       const gameState = initializeGameState(playerSprites)
 
-      // Initialize playerHealth with player's mana
-      setPlayerHealth(gameState.player.mana)
+      // Initialize playerHealth with player's health
+      setPlayerHealth(gameState.player.health)
       setPlayerCoins(gameState.player.crystals)
 
       // Registrar nueva partida iniciada
@@ -102,9 +102,9 @@ export function useGameController(autoStart: boolean = false) {
   const resetGame = useCallback(async () => {
     const gameState = resetGameState(playerSpritesRef.current)
 
-    // Initialize playerHealth with player's mana
+    // Initialize playerHealth with player's health
     if (gameState) {
-      setPlayerHealth(gameState.player.mana)
+      setPlayerHealth(gameState.player.health)
       setPlayerCoins(gameState.player.crystals)
       // Reiniciar tracking con los cristales iniciales
       resetScreenState(gameState.player.crystals)
@@ -149,8 +149,8 @@ export function useGameController(autoStart: boolean = false) {
   }, [upgradeHealth, setPlayerCoins, setPlayerHealth])
 
   const handleContinueFromMarketplace = useCallback(() => {
-    continueFromMarketplace(setWaveMessage)
-  }, [continueFromMarketplace, setWaveMessage])
+    continueFromMarketplace(setWaveMessage, healthPackSpriteRef.current)
+  }, [continueFromMarketplace, setWaveMessage, healthPackSpriteRef])
 
   return {
     // State
@@ -162,6 +162,7 @@ export function useGameController(autoStart: boolean = false) {
     creatureSpritesRef,
     playerSpritesRef,
     floorTextureRef,
+    healthPackSpriteRef,
 
     // Leaderboard
     topScores,
