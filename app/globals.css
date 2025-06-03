@@ -131,3 +131,48 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* Mobile game controls - prevent text selection and context menu */
+.game-element,
+.mobile-control,
+canvas {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+  -webkit-touch-callout: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+  touch-action: manipulation !important;
+}
+
+/* Prevent selection and context menu on mobile for specific game areas */
+.game-canvas-container,
+.mobile-joystick,
+.mobile-shoot-button {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+  -webkit-touch-callout: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+  touch-action: none !important;
+  outline: none !important;
+}
+
+/* Prevent text selection on mobile game interface */
+@media (max-width: 768px) {
+  .game-interface {
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    user-select: none !important;
+    -webkit-touch-callout: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+  
+  /* Disable pull-to-refresh on mobile for game area */
+  .game-area {
+    overscroll-behavior: none !important;
+    overflow: hidden !important;
+  }
+}

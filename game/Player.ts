@@ -28,7 +28,10 @@ export const createInitialPlayer = (playerSprites: { [key: string]: HTMLImageEle
   direction: 'S',
   isMoving: false,
   animationFrame: 'S',
-  lastAnimationTime: Date.now()
+  lastAnimationTime: Date.now(),
+  // Initialize mobile joystick movement
+  dx: 0,
+  dy: 0
 })
 
 export const updatePlayer = (gameState: GameState) => {
@@ -39,10 +42,18 @@ export const updatePlayer = (gameState: GameState) => {
   let dx = 0
   let dy = 0
 
+  // Keyboard input
   if (keys["w"] || keys["arrowup"]) dy -= speed
   if (keys["s"] || keys["arrowdown"]) dy += speed
   if (keys["a"] || keys["arrowleft"]) dx -= speed
   if (keys["d"] || keys["arrowright"]) dx += speed
+
+  // Mobile joystick input (only override if joystick is actually being used)
+  if (player.dx !== undefined && player.dy !== undefined &&
+    (player.dx !== 0 || player.dy !== 0)) {
+    dx = player.dx
+    dy = player.dy
+  }
 
   // Determinar si el jugador se está moviendo
   const isMoving = dx !== 0 || dy !== 0

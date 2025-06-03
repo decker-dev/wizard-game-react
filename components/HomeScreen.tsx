@@ -141,13 +141,13 @@ export function HomeScreen({
       </div>
 
       {/* Main Content */}
-      <div className="relative z-10 flex items-center justify-center min-h-screen p-4">
+      <div className="relative z-10 flex items-center justify-center min-h-screen p-4 sm:p-6 lg:p-4">
         <div className="flex flex-col lg:flex-row items-center gap-8 w-full max-w-7xl">
           
           {/* Left Section - Title and Menu */}
-          <div className="flex-1 text-center lg:text-left">
+          <div className="flex-1 text-center lg:text-left p-4 sm:p-6 lg:p-0">
             {/* Title */}
-            <div className={`mb-8 ${animateTitle ? 'animate-fade-in-up' : 'opacity-0'}`}>
+            <div className={`mb-8 mt-8 sm:mb-12 lg:mb-8 ${animateTitle ? 'animate-fade-in-up' : 'opacity-0'}`}>
               <h1 className="text-6xl lg:text-8xl font-bold font-pixel text-transparent bg-clip-text bg-gradient-to-b from-purple-400 to-blue-600 mb-4 tracking-wider">
                 MYSTIC
               </h1>
@@ -164,7 +164,7 @@ export function HomeScreen({
               {menuItems.map((item, index) => {
                 const isSelected = index === currentMenuItem
                 const baseClassName = `
-                  group w-full max-w-md mx-auto lg:mx-0 p-4 rounded-lg font-mono font-bold text-xl
+                  group w-full max-w-md mx-auto lg:mx-0 p-4 sm:p-6 lg:p-4 rounded-lg font-mono font-bold text-xl
                   transition-all duration-300 transform border-2 block
                   ${isSelected 
                     ? 'bg-purple-600/80 border-purple-500 text-white scale-105 shadow-lg shadow-purple-500/50' 
@@ -209,9 +209,18 @@ export function HomeScreen({
             </div>
 
             {/* Game Instructions */}
-            <div className="mt-6 p-4 bg-black/40 backdrop-blur-sm border border-purple-500/20 rounded-lg max-w-md mx-auto lg:mx-0">
+            <div className="mt-6 p-4 sm:p-6 lg:p-4 bg-black/40 backdrop-blur-sm border border-purple-500/20 rounded-lg max-w-md mx-auto lg:mx-0">
               <h3 className="text-purple-300 font-mono text-sm mb-2">🔮 HOW TO PLAY</h3>
-              <div className="text-xs text-gray-400 space-y-1">
+              
+              {/* Mobile Instructions */}
+              <div className="text-xs text-gray-400 space-y-1 block lg:hidden">
+                <p>🕹️ Joystick - Move & Aim</p>
+                <p>🎯 Fire Button - Cast Spells</p>
+                <p>Survive waves of mythical creatures!</p>
+              </div>
+
+              {/* Desktop Instructions */}
+              <div className="text-xs text-gray-400 space-y-1 hidden lg:block">
                 <p>WASD - Move</p>
                 <p>Mouse - Aim & Cast Spells</p>
                 <p>Survive waves of mythical creatures!</p>
@@ -220,7 +229,7 @@ export function HomeScreen({
           </div>
 
           {/* Right Section - Leaderboard */}
-          <div className="flex-1 w-full max-w-lg">
+          <div className="flex-1 w-full max-w-lg p-4 sm:p-6 lg:p-0">
             <Leaderboard 
               topScores={topScores}
               allScores={allScores}

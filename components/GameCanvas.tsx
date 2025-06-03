@@ -53,6 +53,20 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
     width: CANVAS_WIDTH,
     height: CANVAS_HEIGHT
   })
+  
+  // Detect if we're on mobile
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   // Handle fullscreen change events
   useEffect(() => {
@@ -138,12 +152,12 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
     if (canvas) {
       const ctx = canvas.getContext("2d")
       if (ctx) {
-        render(ctx, gameState, creatureSprites, waveMessage, canvasDimensions.width, canvasDimensions.height, floorTexture, healthPackSprite)
+        render(ctx, gameState, creatureSprites, waveMessage, canvasDimensions.width, canvasDimensions.height, floorTexture, healthPackSprite, isMobile)
       }
     }
 
     animationFrameRef.current = requestAnimationFrame(gameLoop)
-  }, [gameState, creatureSprites, floorTexture, healthPackSprite, waveMessage, startNextWave, setScore, setPlayerHealth, setGameOver, setPlayerCoins, canvasDimensions, playCreatureDeath, playPlayerHit])
+  }, [gameState, creatureSprites, floorTexture, healthPackSprite, waveMessage, startNextWave, setScore, setPlayerHealth, setGameOver, setPlayerCoins, canvasDimensions, playCreatureDeath, playPlayerHit, isMobile])
 
   useEffect(() => {
     if (gameState && !gameState.gameOver && !gameState.gameWon) {
@@ -214,14 +228,24 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
   return (
     <div 
       ref={containerRef}
-      className={`relative ${isFullscreen ? 'fixed inset-0 flex items-center justify-center bg-black z-50' : ''}`}
+      className={`relative game-area ${isFullscreen ? 'fixed inset-0 flex items-center justify-center bg-black z-50' : ''}`}
+      style={{
+        userSelect: 'none',
+        WebkitUserSelect: 'none',
+        MozUserSelect: 'none',
+        msUserSelect: 'none',
+        WebkitTouchCallout: 'none',
+        WebkitTapHighlightColor: 'transparent'
+      }}
+      onContextMenu={(e) => e.preventDefault()}
+      onDragStart={(e) => e.preventDefault()}
     >
       {/* Fullscreen Toggle Button */}
       <button
         onClick={toggleFullscreen}
         className={`absolute ${
-          isFullscreen ? 'top-4 right-4 z-50' : 'top-2 right-2 z-10'
-        } bg-purple-600/80 hover:bg-purple-600 border border-purple-500/50 text-white p-2 rounded font-mono font-bold transition-all duration-200 transform hover:scale-105 hover:border-purple-500`}
+          isFullscreen ? 'top-4 left-4 z-50' : 'top-2 left-2 z-10'
+        } bg-purple-600/30 hover:bg-purple-600/50 border border-purple-500/20 hover:border-purple-500/40 text-white/80 hover:text-white p-2 rounded font-mono font-bold transition-all duration-200 transform hover:scale-105 hidden md:block`}
         title={isFullscreen ? "Exit fullscreen (ESC)" : "Fullscreen"}
       >
         {isFullscreen ? (
@@ -237,13 +261,26 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
 
       {/* Instructions for fullscreen mode */}
       {isFullscreen && (
-        <div className="absolute top-4 left-4 z-40 bg-black/80 backdrop-blur-sm border border-purple-500/30 rounded-lg p-3">
+        <div className="absolute top-4 right-4 z-40 bg-black/80 backdrop-blur-sm border border-purple-500/30 rounded-lg p-3">
           <p className="text-purple-400 font-mono text-sm">Press ESC to exit fullscreen</p>
         </div>
       )}
 
       {/* Canvas Container with Coin Particles */}
-      <div className="relative">
+      <div 
+        className="relative game-canvas-container"
+        style={{
+          userSelect: 'none',
+          WebkitUserSelect: 'none',
+          MozUserSelect: 'none',
+          msUserSelect: 'none',
+          WebkitTouchCallout: 'none',
+          WebkitTapHighlightColor: 'transparent',
+          touchAction: 'none'
+        }}
+        onContextMenu={(e) => e.preventDefault()}
+        onDragStart={(e) => e.preventDefault()}
+      >
         {/* Coin Particles Overlay */}
         {gameState && (
           <CoinParticles 
@@ -260,7 +297,7 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
           ref={canvasRef}
           width={canvasDimensions.width}
           height={canvasDimensions.height}
-          className={`${
+          className={`game-element ${
             isFullscreen 
               ? 'border-2 border-purple-500/70 bg-gray-900 rounded shadow-2xl' 
               : 'border-4 border-purple-500/50 bg-gray-900 rounded-lg shadow-lg hover:border-purple-500/70 transition-colors'
@@ -269,7 +306,17 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
             imageRendering: 'pixelated', // Maintain pixel art look when scaled
             maxWidth: '100%',
             maxHeight: '100%',
+            userSelect: 'none',
+            WebkitUserSelect: 'none',
+            MozUserSelect: 'none',
+            msUserSelect: 'none',
+            WebkitTouchCallout: 'none',
+            WebkitTapHighlightColor: 'transparent',
+            touchAction: 'none',
+            outline: 'none'
           }}
+          onContextMenu={(e) => e.preventDefault()}
+          onDragStart={(e) => e.preventDefault()}
         />
       </div>
     </div>
