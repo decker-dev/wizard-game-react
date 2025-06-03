@@ -214,14 +214,24 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
   return (
     <div 
       ref={containerRef}
-      className={`relative ${isFullscreen ? 'fixed inset-0 flex items-center justify-center bg-black z-50' : ''}`}
+      className={`relative game-area ${isFullscreen ? 'fixed inset-0 flex items-center justify-center bg-black z-50' : ''}`}
+      style={{
+        userSelect: 'none',
+        WebkitUserSelect: 'none',
+        MozUserSelect: 'none',
+        msUserSelect: 'none',
+        WebkitTouchCallout: 'none',
+        WebkitTapHighlightColor: 'transparent'
+      }}
+      onContextMenu={(e) => e.preventDefault()}
+      onDragStart={(e) => e.preventDefault()}
     >
       {/* Fullscreen Toggle Button */}
       <button
         onClick={toggleFullscreen}
         className={`absolute ${
           isFullscreen ? 'top-4 right-4 z-50' : 'top-2 right-2 z-10'
-        } bg-purple-600/80 hover:bg-purple-600 border border-purple-500/50 text-white p-2 rounded font-mono font-bold transition-all duration-200 transform hover:scale-105 hover:border-purple-500`}
+        } bg-purple-600/80 hover:bg-purple-600 border border-purple-500/50 text-white p-2 rounded font-mono font-bold transition-all duration-200 transform hover:scale-105 hover:border-purple-500 hidden md:block`}
         title={isFullscreen ? "Exit fullscreen (ESC)" : "Fullscreen"}
       >
         {isFullscreen ? (
@@ -243,7 +253,20 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
       )}
 
       {/* Canvas Container with Coin Particles */}
-      <div className="relative">
+      <div 
+        className="relative game-canvas-container"
+        style={{
+          userSelect: 'none',
+          WebkitUserSelect: 'none',
+          MozUserSelect: 'none',
+          msUserSelect: 'none',
+          WebkitTouchCallout: 'none',
+          WebkitTapHighlightColor: 'transparent',
+          touchAction: 'none'
+        }}
+        onContextMenu={(e) => e.preventDefault()}
+        onDragStart={(e) => e.preventDefault()}
+      >
         {/* Coin Particles Overlay */}
         {gameState && (
           <CoinParticles 
@@ -260,7 +283,7 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
           ref={canvasRef}
           width={canvasDimensions.width}
           height={canvasDimensions.height}
-          className={`${
+          className={`game-element ${
             isFullscreen 
               ? 'border-2 border-purple-500/70 bg-gray-900 rounded shadow-2xl' 
               : 'border-4 border-purple-500/50 bg-gray-900 rounded-lg shadow-lg hover:border-purple-500/70 transition-colors'
@@ -269,7 +292,17 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
             imageRendering: 'pixelated', // Maintain pixel art look when scaled
             maxWidth: '100%',
             maxHeight: '100%',
+            userSelect: 'none',
+            WebkitUserSelect: 'none',
+            MozUserSelect: 'none',
+            msUserSelect: 'none',
+            WebkitTouchCallout: 'none',
+            WebkitTapHighlightColor: 'transparent',
+            touchAction: 'none',
+            outline: 'none'
           }}
+          onContextMenu={(e) => e.preventDefault()}
+          onDragStart={(e) => e.preventDefault()}
         />
       </div>
     </div>

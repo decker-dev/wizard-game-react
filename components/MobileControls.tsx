@@ -92,30 +92,65 @@ export function MobileControls({ onMove, onShoot, onShootStart, onShootEnd }: Mo
   }, [isDragging])
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-50">
+    <div 
+      className="fixed inset-0 pointer-events-none z-50 game-interface"
+      style={{
+        userSelect: 'none',
+        WebkitUserSelect: 'none',
+        MozUserSelect: 'none',
+        msUserSelect: 'none',
+        WebkitTouchCallout: 'none',
+        WebkitTapHighlightColor: 'transparent',
+        touchAction: 'none'
+      }}
+    >
       {/* Joystick */}
       <div className="absolute bottom-8 left-8 pointer-events-auto">
         <div
           ref={joystickRef}
-          className="relative bg-gray-800/80 border-2 border-purple-400 rounded-full"
+          className="relative bg-gray-800/80 border-2 border-purple-400 rounded-full mobile-joystick"
           style={{ 
             width: JOYSTICK_SIZE, 
             height: JOYSTICK_SIZE,
             touchAction: 'none',
-            userSelect: 'none'
+            userSelect: 'none',
+            WebkitUserSelect: 'none',
+            MozUserSelect: 'none',
+            msUserSelect: 'none',
+            WebkitTouchCallout: 'none',
+            WebkitTapHighlightColor: 'transparent',
+            outline: 'none',
+            border: 'none',
+            WebkitAppearance: 'none',
+            MozAppearance: 'none'
           }}
           onTouchStart={(e) => {
+            e.preventDefault()
             e.stopPropagation()
             const touch = e.touches[0]
             handleStart(touch.clientX, touch.clientY)
           }}
           onMouseDown={(e) => {
+            e.preventDefault()
             e.stopPropagation()
             handleStart(e.clientX, e.clientY)
           }}
+          onContextMenu={(e) => e.preventDefault()}
+          onDragStart={(e) => e.preventDefault()}
         >
           {/* Base circle */}
-          <div className="absolute inset-2 bg-purple-500/20 rounded-full" />
+          <div 
+            className="absolute inset-2 bg-purple-500/20 rounded-full" 
+            style={{
+              userSelect: 'none',
+              WebkitUserSelect: 'none',
+              MozUserSelect: 'none',
+              msUserSelect: 'none',
+              WebkitTouchCallout: 'none',
+              WebkitTapHighlightColor: 'transparent',
+              pointerEvents: 'none'
+            }}
+          />
           
           {/* Knob */}
           <div
@@ -125,22 +160,37 @@ export function MobileControls({ onMove, onShoot, onShootStart, onShootEnd }: Mo
               height: KNOB_SIZE,
               left: `calc(50% + ${knobPosition.x}px - ${KNOB_SIZE/2}px)`,
               top: `calc(50% + ${knobPosition.y}px - ${KNOB_SIZE/2}px)`,
-              transition: isDragging ? 'none' : 'all 0.2s ease'
+              transition: isDragging ? 'none' : 'all 0.2s ease',
+              userSelect: 'none',
+              WebkitUserSelect: 'none',
+              MozUserSelect: 'none',
+              msUserSelect: 'none',
+              WebkitTouchCallout: 'none',
+              WebkitTapHighlightColor: 'transparent',
+              pointerEvents: 'none'
             }}
           />
         </div>
-        <div className="text-center mt-2 text-white/70 text-sm font-bold">MOVE</div>
       </div>
 
       {/* Shoot Button */}
       <div className="absolute bottom-8 right-8 pointer-events-auto">
         <button
-          className="w-24 h-24 bg-red-500 hover:bg-red-600 active:bg-red-700 border-4 border-red-300 rounded-full shadow-lg active:scale-95 transition-all"
+          className="w-24 h-24 bg-purple-900/50 hover:bg-purple-900/70 active:bg-purple-900/70 border-4 border-purple-300 rounded-full shadow-lg active:scale-95 transition-all mobile-shoot-button"
           style={{
             touchAction: 'manipulation',
-            userSelect: 'none'
+            userSelect: 'none',
+            WebkitUserSelect: 'none',
+            MozUserSelect: 'none',
+            msUserSelect: 'none',
+            WebkitTouchCallout: 'none',
+            WebkitTapHighlightColor: 'transparent',
+            outline: 'none',
+            WebkitAppearance: 'none',
+            MozAppearance: 'none'
           }}
           onTouchStart={(e) => {
+            e.preventDefault()
             e.stopPropagation()
             if (onShootStart) {
               onShootStart()
@@ -149,12 +199,14 @@ export function MobileControls({ onMove, onShoot, onShootStart, onShootEnd }: Mo
             }
           }}
           onTouchEnd={(e) => {
+            e.preventDefault()
             e.stopPropagation()
             if (onShootEnd) {
               onShootEnd()
             }
           }}
           onMouseDown={(e) => {
+            e.preventDefault()
             e.stopPropagation()
             if (onShootStart) {
               onShootStart()
@@ -163,22 +215,35 @@ export function MobileControls({ onMove, onShoot, onShootStart, onShootEnd }: Mo
             }
           }}
           onMouseUp={(e) => {
+            e.preventDefault()
             e.stopPropagation()
             if (onShootEnd) {
               onShootEnd()
             }
           }}
           onClick={(e) => {
+            e.preventDefault()
             e.stopPropagation()
             // Fallback for simple click if no start/end handlers
             if (!onShootStart && !onShootEnd) {
               onShoot()
             }
           }}
+          onContextMenu={(e) => e.preventDefault()}
+          onDragStart={(e) => e.preventDefault()}
         >
-          <div className="text-white text-3xl font-bold">🔮</div>
+          <div 
+            className="text-white text-3xl font-bold"
+            style={{
+              userSelect: 'none',
+              WebkitUserSelect: 'none',
+              MozUserSelect: 'none',
+              msUserSelect: 'none',
+              WebkitTouchCallout: 'none',
+              pointerEvents: 'none'
+            }}
+          >🔮</div>
         </button>
-        <div className="text-center mt-2 text-white/70 text-sm font-bold">SHOOT</div>
       </div>
 
       {/* Debug */}
