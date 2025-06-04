@@ -32,7 +32,7 @@ export async function getAllScores(): Promise<LeaderboardEntry[]> {
     const { data, error } = await supabase
       .from('leaderboard')
       .select('*')
-      .order('score', { ascending: false })
+      .order('created_at', { ascending: false })
 
     if (error) {
       console.error('Error fetching all scores:', error)
