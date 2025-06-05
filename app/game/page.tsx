@@ -1,101 +1,103 @@
-"use client"
+"use client";
 
-import React from "react"
-import { useGameController } from '@/hooks/useGameController'
-import { useGameEffects } from '@/hooks/useGameEffects'
-import { LoadingScreen } from '@/components/LoadingScreen'
-import { GameScreen } from '@/components/GameScreen'
-import { ScoreSubmissionModal } from '@/components/ScoreSubmissionModal'
-import { ShareModal } from '@/components/ShareModal'
-import { useRouter } from 'next/navigation'
+import { GameScreen } from "@/components/GameScreen";
+import { LoadingScreen } from "@/components/LoadingScreen";
+import { ScoreSubmissionModal } from "@/components/ScoreSubmissionModal";
+import { ShareModal } from "@/components/ShareModal";
+import { useGameController } from "@/hooks/useGameController";
+import { useGameEffects } from "@/hooks/useGameEffects";
+import { useRouter } from "next/navigation";
+import React from "react";
 
 export default function GamePage() {
-  const router = useRouter()
-  const gameController = useGameController(true) // Auto-start the game
-  
-  const {
-    screenState,
-    gameTracking,
-    isSubmitting,
-    handleKeyDownWrapper,
-    handleKeyUp,
-    setShowShareModal,
-    handleScoreSubmit,
-    handleSkipScore,
-    handleSaveScore
-  } = gameController
+	const router = useRouter();
+	const gameController = useGameController(true); // Auto-start the game
 
-  // Override the navigateToHome to use router
-  const handleReturnHome = () => {
-    router.push('/')
-  }
+	const {
+		screenState,
+		gameTracking,
+		isSubmitting,
+		handleKeyDownWrapper,
+		handleKeyUp,
+		setShowShareModal,
+		handleScoreSubmit,
+		handleSkipScore,
+		handleSaveScore,
+	} = gameController;
 
-  // Handle effects
-  useGameEffects({
-    screenState,
-    handleKeyDownWrapper,
-    handleKeyUp
-  })
+	// Override the navigateToHome to use router
+	const handleReturnHome = () => {
+		router.push("/");
+	};
 
-  // Loading Screen
-  if (screenState.isLoading) {
-    return <LoadingScreen />
-  }
+	// Handle effects
+	useGameEffects({
+		screenState,
+		handleKeyDownWrapper,
+		handleKeyUp,
+	});
 
-  // Calculate crystals earned for security
-  const player = gameController.gameStateRef.current?.player
-  const crystalsEarned = player ? player.crystals - (gameTracking.gameStartTime > 0 ? 0 : player.crystals) : 0
+	// Loading Screen
+	if (screenState.isLoading) {
+		return <LoadingScreen />;
+	}
 
-  // Game Screen
-  return (
-    <>
-      <GameScreen
-        screenState={screenState}
-        gameStateRef={gameController.gameStateRef}
-        canvasRef={gameController.canvasRef}
-        creatureSpritesRef={gameController.creatureSpritesRef}
-        floorTextureRef={gameController.floorTextureRef}
-        healthPackSpriteRef={gameController.healthPackSpriteRef}
-        playCreatureDeath={gameController.playCreatureDeath}
-        playPlayerCast={gameController.playPlayerCast}
-        playPlayerHit={gameController.playPlayerHit}
-        onMouseMove={gameController.handleMouseMoveWrapper}
-        onMouseClick={gameController.handleMouseClick}
-        onStartNextWave={gameController.handleStartNextWave}
-        setScore={gameController.setScore}
-        setPlayerHealth={gameController.setPlayerHealth}
-        setPlayerCoins={gameController.setPlayerCoins}
-        setGameOver={gameController.setGameOver}
-        onResetGame={gameController.resetGame}
-        onReturnHome={handleReturnHome}
-        onShare={() => setShowShareModal(true)}
-        onSaveScore={handleSaveScore}
-        onUpgradeWeapon={gameController.handleUpgradeWeapon}
-        onUpgradeHealth={gameController.handleUpgradeHealth}
-        onContinueFromMarketplace={gameController.handleContinueFromMarketplace}
-      />
+	// Calculate crystals earned for security
+	const player = gameController.gameStateRef.current?.player;
+	const crystalsEarned = player
+		? player.crystals - (gameTracking.gameStartTime > 0 ? 0 : player.crystals)
+		: 0;
 
-      {/* Score Submission Modal with secure props */}
-      {player && (
-        <ScoreSubmissionModal
-          score={screenState.score}
-          wavesSurvived={screenState.currentWave}
-          isVisible={screenState.showScoreModal}
-          onSubmit={handleScoreSubmit}
-          onSkip={handleSkipScore}
-          isSubmitting={isSubmitting}
-          clientId={gameTracking.clientId}
-          player={player}
-          gameStartTime={gameTracking.gameStartTime}
-          crystalsEarned={crystalsEarned}
-        />
-      )}
+	// Game Screen
+	return (
+		<>
+			<GameScreen
+				screenState={screenState}
+				gameStateRef={gameController.gameStateRef}
+				canvasRef={gameController.canvasRef}
+				creatureSpritesRef={gameController.creatureSpritesRef}
+				floorTextureRef={gameController.floorTextureRef}
+				healthPackSpriteRef={gameController.healthPackSpriteRef}
+				playCreatureDeath={gameController.playCreatureDeath}
+				playPlayerCast={gameController.playPlayerCast}
+				playPlayerHit={gameController.playPlayerHit}
+				onMouseMove={gameController.handleMouseMoveWrapper}
+				onMouseClick={gameController.handleMouseClick}
+				onStartNextWave={gameController.handleStartNextWave}
+				setScore={gameController.setScore}
+				setPlayerHealth={gameController.setPlayerHealth}
+				setPlayerCoins={gameController.setPlayerCoins}
+				setGameOver={gameController.setGameOver}
+				onResetGame={gameController.resetGame}
+				onReturnHome={handleReturnHome}
+				onShare={() => setShowShareModal(true)}
+				onSaveScore={handleSaveScore}
+				onUpgradeWeapon={gameController.handleUpgradeWeapon}
+				onUpgradeHealth={gameController.handleUpgradeHealth}
+				onContinueFromMarketplace={gameController.handleContinueFromMarketplace}
+			/>
 
-      {/* Share Modal */}
-      <ShareModal
-        isVisible={screenState.showShareModal}
-        onClose={() => setShowShareModal(false)}
-      />
-    </>
-  )
-} 
+			{/* Score Submission Modal with secure props */}
+			{player && (
+				<ScoreSubmissionModal
+					score={screenState.score}
+					wavesSurvived={screenState.currentWave}
+					isVisible={screenState.showScoreModal}
+					onSubmit={handleScoreSubmit}
+					onSkip={handleSkipScore}
+					isSubmitting={isSubmitting}
+					clientId={gameTracking.clientId}
+					player={player}
+					gameStartTime={gameTracking.gameStartTime}
+					crystalsEarned={crystalsEarned}
+				/>
+			)}
+
+			{/* Share Modal */}
+			<ShareModal
+				isVisible={screenState.showShareModal}
+				onClose={() => setShowShareModal(false)}
+			/>
+		</>
+	);
+}

@@ -37,7 +37,7 @@ export const CREATURE_TANK_SPEED = 0.3;
 export const CREATURE_TANK_HEALTH = 120;
 export const TANK_SIZE_MULTIPLIER = 1.5; // 50% más grande
 
-// Speed creature constants  
+// Speed creature constants
 export const CREATURE_SPEED_FAST = 1.8;
 export const CREATURE_SPEED_HEALTH = 15;
 export const SPEED_SIZE_MULTIPLIER = 0.8; // 20% más pequeño
@@ -83,26 +83,26 @@ export const INVULNERABILITY_TIME = 1000;
 
 // Game progression - Waves are now infinite!
 // export const MAX_WAVES = 5; // Removed - waves are now infinite
-export const BASE_CREATURES_PER_WAVE = 5
-export const CREATURES_INCREASE_PER_WAVE = 3
-export const CREATURE_HEALTH_INCREASE_PER_WAVE = 5
-export const CREATURE_SPEED_INCREASE_PER_WAVE = 0.05
-export const CASTER_SPAWN_CHANCE_INCREASE = 0.02 // Aumenta 2% cada wave
-export const MAX_CASTER_SPAWN_CHANCE = 0.6 // Máximo 60% de casters
-export const MAGIC_BOLT_SPEED_INCREASE_PER_WAVE = 0.1
-export const CASTER_CAST_RATE_IMPROVEMENT_PER_WAVE = 50 // Reducir tiempo entre hechizos
-export const MAGIC_BOLT_SIZE_INCREASE_PER_WAVE = 0.1 // Aumentar tamaño de magic bolts
+export const BASE_CREATURES_PER_WAVE = 5;
+export const CREATURES_INCREASE_PER_WAVE = 3;
+export const CREATURE_HEALTH_INCREASE_PER_WAVE = 5;
+export const CREATURE_SPEED_INCREASE_PER_WAVE = 0.05;
+export const CASTER_SPAWN_CHANCE_INCREASE = 0.02; // Aumenta 2% cada wave
+export const MAX_CASTER_SPAWN_CHANCE = 0.6; // Máximo 60% de casters
+export const MAGIC_BOLT_SPEED_INCREASE_PER_WAVE = 0.1;
+export const CASTER_CAST_RATE_IMPROVEMENT_PER_WAVE = 50; // Reducir tiempo entre hechizos
+export const MAGIC_BOLT_SIZE_INCREASE_PER_WAVE = 0.1; // Aumentar tamaño de magic bolts
 
 // Escalado exponencial para waves muy altas (cada 10 waves)
-export const EXPONENTIAL_SCALING_INTERVAL = 10
-export const EXPONENTIAL_HEALTH_MULTIPLIER = 1.5
-export const EXPONENTIAL_SPEED_MULTIPLIER = 1.2
-export const EXPONENTIAL_SPAWN_MULTIPLIER = 1.3
+export const EXPONENTIAL_SCALING_INTERVAL = 10;
+export const EXPONENTIAL_HEALTH_MULTIPLIER = 1.5;
+export const EXPONENTIAL_SPEED_MULTIPLIER = 1.2;
+export const EXPONENTIAL_SPAWN_MULTIPLIER = 1.3;
 
 // Límites máximos para evitar que el juego sea imposible
-export const MAX_CREATURE_SPEED = 3.0
-export const MAX_MAGIC_BOLT_SPEED = 8.0
-export const MIN_CASTER_CAST_RATE = 300 // ms
+export const MAX_CREATURE_SPEED = 3.0;
+export const MAX_MAGIC_BOLT_SPEED = 8.0;
+export const MIN_CASTER_CAST_RATE = 300; // ms
 
 // Minimap constants
 export const MINIMAP_SIZE = 80;
@@ -114,17 +114,17 @@ export const MINIMAP_SCALE_Y = MINIMAP_SIZE / MAP_HEIGHT;
 export const WALL_BLOCK_SIZE = 32; // Tamaño de cada bloque individual de pared
 
 // Spawn chances para nuevos tipos de criaturas
-export const TANK_SPAWN_CHANCE_BASE = 0.05 // 5% base desde wave 3
-export const TANK_SPAWN_CHANCE_INCREASE = 0.01 // +1% cada wave
-export const MAX_TANK_SPAWN_CHANCE = 0.25 // Máximo 25% de tanks
+export const TANK_SPAWN_CHANCE_BASE = 0.05; // 5% base desde wave 3
+export const TANK_SPAWN_CHANCE_INCREASE = 0.01; // +1% cada wave
+export const MAX_TANK_SPAWN_CHANCE = 0.25; // Máximo 25% de tanks
 
-export const SPEED_SPAWN_CHANCE_BASE = 0.08 // 8% base desde wave 2  
-export const SPEED_SPAWN_CHANCE_INCREASE = 0.015 // +1.5% cada wave
-export const MAX_SPEED_SPAWN_CHANCE = 0.35 // Máximo 35% de speed
+export const SPEED_SPAWN_CHANCE_BASE = 0.08; // 8% base desde wave 2
+export const SPEED_SPAWN_CHANCE_INCREASE = 0.015; // +1.5% cada wave
+export const MAX_SPEED_SPAWN_CHANCE = 0.35; // Máximo 35% de speed
 
-export const EXPLOSIVE_SPAWN_CHANCE_BASE = 0.03 // 3% base desde wave 4
-export const EXPLOSIVE_SPAWN_CHANCE_INCREASE = 0.008 // +0.8% cada wave  
-export const MAX_EXPLOSIVE_SPAWN_CHANCE = 0.2 // Máximo 20% de explosive
+export const EXPLOSIVE_SPAWN_CHANCE_BASE = 0.03; // 3% base desde wave 4
+export const EXPLOSIVE_SPAWN_CHANCE_INCREASE = 0.008; // +0.8% cada wave
+export const MAX_EXPLOSIVE_SPAWN_CHANCE = 0.2; // Máximo 20% de explosive
 
 // Boss creature constants - TODO: Cambiar assets del boss más adelante
 export const CREATURE_BOSS_SPEED = 0.2; // Muy lento pero resistente
