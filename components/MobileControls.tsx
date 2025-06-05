@@ -68,11 +68,18 @@ export function MobileControls({
 
 	// Global event listeners
 	useEffect(() => {
-		const handleGlobalMove = (e: any) => {
+		const handleGlobalMove = (e: MouseEvent | TouchEvent) => {
 			if (!isDragging) return;
 
-			const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-			const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+			let clientX: number;
+			let clientY: number;
+			if (e instanceof TouchEvent) {
+				clientX = e.touches[0].clientX;
+				clientY = e.touches[0].clientY;
+			} else {
+				clientX = e.clientX;
+				clientY = e.clientY;
+			}
 
 			handleMove(clientX, clientY);
 		};
@@ -179,13 +186,14 @@ export function MobileControls({
 
 				{/* Joystick Label */}
 				<div className="mt-2 text-center">
-					<span className="text-purple-300 font-mono text-xs"></span>
+					<span className="text-purple-300 font-mono text-xs" />
 				</div>
 			</div>
 
 			{/* Shoot Button - Positioned for DS-style controls area */}
 			<div className="absolute bottom-[12%] right-6 pointer-events-auto">
 				<button
+					type="button"
 					className="w-[115px] h-[115px] bg-purple-900/50 hover:bg-purple-900/70 active:bg-purple-900/70 border-4 border-purple-300 rounded-full shadow-lg active:scale-95 transition-all mobile-shoot-button"
 					style={{
 						touchAction: "manipulation",
@@ -258,7 +266,7 @@ export function MobileControls({
 				</button>
 
 				<div className="mt-2 text-center">
-					<span className="text-purple-300 font-mono text-xs"></span>
+					<span className="text-purple-300 font-mono text-xs" />
 				</div>
 			</div>
 		</div>
