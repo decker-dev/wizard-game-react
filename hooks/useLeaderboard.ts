@@ -90,7 +90,7 @@ export function useLeaderboard() {
 			try {
 				const timestamp = Date.now();
 
-				const timeWindowHash = generateTimeWindowHash(
+				const timeWindowHash = await generateTimeWindowHash(
 					scoreData.score,
 					timestamp,
 					clientId,
