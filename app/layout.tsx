@@ -1,8 +1,8 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import { Analytics } from '@vercel/analytics/react'
 import { Press_Start_2P } from 'next/font/google'
-import { metadata as gameMetadata } from '@/lib/metadata'
+import { metadata as gameMetadata, viewport as gameViewport } from '@/lib/metadata'
 
 const pressStart2P = Press_Start_2P({
   weight: '400',
@@ -12,6 +12,7 @@ const pressStart2P = Press_Start_2P({
 })
 
 export const metadata: Metadata = gameMetadata
+export const viewport: Viewport = gameViewport
 
 export default function RootLayout({
   children,
@@ -19,8 +20,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <body className={pressStart2P.variable}>{children}</body>
+    <html lang="en" className="h-full">
+      <body className={`${pressStart2P.variable} h-full overflow-hidden`}>{children}</body>
       <Analytics />
     </html>
   )

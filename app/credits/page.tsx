@@ -39,7 +39,7 @@ export default function CreditsPage() {
   ]
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-black">
+    <div className="min-h-dvh relative overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-black">
       {/* Background Elements */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
@@ -52,7 +52,7 @@ export default function CreditsPage() {
       </div>
 
       {/* Credits Content */}
-      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-4">
+      <div className="relative z-10 flex flex-col items-center justify-center min-h-dvh p-4">
         <div className="bg-black/60 backdrop-blur-sm border border-purple-500/30 rounded-lg p-8 w-full max-w-4xl hover:border-purple-500/50 transition-colors">
           {/* Header */}
           <div className="text-center mb-8">

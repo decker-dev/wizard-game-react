@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 
 const siteUrl = 'https://mystic.decker.sh'
 
@@ -82,6 +82,7 @@ export const metadata: Metadata = {
     images: ['/og.png'],
     creator: '@0xDecker',
   },
+
   other: {
     'game:credits': 'Discover the passionate team behind MYSTIC REALM DEFENDER: Lauti, Alejo and Decker. Born from creativity and magic during the first Vibe Gaming Hackathon in LATAM.',
     'game:credits:title': '✨ The Wizards Behind the Magic - MYSTIC REALM DEFENDER',
@@ -97,6 +98,16 @@ export const metadata: Metadata = {
     'msapplication-TileColor': '#8A2BE2',
     'theme-color': '#8A2BE2',
   },
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  // Specific configuration for mobile browsers with navigation bars
+  viewportFit: 'cover',
+  interactiveWidget: 'resizes-content'
 }
 
 export const jsonLd = {

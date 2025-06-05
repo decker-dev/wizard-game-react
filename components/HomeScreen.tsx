@@ -120,7 +120,7 @@ export function HomeScreen({
 
   return (
     <div 
-      className="min-h-screen relative overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-black"
+      className="min-h-dvh relative overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-black"
       onKeyDown={handleKeyPress}
       tabIndex={0}
     >
@@ -141,7 +141,7 @@ export function HomeScreen({
       </div>
 
       {/* Main Content */}
-      <div className="relative z-10 flex items-center justify-center min-h-screen p-4 sm:p-6 lg:p-4">
+      <div className="relative z-10 flex items-center justify-center min-h-dvh p-4 sm:p-6 lg:p-4">
         <div className="flex flex-col lg:flex-row items-center gap-8 w-full max-w-7xl">
           
           {/* Left Section - Title and Menu */}

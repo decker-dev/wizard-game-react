@@ -3,7 +3,7 @@ import { FloatingParticles } from './FloatingParticles'
 
 export function LoadingScreen() {
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-black">
+    <div className="min-h-dvh relative overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-black">
       {/* Background Elements */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
@@ -16,7 +16,7 @@ export function LoadingScreen() {
       </div>
 
       {/* Loading Content */}
-      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-4">
+      <div className="relative z-10 flex flex-col items-center justify-center min-h-dvh p-4">
         <div className="bg-black/60 backdrop-blur-sm border border-purple-500/30 rounded-lg p-8 hover:border-purple-500/50 transition-colors">
           <h2 className="text-4xl font-bold font-mono text-transparent bg-clip-text bg-gradient-to-b from-purple-400 to-blue-600 mb-6">
             LOADING MYSTIC REALM

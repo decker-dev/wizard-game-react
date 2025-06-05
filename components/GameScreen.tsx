@@ -233,7 +233,7 @@ export function GameScreen({
   // Mobile version - Nintendo DS style layout
   if (isMobile) {
     return (
-      <div className="min-h-screen w-full bg-black flex flex-col overflow-hidden">
+      <div className="min-h-dvh w-full bg-black flex flex-col overflow-hidden">
         {/* Game Stats - Fixed at top */}
         <div className="flex-shrink-0 p-3 bg-gray-900/80 border-b-2 border-purple-500/30">
           <div 
@@ -281,7 +281,7 @@ export function GameScreen({
         </div>
 
         {/* Controls Area */}
-        <div className="bg-gray-900/80 border-t-2 border-purple-500/30 relative" style={{ height: '30vh', minHeight: '200px' }}>
+                  <div className="bg-gray-900/80 border-t-2 border-purple-500/30 relative h-[30dvh] min-h-[200px]">
           <MobileControls
             onMove={handleMobileMove}
             onShoot={handleMobileShoot}
@@ -323,7 +323,7 @@ export function GameScreen({
 
   // Desktop version - original layout
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-black">
+          <div className="min-h-dvh relative overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-black">
       {/* Animated Background Elements */}
       <div className="absolute inset-0">
         {/* Smoke/Fog effect */}
@@ -341,7 +341,7 @@ export function GameScreen({
       </div>
 
       {/* Game Content with new layout */}
-      <div className="relative z-10 flex items-center justify-center min-h-screen p-4">
+              <div className="relative z-10 flex items-center justify-center min-h-dvh p-4">
         <div className="flex items-start gap-8 w-full max-w-7xl">
           {/* Game Canvas Container - Centered */}
           <div className="flex-1 flex flex-col items-center">
