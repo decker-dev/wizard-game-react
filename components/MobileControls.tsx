@@ -12,9 +12,9 @@ export function MobileControls({ onMove, onShoot, onShootStart, onShootEnd }: Mo
   const [isDragging, setIsDragging] = useState(false)
   const [knobPosition, setKnobPosition] = useState({ x: 0, y: 0 })
 
-  const JOYSTICK_SIZE = 120
-  const KNOB_SIZE = 50
-  const MAX_DISTANCE = 35
+  const JOYSTICK_SIZE = 144 // 120 * 1.2 = 144 (20% más grande)
+  const KNOB_SIZE = 60 // 50 * 1.2 = 60 (20% más grande)
+  const MAX_DISTANCE = 42 // 35 * 1.2 = 42 (20% más grande)
 
   // Simple touch/mouse handlers
   const handleStart = (clientX: number, clientY: number) => {
@@ -105,7 +105,7 @@ export function MobileControls({ onMove, onShoot, onShootStart, onShootEnd }: Mo
       }}
     >
       {/* Joystick - Positioned for DS-style controls area */}
-      <div className="absolute bottom-4 left-6 pointer-events-auto">
+      <div className="absolute bottom-[12%] left-6 pointer-events-auto">
         <div
           ref={joystickRef}
           className="relative bg-gray-800/80 border-2 border-purple-400 rounded-full mobile-joystick"
@@ -179,9 +179,9 @@ export function MobileControls({ onMove, onShoot, onShootStart, onShootEnd }: Mo
       </div>
 
       {/* Shoot Button - Positioned for DS-style controls area */}
-      <div className="absolute bottom-4 right-6 pointer-events-auto">
+      <div className="absolute bottom-[12%] right-6 pointer-events-auto">
         <button
-          className="w-24 h-24 bg-purple-900/50 hover:bg-purple-900/70 active:bg-purple-900/70 border-4 border-purple-300 rounded-full shadow-lg active:scale-95 transition-all mobile-shoot-button"
+          className="w-[115px] h-[115px] bg-purple-900/50 hover:bg-purple-900/70 active:bg-purple-900/70 border-4 border-purple-300 rounded-full shadow-lg active:scale-95 transition-all mobile-shoot-button"
           style={{
             touchAction: 'manipulation',
             userSelect: 'none',
@@ -238,7 +238,7 @@ export function MobileControls({ onMove, onShoot, onShootStart, onShootEnd }: Mo
           onDragStart={(e) => e.preventDefault()}
         >
           <div 
-            className="text-white text-3xl font-bold"
+            className="text-white text-4xl font-bold"
             style={{
               userSelect: 'none',
               WebkitUserSelect: 'none',
