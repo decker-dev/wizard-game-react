@@ -256,10 +256,10 @@ export function GameScreen({
           </div>
         </div>
 
-        {/* Game Canvas Area - Reduced height */}
-        <div className="flex-none h-[35dvh] flex items-center justify-center bg-black">
-          <div className="w-full h-full flex items-center justify-center p-2">
-            <div className="relative w-full h-full max-w-[95vw] max-h-full">
+        {/* Game Canvas Area */}
+        <div className="flex-none h-[45dvh] flex items-center justify-center bg-black">
+          <div className="w-full h-full flex items-center justify-center p-4">
+            <div className="relative flex items-center justify-center">
               <GameCanvas
                 gameState={gameStateRef.current}
                 creatureSprites={creatureSpritesRef.current}
@@ -280,9 +280,9 @@ export function GameScreen({
           </div>
         </div>
 
-        {/* Controls Area - Expanded to take remaining space */}
+        {/* Controls Area */}
         <div 
-          className="border-t-2 border-purple-500/30 relative flex-1 min-h-[250px]"
+          className="border-t-2 border-purple-500/30 relative flex-1 min-h-[200px]"
           style={{
             backgroundImage: 'url(/bg-controls.jpeg)',
             backgroundSize: 'cover',
