@@ -1,4 +1,4 @@
-import { createHash } from "crypto";
+import { createHash } from "node:crypto";
 import { supabase } from "@/lib/supabase";
 import { type NextRequest, NextResponse } from "next/server";
 
@@ -9,7 +9,14 @@ function generateServerTimeWindowHash(
 	score: number,
 	timestamp: number,
 	clientId: string,
-	gameData: any,
+	gameData: {
+		wavesSurvived: number;
+		crystalsEarned: number;
+		gameStartTime: number;
+		gameDuration: number;
+		spellLevel: number;
+		healthLevel: number;
+	},
 ): string {
 	const dataToHash = [
 		score.toString(),
@@ -29,7 +36,7 @@ function generateServerTimeWindowHash(
 	// Log para debugging
 	console.log("🔐 Server hash generation:", {
 		dataToHash: dataToHash.replace(SECRET_KEY, "[SECRET]"),
-		generatedHash: hash.substring(0, 10) + "...",
+		generatedHash: `${hash.substring(0, 10)}...`,
 	});
 
 	return hash;
@@ -59,9 +66,9 @@ export async function POST(request: NextRequest) {
 			player_name,
 			score,
 			waves_survived,
-			client_id: client_id?.substring(0, 8) + "...",
+			client_id: `${client_id?.substring(0, 8)}...`,
 			timestamp: new Date(timestamp).toISOString(),
-			time_window_hash: time_window_hash?.substring(0, 10) + "...",
+			time_window_hash: `${time_window_hash?.substring(0, 10)}...`,
 			game_duration,
 			crystals_earned,
 			spell_level,
@@ -109,8 +116,8 @@ export async function POST(request: NextRequest) {
 		const tokenValid = time_window_hash === expectedToken;
 
 		console.log("🔐 Token validation:", {
-			received: time_window_hash?.substring(0, 15) + "...",
-			expected: expectedToken.substring(0, 15) + "...",
+			received: `${time_window_hash?.substring(0, 15)}...`,
+			expected: `${expectedToken.substring(0, 15)}...`,
 			tokenValid,
 		});
 
@@ -193,7 +200,7 @@ export async function POST(request: NextRequest) {
 			.gte("submitted_at", new Date(now - 60000).toISOString());
 
 		console.log("🚦 Rate limit check:", {
-			clientId: client_id.substring(0, 8) + "...",
+			clientId: `${client_id.substring(0, 8)}...`,
 			recentSubmissions: recentSubmissions?.length || 0,
 			limit: 3,
 		});
@@ -249,7 +256,7 @@ export async function POST(request: NextRequest) {
 			success: true,
 			message: "Score saved successfully",
 			processingTime,
-			serverHash: serverHash.substring(0, 10) + "...", // Para debugging
+			serverHash: `${serverHash.substring(0, 10)}...`, // Para debugging
 		});
 	} catch (error) {
 		console.error("💥 Server error:", error);
