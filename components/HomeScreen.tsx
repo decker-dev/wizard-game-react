@@ -128,19 +128,18 @@ export function HomeScreen({
 		<div
 			className="min-h-dvh relative overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-black"
 			onKeyDown={handleKeyPress}
-			tabIndex={0}
 		>
 			{/* Animated Background Elements */}
 			<div className="absolute inset-0">
 				{/* Smoke/Fog effect */}
-				<div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+				<div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
 				<div className="absolute top-0 left-0 w-full h-full opacity-20">
-					<div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
-					<div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+					<div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" />
+					<div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
 				</div>
 
 				{/* Grid overlay */}
-				<div className="absolute inset-0 bg-[linear-gradient(rgba(147,51,234,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(147,51,234,0.1)_1px,transparent_1px)] bg-[size:20px_20px]"></div>
+				<div className="absolute inset-0 bg-[linear-gradient(rgba(147,51,234,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(147,51,234,0.1)_1px,transparent_1px)] bg-[size:20px_20px]" />
 
 				{/* Floating particles */}
 				<FloatingParticles />
@@ -196,6 +195,7 @@ export function HomeScreen({
 											</div>
 										</button>
 									);
+									// biome-ignore lint/style/noUselessElse: <explanation>
 								} else {
 									return (
 										<Link
@@ -251,10 +251,10 @@ export function HomeScreen({
 			</div>
 
 			{/* Corner decorative elements */}
-			<div className="absolute top-0 left-0 w-32 h-32 border-l-2 border-t-2 border-purple-500/30"></div>
-			<div className="absolute top-0 right-0 w-32 h-32 border-r-2 border-t-2 border-purple-500/30"></div>
-			<div className="absolute bottom-0 left-0 w-32 h-32 border-l-2 border-b-2 border-purple-500/30"></div>
-			<div className="absolute bottom-0 right-0 w-32 h-32 border-r-2 border-b-2 border-purple-500/30"></div>
+			<div className="absolute top-0 left-0 w-32 h-32 border-l-2 border-t-2 border-purple-500/30" />
+			<div className="absolute top-0 right-0 w-32 h-32 border-r-2 border-t-2 border-purple-500/30" />
+			<div className="absolute bottom-0 left-0 w-32 h-32 border-l-2 border-b-2 border-purple-500/30" />
+			<div className="absolute bottom-0 right-0 w-32 h-32 border-r-2 border-b-2 border-purple-500/30" />
 		</div>
 	);
 }

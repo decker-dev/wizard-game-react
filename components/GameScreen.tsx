@@ -6,17 +6,20 @@ import { Marketplace } from "@/components/Marketplace";
 import { MobileControls } from "@/components/MobileControls";
 import { PROJECTILE_SPEED } from "@/constants/game";
 import type { GameScreenState } from "@/hooks/useGameScreens";
+import type { GameState } from "@/types/game";
 import React from "react";
 
 interface GameScreenProps {
 	screenState: GameScreenState;
-	gameStateRef: any;
+	gameStateRef: React.RefObject<GameState | null>;
 	canvasRef: React.RefObject<HTMLCanvasElement | null>;
 
 	// Assets
-	creatureSpritesRef: any;
-	floorTextureRef: any;
-	healthPackSpriteRef: any;
+	creatureSpritesRef: React.RefObject<{
+		[key: string]: HTMLImageElement | null;
+	}>;
+	floorTextureRef: React.RefObject<HTMLImageElement | null>;
+	healthPackSpriteRef: React.RefObject<HTMLImageElement | null>;
 
 	// Audio
 	playCreatureDeath: () => void;
@@ -111,7 +114,7 @@ export function GameScreen({
 			// Update player direction for sprite animation
 			if (direction.x !== 0 || direction.y !== 0) {
 				if (Math.abs(direction.x) > Math.abs(direction.y)) {
-					player.direction = direction.x > 0 ? "E" : "W";
+					player.direction = direction.x > 0 ? "E" : "O";
 				} else {
 					player.direction = direction.y > 0 ? "S" : "N";
 				}

@@ -8,7 +8,7 @@ interface ScoreSubmissionModalProps {
 	onSubmit: (
 		scoreData: ScoreSubmission,
 		clientId: string,
-		gameData: any,
+		gameData: unknown,
 	) => Promise<boolean>;
 	onSkip: () => void;
 	isSubmitting: boolean;
@@ -47,7 +47,7 @@ export function ScoreSubmissionModal({
 				playerName: playerName.trim(),
 				score,
 				wavesSurvived,
-				clientId: clientId.substring(0, 8) + "...",
+				clientId: `${clientId.substring(0, 8)}...`,
 				gameStartTime: new Date(gameStartTime).toISOString(),
 				crystalsEarned,
 				spellLevel: player.upgrades.spellLevel,
@@ -147,51 +147,46 @@ export function ScoreSubmissionModal({
 				</div>
 
 				{submitSuccess === null && (
-					<>
-						<form onSubmit={handleSubmit} className="space-y-4">
-							<div>
-								<label
-									htmlFor="playerName"
-									className="block text-white text-sm font-medium mb-2"
-								>
-									Your Name:
-								</label>
-								<input
-									id="playerName"
-									type="text"
-									value={playerName}
-									onChange={(e) => setPlayerName(e.target.value)}
-									placeholder="Enter your name"
-									maxLength={50}
-									className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-									disabled={isSubmittingState || isSubmitting}
-									autoFocus
-								/>
-							</div>
+					<form onSubmit={handleSubmit} className="space-y-4">
+						<div>
+							<label
+								htmlFor="playerName"
+								className="block text-white text-sm font-medium mb-2"
+							>
+								Your Name:
+							</label>
+							<input
+								id="playerName"
+								type="text"
+								value={playerName}
+								onChange={(e) => setPlayerName(e.target.value)}
+								placeholder="Enter your name"
+								maxLength={50}
+								className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+								disabled={isSubmittingState || isSubmitting}
+							/>
+						</div>
 
-							<div className="flex gap-3">
-								<button
-									type="submit"
-									disabled={
-										!playerName.trim() || isSubmittingState || isSubmitting
-									}
-									className="flex-1 bg-green-600 hover:bg-green-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-bold py-2 px-4 rounded transition-colors"
-								>
-									{isSubmittingState || isSubmitting
-										? "Saving..."
-										: "Save Score"}
-								</button>
-								<button
-									type="button"
-									onClick={handleSkip}
-									disabled={isSubmittingState || isSubmitting}
-									className="flex-1 bg-gray-600 hover:bg-gray-700 disabled:bg-gray-500 disabled:cursor-not-allowed text-white font-bold py-2 px-4 rounded transition-colors"
-								>
-									Skip
-								</button>
-							</div>
-						</form>
-					</>
+						<div className="flex gap-3">
+							<button
+								type="submit"
+								disabled={
+									!playerName.trim() || isSubmittingState || isSubmitting
+								}
+								className="flex-1 bg-green-600 hover:bg-green-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-bold py-2 px-4 rounded transition-colors"
+							>
+								{isSubmittingState || isSubmitting ? "Saving..." : "Save Score"}
+							</button>
+							<button
+								type="button"
+								onClick={handleSkip}
+								disabled={isSubmittingState || isSubmitting}
+								className="flex-1 bg-gray-600 hover:bg-gray-700 disabled:bg-gray-500 disabled:cursor-not-allowed text-white font-bold py-2 px-4 rounded transition-colors"
+							>
+								Skip
+							</button>
+						</div>
+					</form>
 				)}
 
 				{submitSuccess === true && (
@@ -213,12 +208,14 @@ export function ScoreSubmissionModal({
 						</div>
 						<div className="flex gap-3">
 							<button
+								type="button"
 								onClick={() => setSubmitSuccess(null)}
 								className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors"
 							>
 								Retry
 							</button>
 							<button
+								type="button"
 								onClick={handleSkip}
 								className="flex-1 bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded transition-colors"
 							>

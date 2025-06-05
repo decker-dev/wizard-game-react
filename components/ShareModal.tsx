@@ -63,6 +63,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
 				{/* Action Buttons */}
 				<div className="flex gap-4 justify-center">
 					<button
+						type="button"
 						onClick={() => {
 							navigator.clipboard.writeText(
 								"https://fork-game-jam-paisanos-pvh5o34m1-alejorrojas-projects.vercel.app/",
@@ -75,6 +76,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
 					</button>
 
 					<button
+						type="button"
 						onClick={onClose}
 						className="px-6 py-3 bg-red-600/80 hover:bg-red-600 border border-red-500/50 text-white font-mono font-bold rounded-lg text-sm transition-all duration-200 transform hover:scale-105 hover:border-red-500"
 					>
@@ -84,6 +86,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
 
 				{/* Close button (X) */}
 				<button
+					type="button"
 					onClick={onClose}
 					className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
 				>
