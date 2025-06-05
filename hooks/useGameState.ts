@@ -102,10 +102,7 @@ export const useGameState = () => {
 			const exponentialBonus = Math.floor(
 				gameStateRef.current.currentWave / EXPONENTIAL_SCALING_INTERVAL,
 			);
-			const spawnMultiplier = Math.pow(
-				EXPONENTIAL_SPAWN_MULTIPLIER,
-				exponentialBonus,
-			);
+			const spawnMultiplier = EXPONENTIAL_SPAWN_MULTIPLIER ** exponentialBonus;
 			const baseCreatures =
 				BASE_CREATURES_PER_WAVE +
 				gameStateRef.current.currentWave * CREATURES_INCREASE_PER_WAVE;
@@ -150,10 +147,7 @@ export const useGameState = () => {
 			const exponentialBonus = Math.floor(
 				gameStateRef.current.currentWave / EXPONENTIAL_SCALING_INTERVAL,
 			);
-			const spawnMultiplier = Math.pow(
-				EXPONENTIAL_SPAWN_MULTIPLIER,
-				exponentialBonus,
-			);
+			const spawnMultiplier = EXPONENTIAL_SPAWN_MULTIPLIER ** exponentialBonus;
 			const baseCreatures =
 				BASE_CREATURES_PER_WAVE +
 				gameStateRef.current.currentWave * CREATURES_INCREASE_PER_WAVE;

@@ -57,7 +57,7 @@ export const render = (
 	}
 
 	// Render obstacles
-	gameState.obstacles.forEach((obs) => {
+	for (const obs of gameState.obstacles) {
 		const screenX = obs.x - cameraX;
 		const screenY = obs.y - cameraY;
 
@@ -70,10 +70,10 @@ export const render = (
 			// Renderizar muros con bloques grises
 			renderWallBlocks(ctx, screenX, screenY, obs.width, obs.height);
 		}
-	});
+	}
 
 	// Render health packs ANTES del jugador para que el jugador esté siempre visible
-	gameState.healthPacks.forEach((healthPack) => {
+	for (const healthPack of gameState.healthPacks) {
 		const screenX = healthPack.position.x - cameraX;
 		const screenY = healthPack.position.y - cameraY;
 
@@ -120,7 +120,7 @@ export const render = (
 				);
 			}
 		}
-	});
+	}
 
 	// Render player
 	const currentPlayerSprite = getPlayerSprite(player);
@@ -190,7 +190,7 @@ export const render = (
 	);
 
 	// Render projectiles
-	gameState.projectiles.forEach((p) => {
+	for (const p of gameState.projectiles) {
 		const screenX = p.position.x - cameraX;
 		const screenY = p.position.y - cameraY;
 		if (
@@ -209,10 +209,10 @@ export const render = (
 			ctx.arc(screenX, screenY, p.radius, 0, Math.PI * 2);
 			ctx.fill();
 		}
-	});
+	}
 
 	// Render creatures
-	gameState.creatures.forEach((c) => {
+	for (const c of gameState.creatures) {
 		const screenX = c.position.x - cameraX;
 		const screenY = c.position.y - cameraY;
 
@@ -279,7 +279,7 @@ export const render = (
 				healthBarHeight,
 			);
 		}
-	});
+	}
 
 	// Render minimap
 	renderMinimap(ctx, gameState, cameraX, cameraY, canvasWidth, canvasHeight);
@@ -346,17 +346,17 @@ const renderMinimap = (
 
 	// Obstáculos en el minimapa
 	ctx.fillStyle = "#808080";
-	gameState.obstacles.forEach((obs) => {
+	for (const obs of gameState.obstacles) {
 		ctx.fillRect(
 			canvasWidth - minimapSize - minimapPadding + obs.x * minimapScaleX,
 			minimapPadding + obs.y * minimapScaleY,
 			obs.width * minimapScaleX,
 			obs.height * minimapScaleY,
 		);
-	});
+	}
 
 	// Criaturas en el minimapa
-	gameState.creatures.forEach((c) => {
+	for (const c of gameState.creatures) {
 		// Usar diferentes colores según el tipo de criatura
 		if (c.type === "caster") {
 			ctx.fillStyle = "#8A2BE2"; // Púrpura para casters
@@ -382,11 +382,11 @@ const renderMinimap = (
 			2,
 			2,
 		);
-	});
+	}
 
 	// Packs de vida en el minimapa
 	ctx.fillStyle = "#00FFFF"; // Cyan para packs de vida (más visible y contrastante)
-	gameState.healthPacks.forEach((healthPack) => {
+	for (const healthPack of gameState.healthPacks) {
 		ctx.fillRect(
 			canvasWidth -
 				minimapSize -
@@ -397,7 +397,7 @@ const renderMinimap = (
 			2,
 			2,
 		);
-	});
+	}
 
 	// Jugador en el minimapa
 	ctx.fillStyle = "#00FF00";

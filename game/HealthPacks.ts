@@ -75,8 +75,8 @@ const findValidHealthPackPosition = (gameState: GameState): Vector2 | null => {
 
 		// Verificar distancia mínima del jugador
 		const distanceToPlayer = Math.sqrt(
-			Math.pow(position.x - player.position.x, 2) +
-				Math.pow(position.y - player.position.y, 2),
+			(position.x - player.position.x) ** 2 +
+				(position.y - player.position.y) ** 2,
 		);
 
 		if (distanceToPlayer < HEALTH_PACK_MIN_DISTANCE_FROM_PLAYER) {
@@ -101,8 +101,8 @@ const findValidHealthPackPosition = (gameState: GameState): Vector2 | null => {
 
 			// Verificar distancia mínima de obstáculos
 			const distanceToObstacle = Math.sqrt(
-				Math.pow(position.x - (obstacle.x + obstacle.width / 2), 2) +
-					Math.pow(position.y - (obstacle.y + obstacle.height / 2), 2),
+				(position.x - (obstacle.x + obstacle.width / 2)) ** 2 +
+					(position.y - (obstacle.y + obstacle.height / 2)) ** 2,
 			);
 
 			if (distanceToObstacle < HEALTH_PACK_MIN_DISTANCE_FROM_OBSTACLES) {

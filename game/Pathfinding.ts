@@ -49,26 +49,20 @@ export class Pathfinding {
 		}
 
 		// Marcar nodos ocupados por obstáculos como no caminables
-		obstacles.forEach((obstacle) => {
+		for (const obstacle of obstacles) {
 			const startX = Math.floor(obstacle.x / this.nodeSize);
-			const endX = Math.ceil((obstacle.x + obstacle.width) / this.nodeSize);
 			const startY = Math.floor(obstacle.y / this.nodeSize);
-			const endY = Math.ceil((obstacle.y + obstacle.height) / this.nodeSize);
+			const endX = Math.floor((obstacle.x + obstacle.width) / this.nodeSize);
+			const endY = Math.floor((obstacle.y + obstacle.height) / this.nodeSize);
 
-			for (
-				let x = Math.max(0, startX);
-				x < Math.min(this.gridWidth, endX);
-				x++
-			) {
-				for (
-					let y = Math.max(0, startY);
-					y < Math.min(this.gridHeight, endY);
-					y++
-				) {
-					this.grid[x][y].walkable = false;
+			for (let x = startX; x <= endX; x++) {
+				for (let y = startY; y <= endY; y++) {
+					if (x >= 0 && x < this.gridWidth && y >= 0 && y < this.gridHeight) {
+						this.grid[x][y].walkable = false;
+					}
 				}
 			}
-		});
+		}
 	}
 
 	// Convertir coordenadas del mundo a coordenadas del grid

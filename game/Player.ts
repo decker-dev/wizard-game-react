@@ -59,10 +59,10 @@ export const updatePlayer = (gameState: GameState) => {
 	let dy = 0;
 
 	// Keyboard input
-	if (keys["w"] || keys["arrowup"]) dy -= speed;
-	if (keys["s"] || keys["arrowdown"]) dy += speed;
-	if (keys["a"] || keys["arrowleft"]) dx -= speed;
-	if (keys["d"] || keys["arrowright"]) dx += speed;
+	if (keys.w || keys.arrowup) dy -= speed;
+	if (keys.s || keys.arrowdown) dy += speed;
+	if (keys.a || keys.arrowleft) dx -= speed;
+	if (keys.d || keys.arrowright) dx += speed;
 
 	// Mobile joystick input (only override if joystick is actually being used)
 	if (
@@ -167,5 +167,5 @@ export const getPlayerSprite = (player: Player): HTMLImageElement | null => {
 	}
 
 	// Usar sprites del wizard para el player
-	return sprite || player.sprites["wizard_S_S"]; // fallback to wizard south standing
+	return sprite || player.sprites.wizard_S_S; // fallback to wizard south standing
 };

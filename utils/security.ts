@@ -29,7 +29,7 @@ export function generateServerTimeWindowHash(
 	].join("|");
 
 	// Solo funciona en el servidor con Node.js crypto
-	const crypto = require("crypto");
+	const crypto = require("node:crypto");
 	return crypto.createHash("sha256").update(dataToHash).digest("hex");
 }
 
@@ -54,5 +54,5 @@ export function generateTimeWindowHash(
 }
 
 export function generateClientId(): string {
-	return "1234567890"; //crypto.randomUUID();
+	return crypto.randomUUID();
 }

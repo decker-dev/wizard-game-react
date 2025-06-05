@@ -11,7 +11,7 @@ export const magnitude = (vector: Vector2): number => {
 };
 
 export const distance = (a: Vector2, b: Vector2): number => {
-	return Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
+	return Math.sqrt((b.x - a.x) ** 2 + (b.y - a.y) ** 2);
 };
 
 export const checkAABBCollision = (

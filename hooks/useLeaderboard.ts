@@ -82,7 +82,7 @@ export function useLeaderboard() {
 				player: scoreData.player_name,
 				score: scoreData.score,
 				waves: scoreData.waves_survived,
-				clientId: clientId.substring(0, 8) + "...",
+				clientId: `${clientId.substring(0, 8)}...`,
 				gameData,
 			});
 
@@ -111,7 +111,7 @@ export function useLeaderboard() {
 
 				console.log("🔐 Payload prepared:", {
 					timestamp: new Date(timestamp).toISOString(),
-					hash: timeWindowHash.substring(0, 10) + "...",
+					hash: `${timeWindowHash.substring(0, 10)}...`,
 					payloadSize: JSON.stringify(securePayload).length,
 				});
 

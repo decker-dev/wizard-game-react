@@ -6,12 +6,12 @@ import {
 
 export const getSpellUpgradeCost = (currentLevel: number): number => {
 	return Math.round(
-		SPELL_UPGRADE_BASE_COST * Math.pow(UPGRADE_COST_MULTIPLIER, currentLevel),
+		SPELL_UPGRADE_BASE_COST * UPGRADE_COST_MULTIPLIER ** currentLevel,
 	);
 };
 
 export const getHealthUpgradeCost = (currentLevel: number): number => {
 	return Math.round(
-		HEALTH_UPGRADE_BASE_COST * Math.pow(UPGRADE_COST_MULTIPLIER, currentLevel),
+		HEALTH_UPGRADE_BASE_COST * UPGRADE_COST_MULTIPLIER ** currentLevel,
 	);
 };

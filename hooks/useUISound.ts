@@ -17,7 +17,9 @@ const initAudioContext = () => {
 	if (!audioContext) {
 		try {
 			audioContext = new (
-				window.AudioContext || (window as any).webkitAudioContext
+				window.AudioContext ||
+				(window as unknown as { webkitAudioContext: typeof AudioContext })
+					.webkitAudioContext
 			)();
 		} catch (error) {
 			console.warn("AudioContext not supported:", error);

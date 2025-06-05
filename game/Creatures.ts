@@ -80,14 +80,8 @@ export const createCreature = (
 	const exponentialBonus = Math.floor(
 		currentWave / EXPONENTIAL_SCALING_INTERVAL,
 	);
-	const healthMultiplier = Math.pow(
-		EXPONENTIAL_HEALTH_MULTIPLIER,
-		exponentialBonus,
-	);
-	const speedMultiplier = Math.pow(
-		EXPONENTIAL_SPEED_MULTIPLIER,
-		exponentialBonus,
-	);
+	const healthMultiplier = EXPONENTIAL_HEALTH_MULTIPLIER ** exponentialBonus;
+	const speedMultiplier = EXPONENTIAL_SPEED_MULTIPLIER ** exponentialBonus;
 
 	// Configuración por defecto (todos habilitados)
 	const config = mobConfig || {
@@ -167,7 +161,7 @@ export const createCreature = (
 			.filter(([_, enabled]) => enabled)
 			.map(([type, _]) => type);
 		if (enabledTypes.length > 0) {
-			creatureType = enabledTypes[0] as any;
+			creatureType = enabledTypes[0] as CreatureType;
 		}
 	}
 
@@ -178,7 +172,7 @@ export const createCreature = (
 	let height = CREATURE_HEIGHT;
 
 	switch (creatureType) {
-		case "boss":
+		case "boss": {
 			// Los boss se crean con la función específica, esto es solo fallback
 			const bossWaveMultiplier = Math.floor(currentWave / BOSS_SPAWN_INTERVAL);
 			baseHealth =
@@ -190,6 +184,7 @@ export const createCreature = (
 			width = CREATURE_WIDTH * BOSS_SIZE_MULTIPLIER;
 			height = CREATURE_HEIGHT * BOSS_SIZE_MULTIPLIER;
 			break;
+		}
 		case "tank":
 			baseHealth =
 				CREATURE_TANK_HEALTH +
@@ -281,7 +276,8 @@ export const spawnCreature = (gameState: GameState): boolean => {
 		Math.random() < 0.05
 	) {
 		const side = Math.floor(Math.random() * 4);
-		let x, y;
+		let x: number;
+		let y: number;
 
 		switch (side) {
 			case 0:
@@ -346,14 +342,14 @@ export const updateCreatures = (gameState: GameState) => {
 	// Spawn new creatures
 	spawnCreature(gameState);
 
-	creatures.forEach((creature) => {
+	for (const creature of creatures) {
 		// Guardar posición anterior para el sistema de IA
 		creature.lastPosition = { ...creature.position };
 
 		const distanceToPlayer = distance(player.position, creature.position);
 
 		// Usar el nuevo sistema de IA con Steering Behaviors y Pathfinding
-		let steeringForce;
+		let steeringForce: SteeringForce;
 		if (creature.type === "caster") {
 			steeringForce = CreatureAI.updateCasterCreature(
 				creature,
@@ -566,7 +562,7 @@ export const updateCreatures = (gameState: GameState) => {
 		} else if (!creature.isMoving) {
 			creature.animationFrame = "S";
 		}
-	});
+	}
 
 	// SISTEMA MEJORADO: Verificar colisiones entre criaturas SIN empujarlas dentro de obstáculos
 	for (let i = 0; i < creatures.length; i++) {
@@ -842,17 +838,14 @@ export const handleExplosiveCreatureDeath = (
 	}
 
 	// Dañar otras criaturas en el radio de explosión
-	creatures.forEach((creature) => {
+	for (const creature of creatures) {
 		if (creature.id !== explosiveCreature.id) {
-			const distanceToCreature = distance(
-				explosiveCreature.position,
-				creature.position,
-			);
-			if (distanceToCreature <= EXPLOSION_RADIUS) {
+			const dist = distance(explosiveCreature.position, creature.position);
+			if (dist <= EXPLOSION_RADIUS) {
 				creature.health -= EXPLOSION_DAMAGE * 0.5; // Medio daño a otras criaturas
 			}
 		}
-	});
+	}
 };
 
 // Función específica para crear Boss
@@ -865,14 +858,8 @@ export const createBoss = (
 	const exponentialBonus = Math.floor(
 		currentWave / EXPONENTIAL_SCALING_INTERVAL,
 	);
-	const healthMultiplier = Math.pow(
-		EXPONENTIAL_HEALTH_MULTIPLIER,
-		exponentialBonus,
-	);
-	const speedMultiplier = Math.pow(
-		EXPONENTIAL_SPEED_MULTIPLIER,
-		exponentialBonus,
-	);
+	const healthMultiplier = EXPONENTIAL_HEALTH_MULTIPLIER ** exponentialBonus;
+	const speedMultiplier = EXPONENTIAL_SPEED_MULTIPLIER ** exponentialBonus;
 
 	// Calcular vida del boss escalable
 	const bossWaveMultiplier = Math.floor(currentWave / BOSS_SPAWN_INTERVAL); // Cuántas veces ha aparecido un boss

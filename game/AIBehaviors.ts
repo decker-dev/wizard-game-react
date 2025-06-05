@@ -7,14 +7,14 @@ export interface SteeringForce {
 	y: number;
 }
 
-export class AIBehaviors {
+export namespace AIBehaviors {
 	// Buscar un objetivo usando pathfinding inteligente
-	static seekWithPathfinding(
+	export const seekWithPathfinding = (
 		target: Vector2,
 		creature: Creature,
 		obstacles: Obstacle[],
 		maxForce = 0.8,
-	): SteeringForce {
+	): SteeringForce => {
 		const now = Date.now();
 		const pathUpdateInterval = 500; // Actualizar path cada 500ms
 
@@ -44,7 +44,7 @@ export class AIBehaviors {
 
 		// Si no hay path válido, usar comportamiento básico
 		if (!creature.currentPath || creature.currentPath.length === 0) {
-			return this.seek(target, creature, maxForce);
+			return seek(target, creature, maxForce);
 		}
 
 		// Seguir el path actual
@@ -102,14 +102,14 @@ export class AIBehaviors {
 		}
 
 		return { x: 0, y: 0 };
-	}
+	};
 
 	// Buscar un objetivo (versión simple para casos donde no se necesita pathfinding)
-	static seek(
+	export const seek = (
 		target: Vector2,
 		creature: Creature,
 		maxForce = 0.1,
-	): SteeringForce {
+	): SteeringForce => {
 		const desired = normalize({
 			x: target.x - creature.position.x,
 			y: target.y - creature.position.y,
@@ -141,14 +141,14 @@ export class AIBehaviors {
 		}
 
 		return steeringForce;
-	}
+	};
 
 	// Huir de un objetivo (para casters)
-	static flee(
+	export const flee = (
 		target: Vector2,
 		creature: Creature,
 		maxForce = 0.15,
-	): SteeringForce {
+	): SteeringForce => {
 		const desired = normalize({
 			x: creature.position.x - target.x,
 			y: creature.position.y - target.y,
@@ -180,18 +180,18 @@ export class AIBehaviors {
 		}
 
 		return steeringForce;
-	}
+	};
 
 	// Separación entre criaturas para evitar amontonamiento
-	static separate(
+	export const separate = (
 		neighbors: Creature[],
 		creature: Creature,
 		separationRadius = 50,
-	): SteeringForce {
+	): SteeringForce => {
 		const separationForce = { x: 0, y: 0 };
 		let count = 0;
 
-		neighbors.forEach((neighbor) => {
+		for (const neighbor of neighbors) {
 			if (neighbor.id !== creature.id) {
 				const dist = distance(creature.position, neighbor.position);
 
@@ -207,7 +207,7 @@ export class AIBehaviors {
 					count++;
 				}
 			}
-		});
+		}
 
 		if (count > 0) {
 			separationForce.x /= count;
@@ -221,14 +221,14 @@ export class AIBehaviors {
 		}
 
 		return { x: 0, y: 0 };
-	}
+	};
 
 	// Evitar obstáculos (versión mejorada)
-	static avoidObstacles(
+	export const avoidObstacles = (
 		obstacles: Obstacle[],
 		creature: Creature,
 		avoidanceRadius = 60,
-	): SteeringForce {
+	): SteeringForce => {
 		let closestObstacle: Obstacle | null = null;
 		let closestDistance = Number.POSITIVE_INFINITY;
 
@@ -287,22 +287,21 @@ export class AIBehaviors {
 		}
 
 		return { x: 0, y: 0 };
-	}
+	};
 
 	// Comportamiento de rondeo (para casters)
-	static circle(
+	export const circle = (
 		target: Vector2,
 		creature: Creature,
 		circleRadius = 250,
-	): SteeringForce {
+	): SteeringForce => {
 		const distToTarget = distance(creature.position, target);
 
 		if (Math.abs(distToTarget - circleRadius) > 50) {
 			if (distToTarget < circleRadius) {
-				return this.flee(target, creature, 0.1);
-			} else {
-				return this.seek(target, creature, 0.1);
+				return flee(target, creature, 0.1);
 			}
+			return seek(target, creature, 0.1);
 		}
 
 		const toTarget = normalize({
@@ -319,22 +318,25 @@ export class AIBehaviors {
 			x: tangent.x * creature.speed * 0.6,
 			y: tangent.y * creature.speed * 0.6,
 		};
-	}
+	};
 
 	// Combinar múltiples fuerzas de steering
-	static combine(forces: SteeringForce[]): SteeringForce {
+	export const combine = (forces: SteeringForce[]): SteeringForce => {
 		const combined = { x: 0, y: 0 };
 
-		forces.forEach((force) => {
+		for (const force of forces) {
 			combined.x += force.x;
 			combined.y += force.y;
-		});
+		}
 
 		return combined;
-	}
+	};
 
 	// Aplicar límites a la fuerza resultante
-	static limitForce(force: SteeringForce, maxForce: number): SteeringForce {
+	export const limitForce = (
+		force: SteeringForce,
+		maxForce: number,
+	): SteeringForce => {
 		const forceMagnitude = magnitude(force);
 
 		if (forceMagnitude > maxForce) {
@@ -345,7 +347,7 @@ export class AIBehaviors {
 		}
 
 		return force;
-	}
+	};
 }
 
 // Estados de IA para diferentes tipos de criaturas
@@ -360,13 +362,13 @@ export enum CreatureAIState {
 }
 
 // Controlador de IA específico para cada tipo de criatura
-export class CreatureAI {
-	static updateNormalCreature(
+export namespace CreatureAI {
+	export const updateNormalCreature = (
 		creature: Creature,
 		target: Vector2,
 		neighbors: Creature[],
 		obstacles: Obstacle[],
-	): SteeringForce {
+	): SteeringForce => {
 		const forces: SteeringForce[] = [];
 
 		// Comportamiento principal: buscar al jugador con pathfinding
@@ -388,15 +390,15 @@ export class CreatureAI {
 
 		const combinedForce = AIBehaviors.combine(forces);
 		return AIBehaviors.limitForce(combinedForce, creature.speed * 0.9);
-	}
+	};
 
-	static updateCasterCreature(
+	export const updateCasterCreature = (
 		creature: Creature,
 		target: Vector2,
 		neighbors: Creature[],
 		obstacles: Obstacle[],
 		distanceToTarget: number,
-	): SteeringForce {
+	): SteeringForce => {
 		const forces: SteeringForce[] = [];
 		const optimalRange = 300;
 
@@ -444,5 +446,5 @@ export class CreatureAI {
 
 		const combinedForce = AIBehaviors.combine(forces);
 		return AIBehaviors.limitForce(combinedForce, creature.speed * 0.8);
-	}
+	};
 }
