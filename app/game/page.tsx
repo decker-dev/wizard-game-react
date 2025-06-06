@@ -53,6 +53,17 @@ export default function GamePage() {
 		handleKeyUp,
 	});
 
+	// Apply game mode class to prevent scrolling during game
+	React.useEffect(() => {
+		document.documentElement.classList.add('game-mode');
+		document.body.classList.add('game-mode');
+		
+		return () => {
+			document.documentElement.classList.remove('game-mode');
+			document.body.classList.remove('game-mode');
+		};
+	}, []);
+
 	// Loading Screen
 	if (screenState.isLoading) {
 		return <LoadingScreen />;
