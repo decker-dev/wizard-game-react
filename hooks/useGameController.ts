@@ -1,265 +1,241 @@
-import { useAssetLoader } from "@/hooks/useAssetLoader";
-import { useGameAudio } from "@/hooks/useGameAudio";
-import { useGameScreens } from "@/hooks/useGameScreens";
-import { useGameState } from "@/hooks/useGameState";
-import { useInputHandlers } from "@/hooks/useInputHandlers";
-import { useLeaderboard } from "@/hooks/useLeaderboard";
-import type { ScoreSubmission, GameDataForScoreSubmission } from "@/types/game";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useRef, useEffect, useState } from 'react'
+import { useGameState } from '@/hooks/useGameState'
+import { useAssetLoader } from '@/hooks/useAssetLoader'
+import { useInputHandlers } from '@/hooks/useInputHandlers'
+import { useLeaderboard } from '@/hooks/useLeaderboard'
+import { useGameAudio } from '@/hooks/useGameAudio'
+import { useGameScreens } from '@/hooks/useGameScreens'
 
-export function useGameController(autoStart = false) {
-	const canvasRef = useRef<HTMLCanvasElement>(null);
+export function useGameController(autoStart: boolean = false) {
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const [isFullscreen, setIsFullscreen] = useState(false)
 
-	// Core game hooks
-	const {
-		gameStateRef,
-		initializeGameState,
-		resetGameState,
-		startNextWave,
-		continueFromMarketplace,
-		upgradeWeapon,
-		upgradeHealth,
-	} = useGameState();
+  // Core game hooks
+  const {
+    gameStateRef,
+    initializeGameState,
+    resetGameState,
+    startNextWave,
+    continueFromMarketplace,
+    upgradeWeapon,
+    upgradeHealth
+  } = useGameState()
 
-	const {
-		loadAssets,
-		creatureSpritesRef,
-		playerSpritesRef,
-		floorTextureRef,
-		healthPackSpriteRef,
-	} = useAssetLoader();
-	const {
-		topScores,
-		allScores,
-		totalGamesPlayed,
-		isLoading: isLoadingScores,
-		isSubmitting,
-		submitSecureScore,
-		recordNewGame,
-	} = useLeaderboard();
-	const { playCreatureDeath, playPlayerCast, playPlayerHit } = useGameAudio();
+  const { loadAssets, creatureSpritesRef, playerSpritesRef, floorTextureRef, healthPackSpriteRef } = useAssetLoader()
+  const {
+    topScores,
+    allScores,
+    totalGamesPlayed,
+    isLoading: isLoadingScores,
+    isSubmitting,
+    submitSecureScore,
+    recordNewGame
+  } = useLeaderboard()
+  const { playCreatureDeath, playPlayerCast, playPlayerHit } = useGameAudio()
 
-	// Screen and UI state management (includes gameTracking)
-	const {
-		screenState,
-		gameTracking,
-		navigateToHome,
-		navigateToGame,
-		setGameReady,
-		resetGameState: resetScreenState,
-		setScore,
-		setCurrentWave,
-		setPlayerHealth,
-		setPlayerCoins,
-		setGameOver,
-		setGameWon,
-		setWaveMessage,
-		setShowScoreModal,
-		setShowShareModal,
-	} = useGameScreens();
+  // Screen and UI state management (includes gameTracking)
+  const {
+    screenState,
+    gameTracking,
+    navigateToHome,
+    navigateToGame,
+    setGameReady,
+    resetGameState: resetScreenState,
+    setScore,
+    setCurrentWave,
+    setPlayerHealth,
+    setPlayerCoins,
+    setGameOver,
+    setGameWon,
+    setWaveMessage,
+    setShowScoreModal,
+    setShowShareModal,
+    setPaused
+  } = useGameScreens()
 
-	// Input handling
-	const { handleKeyDown, handleKeyUp, handleMouseMove, handleMouseClick } =
-		useInputHandlers(gameStateRef, playPlayerCast);
+  // Pause toggle function
+  const togglePause = useCallback(() => {
+    setPaused(!screenState.isPaused)
+  }, [setPaused, screenState.isPaused])
 
-	// Game lifecycle methods
-	const handleStartNextWave = useCallback(() => {
-		startNextWave(
-			setCurrentWave,
-			setWaveMessage,
-			setGameWon,
-			healthPackSpriteRef.current,
-		);
-	}, [
-		startNextWave,
-		setCurrentWave,
-		setWaveMessage,
-		setGameWon,
-		healthPackSpriteRef,
-	]);
+  // Track fullscreen state
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(Boolean(document.fullscreenElement))
+    }
 
-	const handleMouseMoveWrapper = useCallback(
-		(e: MouseEvent) => {
-			handleMouseMove(e, canvasRef);
-		},
-		[handleMouseMove],
-	);
+    document.addEventListener('fullscreenchange', handleFullscreenChange)
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange)
+    }
+  }, [])
 
-	const handleKeyDownWrapper = useCallback(
-		(e: KeyboardEvent) => {
-			const gameState = gameStateRef.current;
-			handleKeyDown(
-				e,
-				screenState.isLoading,
-				gameState?.waveTransitioning || false,
-			);
-		},
-		[handleKeyDown, screenState.isLoading, gameStateRef],
-	);
+  // Input handling
+  const { handleKeyDown, handleKeyUp, handleMouseMove, handleMouseClick } = useInputHandlers(
+    gameStateRef, 
+    playPlayerCast, 
+    togglePause, 
+    isFullscreen
+  )
 
-	const startGame = useCallback(async () => {
-		navigateToGame();
+  // Game lifecycle methods
+  const handleStartNextWave = useCallback(() => {
+    startNextWave(setCurrentWave, setWaveMessage, setGameWon, healthPackSpriteRef.current)
+  }, [startNextWave, setCurrentWave, setWaveMessage, setGameWon, healthPackSpriteRef])
 
-		try {
-			const { playerSprites } = await loadAssets();
-			const gameState = initializeGameState(playerSprites);
+  const handleMouseMoveWrapper = useCallback((e: MouseEvent) => {
+    handleMouseMove(e, canvasRef)
+  }, [handleMouseMove])
 
-			// Initialize playerHealth with player's health
-			setPlayerHealth(gameState.player.health);
-			setPlayerCoins(gameState.player.crystals);
+  const handleKeyDownWrapper = useCallback((e: KeyboardEvent) => {
+    const gameState = gameStateRef.current
+    handleKeyDown(e, screenState.isLoading, gameState?.waveTransitioning || false, screenState.isPaused)
+  }, [handleKeyDown, screenState.isLoading, screenState.isPaused, gameStateRef])
 
-			// Registrar nueva partida iniciada
-			await recordNewGame();
+  const handleKeyUpWrapper = useCallback((e: KeyboardEvent) => {
+    handleKeyUp(e, screenState.isPaused)
+  }, [handleKeyUp, screenState.isPaused])
 
-			// Pasar los cristales iniciales al tracking
-			setGameReady(gameState.player.crystals);
-			handleStartNextWave();
-		} catch (error) {
-			console.error("Failed to load game assets:", error);
-			navigateToHome();
-		}
-	}, [
-		loadAssets,
-		initializeGameState,
-		handleStartNextWave,
-		navigateToGame,
-		setGameReady,
-		navigateToHome,
-		recordNewGame,
-		setPlayerHealth,
-		setPlayerCoins,
-	]);
+  const startGame = useCallback(async () => {
+    navigateToGame()
 
-	// Auto-start game when needed (for /game route)
-	useEffect(() => {
-		if (autoStart && screenState.currentScreen === "home") {
-			startGame();
-		}
-	}, [autoStart, startGame, screenState.currentScreen]);
+    try {
+      const { playerSprites } = await loadAssets()
+      const gameState = initializeGameState(playerSprites)
 
-	const resetGame = useCallback(async () => {
-		const gameState = resetGameState(playerSpritesRef.current);
+      // Initialize playerHealth with player's health
+      setPlayerHealth(gameState.player.health)
+      setPlayerCoins(gameState.player.crystals)
 
-		// Initialize playerHealth with player's health
-		if (gameState) {
-			setPlayerHealth(gameState.player.health);
-			setPlayerCoins(gameState.player.crystals);
-			// Reiniciar tracking con los cristales iniciales
-			resetScreenState(gameState.player.crystals);
-		} else {
-			resetScreenState(0);
-		}
+      // Registrar nueva partida iniciada
+      await recordNewGame()
 
-		// Registrar nueva partida iniciada (reinicio cuenta como nueva partida)
-		await recordNewGame();
+      // Pasar los cristales iniciales al tracking
+      setGameReady(gameState.player.crystals)
+      handleStartNextWave()
+    } catch (error) {
+      console.error("Failed to load game assets:", error)
+      navigateToHome()
+    }
+  }, [loadAssets, initializeGameState, handleStartNextWave, navigateToGame, setGameReady, navigateToHome, recordNewGame, setPlayerHealth, setPlayerCoins])
 
-		handleStartNextWave();
-	}, [
-		resetGameState,
-		playerSpritesRef,
-		resetScreenState,
-		handleStartNextWave,
-		recordNewGame,
-		setPlayerHealth,
-		setPlayerCoins,
-	]);
+  // Auto-start game when needed (for /game route)
+  useEffect(() => {
+    if (autoStart && screenState.currentScreen === 'home') {
+      startGame()
+    }
+  }, [autoStart, startGame, screenState.currentScreen])
 
-	// Score handling seguro
-	const handleScoreSubmit = useCallback(
-		async (
-			scoreData: ScoreSubmission,
-			clientId: string,
-			gameData: GameDataForScoreSubmission,
-		) => {
-			const success = await submitSecureScore(scoreData, clientId, gameData);
-			if (success) {
-				setTimeout(() => {
-					setShowScoreModal(false);
-					// No reseteamos automáticamente, volvemos al game over screen
-				}, 1000);
-			}
-			return success;
-		},
-		[submitSecureScore, setShowScoreModal],
-	);
+  const resetGame = useCallback(async () => {
+    const gameState = resetGameState(playerSpritesRef.current)
 
-	const handleSkipScore = useCallback(() => {
-		setShowScoreModal(false);
-		// No reseteamos el juego, solo cerramos el modal y volvemos al game over
-	}, [setShowScoreModal]);
+    // Initialize playerHealth with player's health
+    if (gameState) {
+      setPlayerHealth(gameState.player.health)
+      setPlayerCoins(gameState.player.crystals)
+      // Reiniciar tracking con los cristales iniciales
+      resetScreenState(gameState.player.crystals)
+    } else {
+      resetScreenState(0)
+    }
 
-	const handleSaveScore = useCallback(() => {
-		setShowScoreModal(true);
-	}, [setShowScoreModal]);
+    // Registrar nueva partida iniciada (reinicio cuenta como nueva partida)
+    await recordNewGame()
 
-	// Upgrade handling
-	const handleUpgradeWeapon = useCallback(() => {
-		upgradeWeapon(setPlayerCoins);
-	}, [upgradeWeapon, setPlayerCoins]);
+    handleStartNextWave()
+  }, [resetGameState, playerSpritesRef, resetScreenState, handleStartNextWave, recordNewGame, setPlayerHealth, setPlayerCoins])
 
-	const handleUpgradeHealth = useCallback(() => {
-		upgradeHealth(setPlayerCoins, setPlayerHealth);
-	}, [upgradeHealth, setPlayerCoins, setPlayerHealth]);
+  // Score handling seguro
+  const handleScoreSubmit = useCallback(async (scoreData: any, clientId: string, gameData: any) => {
+    const success = await submitSecureScore(scoreData, clientId, gameData)
+    if (success) {
+      setTimeout(() => {
+        setShowScoreModal(false)
+        // No reseteamos automáticamente, volvemos al game over screen
+      }, 1000)
+    }
+    return success
+  }, [submitSecureScore, setShowScoreModal])
 
-	const handleContinueFromMarketplace = useCallback(() => {
-		continueFromMarketplace(setWaveMessage, healthPackSpriteRef.current);
-	}, [continueFromMarketplace, setWaveMessage, healthPackSpriteRef]);
+  const handleSkipScore = useCallback(() => {
+    setShowScoreModal(false)
+    // No reseteamos el juego, solo cerramos el modal y volvemos al game over
+  }, [setShowScoreModal])
 
-	return {
-		// State
-		screenState,
-		gameStateRef,
-		canvasRef,
+  const handleSaveScore = useCallback(() => {
+    setShowScoreModal(true)
+  }, [setShowScoreModal])
 
-		// Assets
-		creatureSpritesRef,
-		playerSpritesRef,
-		floorTextureRef,
-		healthPackSpriteRef,
+  // Upgrade handling
+  const handleUpgradeWeapon = useCallback(() => {
+    upgradeWeapon(setPlayerCoins)
+  }, [upgradeWeapon, setPlayerCoins])
 
-		// Leaderboard
-		topScores,
-		allScores,
-		totalGamesPlayed,
-		isLoadingScores,
-		isSubmitting,
+  const handleUpgradeHealth = useCallback(() => {
+    upgradeHealth(setPlayerCoins, setPlayerHealth)
+  }, [upgradeHealth, setPlayerCoins, setPlayerHealth])
 
-		// Audio
-		playCreatureDeath,
-		playPlayerCast,
-		playPlayerHit,
+  const handleContinueFromMarketplace = useCallback(() => {
+    continueFromMarketplace(setWaveMessage, healthPackSpriteRef.current)
+  }, [continueFromMarketplace, setWaveMessage, healthPackSpriteRef])
 
-		// Game tracking (for security)
-		gameTracking,
+  return {
+    // State
+    screenState,
+    gameStateRef,
+    canvasRef,
+    isFullscreen,
 
-		// Actions
-		startGame,
-		resetGame,
-		navigateToHome,
-		setShowShareModal,
-		setShowScoreModal,
+    // Assets
+    creatureSpritesRef,
+    playerSpritesRef,
+    floorTextureRef,
+    healthPackSpriteRef,
 
-		// Game actions
-		handleStartNextWave,
-		handleMouseMoveWrapper,
-		handleKeyDownWrapper,
-		handleKeyUp,
-		handleMouseClick,
+    // Leaderboard
+    topScores,
+    allScores,
+    totalGamesPlayed,
+    isLoadingScores,
+    isSubmitting,
 
-		// Score actions
-		handleScoreSubmit,
-		handleSkipScore,
-		handleSaveScore,
+    // Audio
+    playCreatureDeath,
+    playPlayerCast,
+    playPlayerHit,
 
-		// Upgrade actions
-		handleUpgradeWeapon,
-		handleUpgradeHealth,
-		handleContinueFromMarketplace,
+    // Game tracking (for security)
+    gameTracking,
 
-		// State setters (for GameCanvas)
-		setScore,
-		setPlayerHealth,
-		setPlayerCoins,
-		setGameOver,
-	};
-}
+    // Actions
+    startGame,
+    resetGame,
+    navigateToHome,
+    setShowShareModal,
+    setShowScoreModal,
+    togglePause,
+
+    // Game actions
+    handleStartNextWave,
+    handleMouseMoveWrapper,
+    handleKeyDownWrapper,
+    handleKeyUp: handleKeyUpWrapper,
+    handleMouseClick,
+
+    // Score actions
+    handleScoreSubmit,
+    handleSkipScore,
+    handleSaveScore,
+
+    // Upgrade actions
+    handleUpgradeWeapon,
+    handleUpgradeHealth,
+    handleContinueFromMarketplace,
+
+    // State setters (for GameCanvas)
+    setScore,
+    setPlayerHealth,
+    setPlayerCoins,
+    setGameOver
+  }
+} 

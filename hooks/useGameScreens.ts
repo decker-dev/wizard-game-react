@@ -16,6 +16,7 @@ export interface GameScreenState {
 	waveMessage: string;
 	showScoreModal: boolean;
 	showShareModal: boolean;
+	isPaused: boolean;
 }
 
 export function useGameScreens() {
@@ -31,6 +32,7 @@ export function useGameScreens() {
 		waveMessage: "",
 		showScoreModal: false,
 		showShareModal: false,
+		isPaused: false,
 	});
 
 	const gameTracking = useGameTracking();
@@ -160,6 +162,13 @@ export function useGameScreens() {
 		[updateScreenState],
 	);
 
+	const setPaused = useCallback(
+		(isPaused: boolean) => {
+			updateScreenState({ isPaused });
+		},
+		[updateScreenState],
+	);
+
 	return {
 		screenState,
 		gameTracking,
@@ -177,5 +186,6 @@ export function useGameScreens() {
 		setWaveMessage,
 		setShowScoreModal,
 		setShowShareModal,
+		setPaused,
 	};
 }

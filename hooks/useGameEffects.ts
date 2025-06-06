@@ -13,7 +13,7 @@ export function useGameEffects({
 	handleKeyDownWrapper,
 	handleKeyUp,
 }: UseGameEffectsProps) {
-	// Handle keyboard events only when actively playing (not in game over or game won state)
+	// Handle keyboard events only when actively playing (includes paused state for pause/unpause functionality)
 	useEffect(() => {
 		const isActivelyPlaying =
 			screenState.currentScreen === "playing" &&
