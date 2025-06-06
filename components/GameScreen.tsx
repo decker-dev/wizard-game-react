@@ -44,6 +44,9 @@ interface GameScreenProps {
   onUpgradeWeapon: () => void
   onUpgradeHealth: () => void
   onContinueFromMarketplace: () => void
+  
+  // Fullscreen state
+  isFullscreen?: boolean
 }
 
 export function GameScreen({
@@ -69,7 +72,8 @@ export function GameScreen({
   onSaveScore,
   onUpgradeWeapon,
   onUpgradeHealth,
-  onContinueFromMarketplace
+  onContinueFromMarketplace,
+  isFullscreen
 }: GameScreenProps) {
   const {
     score,
@@ -277,6 +281,11 @@ export function GameScreen({
                 playPlayerShoot={playPlayerCast}
                 playPlayerHit={playPlayerHit}
                 isPaused={isPaused}
+                showMarketplace={gameStateRef.current?.showMarketplace}
+                player={gameStateRef.current?.player}
+                onUpgradeWeapon={onUpgradeWeapon}
+                onUpgradeHealth={onUpgradeHealth}
+                onContinueFromMarketplace={onContinueFromMarketplace}
               />
             </div>
           </div>
@@ -308,9 +317,9 @@ export function GameScreen({
           </div>
         )}
 
-        {/* Marketplace */}
-        {gameStateRef.current?.showMarketplace && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-50">
+        {/* Marketplace - Only show when NOT in fullscreen (GameCanvas handles fullscreen marketplace) */}
+        {gameStateRef.current?.showMarketplace && !isFullscreen && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-[60]">
             <Marketplace
               player={gameStateRef.current.player}
               onUpgradeWeapon={onUpgradeWeapon}
@@ -367,6 +376,11 @@ export function GameScreen({
                   playPlayerShoot={playPlayerCast}
                   playPlayerHit={playPlayerHit}
                   isPaused={isPaused}
+                  showMarketplace={gameStateRef.current?.showMarketplace}
+                  player={gameStateRef.current?.player}
+                  onUpgradeWeapon={onUpgradeWeapon}
+                  onUpgradeHealth={onUpgradeHealth}
+                  onContinueFromMarketplace={onContinueFromMarketplace}
                 />
               </div>
 
@@ -415,9 +429,9 @@ export function GameScreen({
           </div>
         </div>
 
-        {/* Marketplace - Overlays everything when shown */}
-        {gameStateRef.current?.showMarketplace && (
-          <div className="absolute inset-0 flex items-center justify-center">
+        {/* Marketplace - Only show when NOT in fullscreen (GameCanvas handles fullscreen marketplace) */}
+        {gameStateRef.current?.showMarketplace && !isFullscreen && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-[60]">
             <Marketplace
               player={gameStateRef.current.player}
               onUpgradeWeapon={onUpgradeWeapon}

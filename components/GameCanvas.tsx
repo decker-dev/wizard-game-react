@@ -7,8 +7,9 @@ import { updateProjectiles } from '@/game/Projectiles'
 import { checkCollisions } from '@/game/Collisions'
 import { render } from '@/game/Renderer'
 import { updateCoinParticles } from '@/utils/coinParticles'
-import { CoinParticles } from './CoinParticles'
+import { CoinParticles } from '@/components/CoinParticles'
 import { updateHealthPacks } from '@/game/HealthPacks'
+import { Marketplace } from '@/components/Marketplace'
 
 interface GameCanvasProps {
   gameState: GameState | null
@@ -27,6 +28,12 @@ interface GameCanvasProps {
   playPlayerShoot: () => void
   playPlayerHit: () => void
   isPaused: boolean
+  // Marketplace props for fullscreen mode
+  showMarketplace?: boolean
+  player?: any
+  onUpgradeWeapon?: () => void
+  onUpgradeHealth?: () => void
+  onContinueFromMarketplace?: () => void
 }
 
 export const GameCanvas: React.FC<GameCanvasProps> = ({
@@ -45,7 +52,13 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
   playCreatureDeath,
   playPlayerShoot,
   playPlayerHit,
-  isPaused
+  isPaused,
+  // Marketplace props for fullscreen mode
+  showMarketplace,
+  player,
+  onUpgradeWeapon,
+  onUpgradeHealth,
+  onContinueFromMarketplace
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -335,6 +348,18 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
           onDragStart={(e) => e.preventDefault()}
         />
       </div>
+
+      {/* Marketplace Overlay */}
+      {showMarketplace && isFullscreen && player && onUpgradeWeapon && onUpgradeHealth && onContinueFromMarketplace && (
+        <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50">
+          <Marketplace 
+            player={player}
+            onUpgradeWeapon={onUpgradeWeapon}
+            onUpgradeHealth={onUpgradeHealth}
+            onContinue={onContinueFromMarketplace}
+          />
+        </div>
+      )}
     </div>
   )
 } 

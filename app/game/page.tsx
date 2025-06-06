@@ -75,6 +75,7 @@ export default function GamePage() {
 				onUpgradeWeapon={gameController.handleUpgradeWeapon}
 				onUpgradeHealth={gameController.handleUpgradeHealth}
 				onContinueFromMarketplace={gameController.handleContinueFromMarketplace}
+				isFullscreen={gameController.isFullscreen}
 			/>
 
 			{/* Score Submission Modal with secure props */}
