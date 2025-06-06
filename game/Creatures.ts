@@ -828,6 +828,10 @@ export const handleExplosiveCreatureDeath = (
 		if (canTakeDamage) {
 			player.health -= EXPLOSION_DAMAGE;
 			player.lastDamageTime = now;
+
+			// ✨ COMBO SYSTEM: Resetear combo al recibir daño por explosión
+			gameState.comboKills = 0;
+
 			if (setPlayerHealth) {
 				setPlayerHealth(player.health);
 			}

@@ -67,6 +67,9 @@ export const checkCollisions = (
 				player.health -= damage;
 				setPlayerHealth(player.health);
 
+				// ✨ COMBO SYSTEM: Resetear combo al recibir daño
+				gameState.comboKills = 0;
+
 				// Reproducir sonido de jugador herido
 				if (playPlayerHit) {
 					playPlayerHit();
@@ -151,6 +154,10 @@ export const checkCollisions = (
 							playCreatureDeath(z.type);
 						}
 
+						// ✨ COMBO SYSTEM: Incrementar combo en kill
+						gameState.comboKills++;
+						gameState.lastComboKillTime = Date.now();
+
 						// Recompensar cristales según el tipo de criatura
 						let crystalsEarned = 0;
 						if (z.type === "caster") {
@@ -216,6 +223,9 @@ export const checkCollisions = (
 				player.health -= contactDamage;
 				player.lastDamageTime = now;
 				setPlayerHealth(player.health);
+
+				// ✨ COMBO SYSTEM: Resetear combo al recibir daño
+				gameState.comboKills = 0;
 
 				// Reproducir sonido de jugador herido
 				if (playPlayerHit) {

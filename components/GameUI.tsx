@@ -13,6 +13,7 @@ interface GameUIProps {
 	onReturnHome?: () => void;
 	onShare?: () => void;
 	player?: Player;
+	comboKills?: number;
 }
 
 export const GameUI: React.FC<GameUIProps> = ({
@@ -26,6 +27,7 @@ export const GameUI: React.FC<GameUIProps> = ({
 	onReturnHome,
 	onShare,
 	player,
+	comboKills,
 }) => {
 	// Use player.health if available, otherwise fall back to playerHealth
 	const currentHealth = player?.health ?? playerHealth;
@@ -70,6 +72,24 @@ export const GameUI: React.FC<GameUIProps> = ({
 						<div className="text-4xl">🌊</div>
 					</div>
 				</div>
+
+				{/* ✨ Combo System */}
+				{comboKills !== undefined && comboKills > 0 && (
+					<div className="bg-black/60 backdrop-blur-sm border border-orange-500/30 rounded-lg p-4 hover:border-orange-500/50 transition-colors">
+						<div className="flex items-center justify-between">
+							<div>
+								<div className="text-orange-400 text-sm font-mono">COMBO</div>
+								<div className="text-3xl font-bold text-orange-300 font-mono">
+									{comboKills}x
+								</div>
+								<div className="text-orange-400 text-xs font-mono">
+									kills streak
+								</div>
+							</div>
+							<div className="text-4xl">🔥</div>
+						</div>
+					</div>
+				)}
 
 				{/* Health */}
 				<div className="bg-black/60 backdrop-blur-sm border border-purple-500/20 rounded-lg p-4 hover:border-purple-500/40 transition-colors">

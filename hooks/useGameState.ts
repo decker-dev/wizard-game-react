@@ -43,6 +43,9 @@ export const useGameState = () => {
 				explosive: false, // ❌ Sin sprites aún
 				boss: true, // ✅ Usa sprites de mage temporalmente
 			},
+			// Combo System - initialized
+			comboKills: 0,
+			lastComboKillTime: 0,
 		}),
 		[],
 	);

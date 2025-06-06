@@ -114,6 +114,9 @@ export interface GameState {
 	showMarketplace: boolean;
 	crystalParticles: CrystalParticle[];
 	mobConfig: MobConfig;
+	// Combo System
+	comboKills: number;
+	lastComboKillTime: number;
 }
 
 export interface LeaderboardEntry {

@@ -255,10 +255,16 @@ export function GameScreen({
 							touchAction: "none",
 						}}
 					>
-						<div className="flex items-center justify-center gap-4 text-sm font-mono">
+						<div className="flex items-center justify-center gap-3 text-sm font-mono">
 							<span className="text-purple-400">Wave {currentWave}</span>
 							<span className="text-green-400">HP {playerHealth}</span>
 							<span className="text-blue-400">Score {score}</span>
+							{gameStateRef.current?.comboKills &&
+								gameStateRef.current.comboKills > 0 && (
+									<span className="text-orange-400">
+										🔥{gameStateRef.current.comboKills}x
+									</span>
+								)}
 						</div>
 					</div>
 				</div>
@@ -434,6 +440,7 @@ export function GameScreen({
 							onReturnHome={onReturnHome}
 							onShare={onShare}
 							player={gameStateRef.current?.player}
+							comboKills={gameStateRef.current?.comboKills}
 						/>
 					</div>
 				</div>
