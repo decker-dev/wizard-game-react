@@ -6,7 +6,7 @@ import { GameOverlay } from '@/components/GameOverlay'
 import { FloatingParticles } from '@/components/FloatingParticles'
 import { MobileControls } from '@/components/MobileControls'
 import { GameScreenState } from '@/hooks/useGameScreens'
-import { PROJECTILE_SPEED } from '@/constants/game'
+import { PROJECTILE_SPEED, PLAYER_PROJECTILE_MAX_RANGE } from '@/constants/game'
 
 interface GameScreenProps {
   screenState: GameScreenState
@@ -155,7 +155,9 @@ export function GameScreen({
         },
         radius: 4 * projectileSize,
         speed: PROJECTILE_SPEED,
-        isMagicBolt: false
+        isMagicBolt: false,
+        startPosition: { ...player.position },
+        maxRange: PLAYER_PROJECTILE_MAX_RANGE
       }
       gameState.projectiles.push(newProjectile)
     } else {
@@ -185,7 +187,9 @@ export function GameScreen({
           },
           radius: 4 * projectileSize,
           speed: PROJECTILE_SPEED,
-          isMagicBolt: false
+          isMagicBolt: false,
+          startPosition: { ...player.position },
+          maxRange: PLAYER_PROJECTILE_MAX_RANGE
         }
         gameState.projectiles.push(newProjectile)
       }

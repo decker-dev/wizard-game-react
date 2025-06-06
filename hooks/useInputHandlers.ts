@@ -1,6 +1,6 @@
 import { useCallback, useRef } from 'react'
 import { GameState } from '@/types/game'
-import { PROJECTILE_SPEED, CANVAS_WIDTH, CANVAS_HEIGHT, MAP_WIDTH, MAP_HEIGHT } from '@/constants/game'
+import { PROJECTILE_SPEED, CANVAS_WIDTH, CANVAS_HEIGHT, MAP_WIDTH, MAP_HEIGHT, PLAYER_PROJECTILE_MAX_RANGE } from '@/constants/game'
 
 export const useInputHandlers = (
   gameStateRef: React.MutableRefObject<GameState | null>,
@@ -83,7 +83,9 @@ export const useInputHandlers = (
               velocity: { x: baseDirection.x * PROJECTILE_SPEED, y: baseDirection.y * PROJECTILE_SPEED },
               radius: 4.1 * projectileSize,
               speed: PROJECTILE_SPEED,
-              isMagicBolt: false // Player spells are not magic bolts (those are enemy projectiles)
+              isMagicBolt: false, // Player spells are not magic bolts (those are enemy projectiles)
+              startPosition: { ...player.position },
+              maxRange: PLAYER_PROJECTILE_MAX_RANGE
             }
             gameStateRef.current.projectiles.push(newProjectile)
             console.log('Created spell projectile:', newProjectile)
@@ -115,7 +117,9 @@ export const useInputHandlers = (
                 velocity: { x: direction.x * PROJECTILE_SPEED, y: direction.y * PROJECTILE_SPEED },
                 radius: 4.5 * projectileSize,
                 speed: PROJECTILE_SPEED,
-                isMagicBolt: false // Player spells are not magic bolts
+                isMagicBolt: false, // Player spells are not magic bolts
+                startPosition: { ...player.position },
+                maxRange: PLAYER_PROJECTILE_MAX_RANGE
               }
               gameStateRef.current.projectiles.push(newProjectile)
               console.log('Created multi-spell projectile:', i, newProjectile)

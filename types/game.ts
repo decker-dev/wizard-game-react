@@ -44,6 +44,9 @@ export interface Projectile {
   speed: number
   isMagicBolt?: boolean
   isBossProjectile?: boolean
+  // Range tracking for player projectiles
+  startPosition?: Vector2
+  maxRange?: number
 }
 
 export interface Creature {
