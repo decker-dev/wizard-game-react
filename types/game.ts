@@ -130,6 +130,15 @@ export interface ScoreSubmission {
 	waves_survived: number;
 }
 
+export interface GameDataForScoreSubmission {
+	wavesSurvived: number;
+	crystalsEarned: number;
+	gameStartTime: number;
+	gameDuration: number;
+	spellLevel: number;
+	healthLevel: number;
+}
+
 // Configuración para habilitar/deshabilitar tipos de mobs
 export interface MobConfig {
 	normal: boolean;

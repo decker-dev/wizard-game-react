@@ -1,4 +1,4 @@
-import type { LeaderboardEntry, ScoreSubmission } from "@/types/game";
+import type { LeaderboardEntry, ScoreSubmission, GameDataForScoreSubmission } from "@/types/game";
 import {
 	getAllScores,
 	getScoreRank,
@@ -68,14 +68,7 @@ export function useLeaderboard() {
 		async (
 			scoreData: ScoreSubmission,
 			clientId: string,
-			gameData: {
-				wavesSurvived: number;
-				crystalsEarned: number;
-				gameStartTime: number;
-				gameDuration: number;
-				spellLevel: number;
-				healthLevel: number;
-			},
+			gameData: GameDataForScoreSubmission,
 		): Promise<boolean> => {
 			console.log("🔮 === SECURE SCORE SUBMISSION START ===");
 			console.log("📤 Submitting secure score:", {

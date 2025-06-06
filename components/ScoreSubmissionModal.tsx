@@ -1,4 +1,8 @@
-import type { Player, ScoreSubmission } from "@/types/game";
+import type {
+	Player,
+	ScoreSubmission,
+	GameDataForScoreSubmission,
+} from "@/types/game";
 import { useCallback, useState } from "react";
 
 interface ScoreSubmissionModalProps {
@@ -8,7 +12,7 @@ interface ScoreSubmissionModalProps {
 	onSubmit: (
 		scoreData: ScoreSubmission,
 		clientId: string,
-		gameData: unknown,
+		gameData: GameDataForScoreSubmission,
 	) => Promise<boolean>;
 	onSkip: () => void;
 	isSubmitting: boolean;
@@ -63,7 +67,7 @@ export function ScoreSubmissionModal({
 				waves_survived: wavesSurvived,
 			};
 
-			const gameData = {
+			const gameData: GameDataForScoreSubmission = {
 				wavesSurvived,
 				crystalsEarned,
 				gameStartTime,

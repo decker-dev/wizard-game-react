@@ -4,7 +4,7 @@ import { useGameScreens } from "@/hooks/useGameScreens";
 import { useGameState } from "@/hooks/useGameState";
 import { useInputHandlers } from "@/hooks/useInputHandlers";
 import { useLeaderboard } from "@/hooks/useLeaderboard";
-import type { ScoreSubmission } from "@/types/game";
+import type { ScoreSubmission, GameDataForScoreSubmission } from "@/types/game";
 import { useCallback, useEffect, useRef } from "react";
 
 export function useGameController(autoStart = false) {
@@ -169,14 +169,7 @@ export function useGameController(autoStart = false) {
 		async (
 			scoreData: ScoreSubmission,
 			clientId: string,
-			gameData: {
-				wavesSurvived: number;
-				crystalsEarned: number;
-				gameStartTime: number;
-				gameDuration: number;
-				spellLevel: number;
-				healthLevel: number;
-			},
+			gameData: GameDataForScoreSubmission,
 		) => {
 			const success = await submitSecureScore(scoreData, clientId, gameData);
 			if (success) {

@@ -53,7 +53,7 @@ import {
 	TANK_SPAWN_CHANCE_BASE,
 	TANK_SPAWN_CHANCE_INCREASE,
 } from "@/constants/game";
-import type { Creature, GameState } from "@/types/game";
+import type { Creature, GameState, Vector2 } from "@/types/game";
 import {
 	checkAABBCollision,
 	distance,
@@ -97,36 +97,36 @@ export const createCreature = (
 	const casterChance =
 		config.caster && currentWave >= 2
 			? Math.min(
-					0.1 + (currentWave - 1) * CASTER_SPAWN_CHANCE_INCREASE,
-					MAX_CASTER_SPAWN_CHANCE,
-				)
+				0.1 + (currentWave - 1) * CASTER_SPAWN_CHANCE_INCREASE,
+				MAX_CASTER_SPAWN_CHANCE,
+			)
 			: 0;
 
 	const tankChance =
 		config.tank && currentWave >= 3
 			? Math.min(
-					TANK_SPAWN_CHANCE_BASE +
-						(currentWave - 3) * TANK_SPAWN_CHANCE_INCREASE,
-					MAX_TANK_SPAWN_CHANCE,
-				)
+				TANK_SPAWN_CHANCE_BASE +
+				(currentWave - 3) * TANK_SPAWN_CHANCE_INCREASE,
+				MAX_TANK_SPAWN_CHANCE,
+			)
 			: 0;
 
 	const speedChance =
 		config.speed && currentWave >= 2
 			? Math.min(
-					SPEED_SPAWN_CHANCE_BASE +
-						(currentWave - 2) * SPEED_SPAWN_CHANCE_INCREASE,
-					MAX_SPEED_SPAWN_CHANCE,
-				)
+				SPEED_SPAWN_CHANCE_BASE +
+				(currentWave - 2) * SPEED_SPAWN_CHANCE_INCREASE,
+				MAX_SPEED_SPAWN_CHANCE,
+			)
 			: 0;
 
 	const explosiveChance =
 		config.explosive && currentWave >= 4
 			? Math.min(
-					EXPLOSIVE_SPAWN_CHANCE_BASE +
-						(currentWave - 4) * EXPLOSIVE_SPAWN_CHANCE_INCREASE,
-					MAX_EXPLOSIVE_SPAWN_CHANCE,
-				)
+				EXPLOSIVE_SPAWN_CHANCE_BASE +
+				(currentWave - 4) * EXPLOSIVE_SPAWN_CHANCE_INCREASE,
+				MAX_EXPLOSIVE_SPAWN_CHANCE,
+			)
 			: 0;
 
 	// Determinar tipo de criatura basado en probabilidades
@@ -161,7 +161,7 @@ export const createCreature = (
 			.filter(([_, enabled]) => enabled)
 			.map(([type, _]) => type);
 		if (enabledTypes.length > 0) {
-			creatureType = enabledTypes[0] as CreatureType;
+			creatureType = enabledTypes[0] as Creature["type"];
 		}
 	}
 
@@ -178,8 +178,8 @@ export const createCreature = (
 			baseHealth =
 				CREATURE_BOSS_HEALTH_BASE +
 				bossWaveMultiplier *
-					CREATURE_BOSS_HEALTH_BASE *
-					CREATURE_BOSS_HEALTH_MULTIPLIER;
+				CREATURE_BOSS_HEALTH_BASE *
+				CREATURE_BOSS_HEALTH_MULTIPLIER;
 			baseSpeed = CREATURE_BOSS_SPEED;
 			width = CREATURE_WIDTH * BOSS_SIZE_MULTIPLIER;
 			height = CREATURE_HEIGHT * BOSS_SIZE_MULTIPLIER;
@@ -349,7 +349,7 @@ export const updateCreatures = (gameState: GameState) => {
 		const distanceToPlayer = distance(player.position, creature.position);
 
 		// Usar el nuevo sistema de IA con Steering Behaviors y Pathfinding
-		let steeringForce: SteeringForce;
+		let steeringForce: Vector2;
 		if (creature.type === "caster") {
 			steeringForce = CreatureAI.updateCasterCreature(
 				creature,
@@ -866,8 +866,8 @@ export const createBoss = (
 	const baseHealth =
 		CREATURE_BOSS_HEALTH_BASE +
 		bossWaveMultiplier *
-			CREATURE_BOSS_HEALTH_BASE *
-			CREATURE_BOSS_HEALTH_MULTIPLIER;
+		CREATURE_BOSS_HEALTH_BASE *
+		CREATURE_BOSS_HEALTH_MULTIPLIER;
 	const bossHealth = Math.floor(baseHealth * healthMultiplier);
 
 	// Velocidad del boss (siempre lento)

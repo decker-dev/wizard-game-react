@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { supabase } from "@/lib/supabase";
 import { type NextRequest, NextResponse } from "next/server";
+import type { GameDataForScoreSubmission } from "@/types/game";
 
 const SECRET_KEY = "mystic-realm-secret-2024-magic-defender";
 const MAX_TIME_WINDOW = 5 * 60 * 1000; // 5 minutos
@@ -9,14 +10,7 @@ function generateServerTimeWindowHash(
 	score: number,
 	timestamp: number,
 	clientId: string,
-	gameData: {
-		wavesSurvived: number;
-		crystalsEarned: number;
-		gameStartTime: number;
-		gameDuration: number;
-		spellLevel: number;
-		healthLevel: number;
-	},
+	gameData: GameDataForScoreSubmission,
 ): string {
 	const dataToHash = [
 		score.toString(),
@@ -132,7 +126,7 @@ export async function POST(request: NextRequest) {
 
 		// Validación 4: Generar hash de seguridad del servidor
 		console.log("✅ Step 4: Generating server security hash...");
-		const gameData = {
+		const gameData: GameDataForScoreSubmission = {
 			wavesSurvived: waves_survived,
 			crystalsEarned: crystals_earned,
 			gameStartTime: game_start_time,
