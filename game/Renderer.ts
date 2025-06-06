@@ -315,13 +315,13 @@ export const render = (
 		ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
 		// Pause text
-		ctx.font = "bold 48px Arial";
+		ctx.font = "bold 32px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace";
 		ctx.fillStyle = "#FFFFFF";
 		ctx.textAlign = "center";
 		ctx.fillText("PAUSED", canvasWidth / 2, canvasHeight / 2 - 30);
 
 		// Instructions
-		ctx.font = "20px Arial";
+		ctx.font = "16px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace";
 		ctx.fillStyle = "#CCCCCC";
 		ctx.fillText("Press P or ESC to resume", canvasWidth / 2, canvasHeight / 2 + 20);
 		

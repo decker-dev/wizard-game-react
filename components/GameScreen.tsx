@@ -47,6 +47,7 @@ interface GameScreenProps {
 	onUpgradeWeapon: () => void;
 	onUpgradeHealth: () => void;
 	onContinueFromMarketplace: () => void;
+	onFullscreenChange: (isFullscreen: boolean) => void;
 }
 
 export function GameScreen({
@@ -73,6 +74,7 @@ export function GameScreen({
 	onUpgradeWeapon,
 	onUpgradeHealth,
 	onContinueFromMarketplace,
+	onFullscreenChange,
 }: GameScreenProps) {
 	const {
 		score,
@@ -288,6 +290,7 @@ export function GameScreen({
 								playCreatureDeath={playCreatureDeath}
 								playPlayerShoot={playPlayerCast}
 								playPlayerHit={playPlayerHit}
+								onFullscreenChange={onFullscreenChange}
 							/>
 						</div>
 					</div>
@@ -388,6 +391,7 @@ export function GameScreen({
 									playCreatureDeath={playCreatureDeath}
 									playPlayerShoot={playPlayerCast}
 									playPlayerHit={playPlayerHit}
+									onFullscreenChange={onFullscreenChange}
 								/>
 							</div>
 
@@ -419,7 +423,7 @@ export function GameScreen({
 										spells
 									</p>
 									<p className="hover:text-purple-400 transition-colors">
-										🔄 <span className="text-purple-300">ESC</span> to pause or
+										🔄 <span className="text-purple-300">P or ESC</span> to pause or
 										resume the game
 									</p>
 									<p className="hover:text-purple-400 transition-colors">

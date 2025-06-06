@@ -12,6 +12,7 @@ export const useInputHandlers = (
 	gameStateRef: React.MutableRefObject<GameState | null>,
 	playPlayerCast?: () => void,
 	togglePause?: () => void,
+	isFullscreen?: boolean,
 ) => {
 	const lastCastTimeRef = useRef<number>(0);
 
@@ -19,8 +20,11 @@ export const useInputHandlers = (
 		(e: KeyboardEvent, isLoading: boolean, waveTransitioning: boolean) => {
 			if (!gameStateRef.current) return;
 
-			// Manejar la tecla de pausa (P o Escape) independientemente del estado del juego
-			if ((e.key.toLowerCase() === "p" || e.key === "Escape") && togglePause) {
+			// Manejar la tecla de pausa
+			// En pantalla completa: solo P (ESC está reservado para salir de fullscreen)
+			// En modo normal: P o Escape
+			const pauseKey = e.key.toLowerCase() === "p" || (!isFullscreen && e.key === "Escape");
+			if (pauseKey && togglePause) {
 				// Solo permitir pausar si el juego está activo (no en loading, game over, etc.)
 				if (!gameStateRef.current.gameOver && !gameStateRef.current.gameWon && !isLoading && !waveTransitioning) {
 					e.preventDefault();
@@ -166,7 +170,7 @@ export const useInputHandlers = (
 				}
 			}
 		},
-		[gameStateRef, playPlayerCast, togglePause],
+		[gameStateRef, playPlayerCast, togglePause, isFullscreen],
 	);
 
 	const handleKeyUp = useCallback(

@@ -29,6 +29,7 @@ interface GameCanvasProps {
 	) => void;
 	playPlayerShoot: () => void;
 	playPlayerHit: () => void;
+	onFullscreenChange?: (isFullscreen: boolean) => void;
 }
 
 export const GameCanvas: React.FC<GameCanvasProps> = ({
@@ -47,6 +48,7 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
 	playCreatureDeath,
 	playPlayerShoot,
 	playPlayerHit,
+	onFullscreenChange,
 }) => {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const containerRef = useRef<HTMLDivElement>(null);
@@ -76,6 +78,11 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
 		const handleFullscreenChange = () => {
 			const isCurrentlyFullscreen = Boolean(document.fullscreenElement);
 			setIsFullscreen(isCurrentlyFullscreen);
+			
+			// Notify parent component about fullscreen change
+			if (onFullscreenChange) {
+				onFullscreenChange(isCurrentlyFullscreen);
+			}
 
 			if (isCurrentlyFullscreen) {
 				// Calculate fullscreen dimensions maintaining aspect ratio
@@ -315,11 +322,18 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
 
 			{/* Instructions for fullscreen mode */}
 			{isFullscreen && (
-				<div className="absolute top-4 right-4 z-40 bg-black/80 backdrop-blur-sm border border-purple-500/30 rounded-lg p-3">
-					<p className="text-purple-400 font-mono text-sm">
-						Press ESC to exit fullscreen
-					</p>
-				</div>
+				<>
+					<div className="absolute top-4 right-4 z-40 bg-black/80 backdrop-blur-sm border border-purple-500/30 rounded-lg p-3">
+						<p className="text-purple-400 font-mono text-sm">
+							Press ESC to exit fullscreen
+						</p>
+					</div>
+					
+					{/* Pause instruction in bottom center */}
+						<p className="absolute bottom-1 left-1/2 transform -translate-x-1/2 z-40 text-purple-400 font-mono text-sm">
+							Press P to pause or resume the game
+						</p>
+				</>
 			)}
 
 			{/* Canvas Container with Coin Particles */}
