@@ -695,4 +695,328 @@ Uso:
 
 Este sistema mantendría la simplicidad técnica actual pero multiplicaría exponencialmente la profundidad estratégica. Los jugadores casuales pueden ignorar la complejidad y jugar linealmente, mientras que los tryhardears tienen infinitas combinaciones que explorar y optimizar. La clave está en que **todo se construye sobre la base sólida existente**, solo expandiendo posibilidades sin romper nada.
 
-**¡El juego pasaría de ser una experiencia divertida de 10 minutos a un "just one more run" adictivo que podría mantener a los jugadores enganchados por horas!** 🎮✨ 
+**¡El juego pasaría de ser una experiencia divertida de 10 minutos a un "just one more run" adictivo que podría mantener a los jugadores enganchados por horas!** 🎮✨
+
+---
+
+# 🚀 ROADMAP DE MICRO-ENTREGAS DIARIAS
+
+## 📅 **SEMANA 1: FUNDAMENTOS FRENÉTICOS**
+
+### 🎯 **DÍA 1: Combo System Basic**
+```typescript
+Entrega: Sistema de combo kills básico
+Effort: 2-3 horas
+Files: useGameState.ts, GameUI.tsx
+Features:
+  - Contador de kills consecutivos
+  - Reseteo al recibir daño
+  - UI básica de combo actual
+  - Sin multiplicadores aún (solo visual)
+```
+**🎮 Value**: Feedback inmediato que hace el juego más satisfactorio
+
+### ⚡ **DÍA 2: Combo Multipliers**
+```typescript
+Entrega: Multiplicadores de cristales por combo
+Effort: 1-2 horas
+Files: useGameState.ts, constants/game.ts
+Features:
+  - x2 cristales a 5 kills
+  - x3 cristales a 10 kills  
+  - x4 cristales a 15+ kills
+  - Indicador visual del multiplicador
+```
+**🎮 Value**: Recompensa tangible que incentiva juego agresivo
+
+### 🎨 **DÍA 3: Screen Shake & Impact Effects**
+```typescript
+Entrega: Juice visual para impactos
+Effort: 2-3 horas
+Files: GameCanvas.tsx, game/Renderer.ts
+Features:
+  - Screen shake al matar enemigos
+  - Intensidad basada en combo
+  - Flash blanco en enemigos al recibir daño
+  - Particle burst en kills de combo alto
+```
+**🎮 Value**: Gameplay se siente 10x más satisfactorio
+
+### 🔴 **DÍA 4: Fire Projectiles**
+```typescript
+Entrega: Primer tipo de proyectil elemental
+Effort: 3-4 horas
+Files: game/Projectiles.ts, game/Player.ts
+Features:
+  - Proyectiles rojos con trail naranja
+  - Burning DoT (2 dmg/sec por 3 seg)
+  - Unlock automático en oleada 5
+  - Sonido diferenciado
+```
+**🎮 Value**: Primera variedad de combate, se siente nuevo
+
+### 🌪️ **DÍA 5: Frenzy Mode Basic**
+```typescript
+Entrega: Modo frenzy temporal
+Effort: 3-4 horas
+Files: useGameState.ts, GameUI.tsx, GameCanvas.tsx
+Features:
+  - Activación cada 25 kills consecutivos
+  - +100% fire rate por 8 segundos
+  - Screen tint púrpura
+  - UI countdown timer
+```
+**🎮 Value**: Momentos épicos de poder absoluto
+
+---
+
+## 📅 **SEMANA 2: VARIEDAD DE COMBATE**
+
+### 🔵 **DÍA 6: Frost Projectiles + Slow Effect**
+```typescript
+Entrega: Segundo tipo elemental con CC
+Effort: 3-4 horas
+Files: game/Projectiles.ts, game/Creatures.ts
+Features:
+  - Proyectiles azules con partículas
+  - Slow effect (50% velocidad por 2 seg)
+  - Unlock en oleada 8
+  - Visual feedback en enemigos slowed
+```
+**🎮 Value**: Primera mecánica de control, estrategia defensiva
+
+### ⚡ **DÍA 7: Lightning Projectiles + Chain**
+```typescript
+Entrega: Proyectil con chain effect
+Effort: 4-5 horas
+Files: game/Projectiles.ts (chain logic)
+Features:
+  - Viaje casi instantáneo
+  - Chain a 2 enemigos cercanos (150px radius)
+  - Damage reduction por chain (75% -> 50%)
+  - Unlock en oleada 12
+```
+**🎮 Value**: Clearing de grupos, momentos espectaculares
+
+### 🏪 **DÍA 8: Marketplace - Projectile Selection**
+```typescript
+Entrega: Selector de tipo de proyectil en marketplace
+Effort: 3-4 horas
+Files: components/Marketplace.tsx, useGameState.ts
+Features:
+  - Botones para cambiar tipo activo
+  - Costo: 10 cristales por cambio
+  - Persistencia durante la run
+  - UI mejorada del marketplace
+```
+**🎮 Value**: Elección estratégica, customización
+
+### 💥 **DÍA 9: Critical Hits System**
+```typescript
+Entrega: Sistema de críticos básico
+Effort: 2-3 horas
+Files: game/Projectiles.ts, constants/game.ts
+Features:
+  - 15% chance base de crítico
+  - x2.5 damage en críticos
+  - Visual: proyectil más grande + particle burst
+  - Audio: sonido especial de crítico
+```
+**🎮 Value**: RNG excitement, variabilidad en combate
+
+### 🎲 **DÍA 10: Special Crystal Drops**
+```typescript
+Entrega: Cristales especiales raros
+Effort: 3-4 horas
+Files: useGameState.ts, utils/coinParticles.ts
+Features:
+  - Ruby Crystal: +25 cristales (5% drop chance)
+  - Lightning Crystal: Frenzy mode instant (2% drop)
+  - Visual: cristales más grandes con glow
+  - Sonido especial al recoger
+```
+**🎮 Value**: Momentos de emoción, lottery feeling
+
+---
+
+## 📅 **SEMANA 3: DEPTH & PROGRESSION**
+
+### 🌳 **DÍA 11: Skill Tree UI Base**
+```typescript
+Entrega: Interface del árbol de habilidades
+Effort: 4-5 horas
+Files: components/SkillTree.tsx, components/Marketplace.tsx
+Features:
+  - UI de 3 árboles (Damage, Speed, Utility)
+  - 5 nodos por árbol (sin funcionalidad aún)
+  - Sistema de puntos (1 por oleada)
+  - Visual: nodos locked/unlocked
+```
+**🎮 Value**: Anticipación de progresión, meta visible
+
+### 🔥 **DÍA 12: Damage Tree - Nodos 1-2**
+```typescript
+Entrega: Primeros nodos funcionales
+Effort: 3-4 horas
+Files: useGameState.ts, game/Player.ts
+Features:
+  - Focused Blast: +50% daño, -25% área
+  - Piercing Spells: atraviesa 2 enemigos
+  - Costo: 1 punto cada uno
+  - Tooltips informativos
+```
+**🎮 Value**: Primeras decisiones estratégicas reales
+
+### ⚡ **DÍA 13: Speed Tree - Nodos 1-2**
+```typescript
+Entrega: Nodos de velocidad
+Effort: 2-3 horas
+Files: game/Player.ts, constants/game.ts
+Features:
+  - Rapid Fire: -30% cooldown
+  - Swift Casting: +50% velocidad proyectiles
+  - Balance: asegurar que no rompa el juego
+```
+**🎮 Value**: Gameplay más frenético, builds diferenciados
+
+### 🌊 **DÍA 14: Utility Tree - Nodos 1-2**
+```typescript
+Entrega: Nodos de utilidad
+Effort: 3-4 horas
+Files: game/Projectiles.ts, game/Player.ts
+Features:
+  - Wide Blast: +100% área proyectiles
+  - Frost Touch: 30% chance slow con cualquier proyectil
+  - Sinergias con proyectiles elementales
+```
+**🎮 Value**: Builds de control, estrategias defensivas
+
+### 🔄 **DÍA 15: Respec System**
+```typescript
+Entrega: Sistema de respec de habilidades
+Effort: 2-3 horas
+Files: components/SkillTree.tsx, useGameState.ts
+Features:
+  - Botón "Reset Skills" en marketplace
+  - Costo: 20 cristales
+  - Confirmación de reseteo
+  - Refund de todos los puntos gastados
+```
+**🎮 Value**: Experimentación sin penalty permanente
+
+---
+
+## 📅 **SEMANA 4: EVENTOS Y POLISH**
+
+### 🌙 **DÍA 16: Blood Moon Event**
+```typescript
+Entrega: Primera oleada especial
+Effort: 4-5 horas
+Files: useGameState.ts, GameCanvas.tsx, game/Creatures.ts
+Features:
+  - Trigger cada 13 oleadas
+  - +50% vida y velocidad enemigos
+  - x3 cristales reward
+  - Screen tint rojizo + música intensificada
+```
+**🎮 Value**: Variedad, eventos memorables
+
+### 🏆 **DÍA 17: Achievement System Base**
+```typescript
+Entrega: Sistema básico de logros
+Effort: 3-4 horas
+Files: hooks/useAchievements.ts, components/GameUI.tsx
+Features:
+  - 5 achievements básicos (First Kill, Wave 10, etc.)
+  - Notificación popup al unlock
+  - Persistencia en localStorage
+  - UI de achievements earned
+```
+**🎮 Value**: Objetivos adicionales, retention
+
+### 🟠 **DÍA 18: Enemy Berserker Mode**
+```typescript
+Entrega: Tanques berserk al low HP
+Effort: 2-3 horas
+Files: game/Creatures.ts, game/Renderer.ts
+Features:
+  - Al 25% vida: +200% velocidad, +50% daño
+  - Tint rojizo en sprite
+  - Duración: 10 segundos
+  - Audio: rugido especial
+```
+**🎮 Value**: Momentos de tensión, enemigos más dinámicos
+
+### 🎯 **DÍA 19: More Skill Tree Nodes**
+```typescript
+Entrega: Nodos 3-4 de cada árbol
+Effort: 4-5 horas
+Files: game/Player.ts, game/Projectiles.ts
+Features:
+  - Critical Strike (20% chance x3 damage)
+  - Multicast (2 proyectiles simultáneos)
+  - Chain Lightning skill (salto garantizado)
+  - Balance testing intensivo
+```
+**🎮 Value**: Builds más profundos, power spikes
+
+### 🎊 **DÍA 20: Final Nodes + Polish**
+```typescript
+Entrega: Nodos tier 5 + pulido general
+Effort: 5-6 horas
+Files: Multiple files, balance pass
+Features:
+  - Annihilation (críticos explotan)
+  - Arcane Gatling (4 proyectiles ráfaga)
+  - Arcane Storm (tornado persigue enemigos)
+  - Bug fixes + balance final
+```
+**🎮 Value**: Power fantasy máximo, builds completos
+
+---
+
+## 📈 **CRITERIOS PARA CADA ENTREGA**
+
+### ✅ **Definition of Done**
+- [ ] Feature funciona completamente
+- [ ] No rompe features existentes
+- [ ] Performance mantiene 60 FPS
+- [ ] Balanceado (no OP ni useless)
+- [ ] Audio feedback apropiado
+- [ ] Mobile compatible
+- [ ] Testeo manual de 5+ runs
+
+### 🎯 **Métricas de Éxito**
+- **Engagement**: Sesiones más largas
+- **Retention**: Players regresan al día siguiente
+- **Fun Factor**: Feedback positivo inmediato
+- **Balance**: No hay estrategia obviamente dominante
+
+### 🔄 **Feedback Loop**
+```
+Deploy → Autotest → User feedback → Hotfix if needed → Next feature
+```
+
+---
+
+## 🎮 **VENTAJAS DE ESTE APPROACH**
+
+### 📦 **Entregas Pequeñas**
+- **Shipeable diariamente** sin romper nada
+- **Testeable inmediatamente** por usuarios
+- **Rollback fácil** si algo sale mal
+- **Momentum constante** de mejoras
+
+### 🔧 **Técnicamente Sólido**
+- **Cada feature es independiente** pero sinergiza
+- **No breaking changes** entre entregas
+- **Progressive enhancement** del core game
+- **Módulos pequeños** fáciles de debuggear
+
+### 🚀 **Impacto en Players**
+- **Siempre hay algo nuevo** que probar
+- **Progresión visible diaria** del juego
+- **Community engagement** con feedback constante
+- **Hype building** hacia features más grandes
+
+¿Te gusta este approach? ¿Prefieres empezar con el **Combo System** (Día 1) o hay alguna feature específica que te emociona más implementar primero? 🎯 
