@@ -51,7 +51,7 @@ export default function CreditsPage() {
 	];
 
 	return (
-		<div className="min-h-dvh relative overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-black">
+		<div className="min-h-dvh relative bg-gradient-to-br from-gray-900 via-gray-800 to-black">
 			{/* Background Elements */}
 			<div className="absolute inset-0">
 				<div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />

@@ -126,7 +126,7 @@ export function HomeScreen({
 
 	return (
 		<div
-			className="min-h-dvh relative overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-black"
+			className="min-h-dvh relative bg-gradient-to-br from-gray-900 via-gray-800 to-black"
 			onKeyDown={handleKeyPress}
 		>
 			{/* Animated Background Elements */}

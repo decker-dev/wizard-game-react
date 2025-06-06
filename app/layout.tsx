@@ -24,7 +24,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en" className="h-full">
-			<body className={`${pressStart2P.variable} h-full overflow-hidden`}>
+			<body className={`${pressStart2P.variable} h-full`}>
 				{children}
 			</body>
 			<Analytics />
