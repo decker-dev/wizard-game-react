@@ -6,7 +6,7 @@ export default function manifest(): MetadataRoute.Manifest {
     short_name: 'Mystic Realm',
     description: 'A Magic Defender Game',
     start_url: '/',
-    display: 'standalone',
+    display: 'minimal-ui',
     background_color: '#6A1B9A',
     theme_color: '#6A1B9A',
     icons: [

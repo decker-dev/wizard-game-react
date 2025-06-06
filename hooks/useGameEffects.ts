@@ -13,9 +13,15 @@ export function useGameEffects({
 	handleKeyDownWrapper,
 	handleKeyUp,
 }: UseGameEffectsProps) {
-	// Handle keyboard events for playing screen
+	// Handle keyboard events only when actively playing (not in game over or game won state)
 	useEffect(() => {
-		if (screenState.currentScreen === "playing") {
+		const isActivelyPlaying =
+			screenState.currentScreen === "playing" &&
+			!screenState.gameOver &&
+			!screenState.gameWon &&
+			!screenState.showScoreModal;
+
+		if (isActivelyPlaying) {
 			window.addEventListener("keydown", handleKeyDownWrapper);
 			window.addEventListener("keyup", handleKeyUp);
 
@@ -24,5 +30,12 @@ export function useGameEffects({
 				window.removeEventListener("keyup", handleKeyUp);
 			};
 		}
-	}, [handleKeyDownWrapper, handleKeyUp, screenState.currentScreen]);
+	}, [
+		handleKeyDownWrapper,
+		handleKeyUp,
+		screenState.currentScreen,
+		screenState.gameOver,
+		screenState.gameWon,
+		screenState.showScoreModal
+	]);
 }
