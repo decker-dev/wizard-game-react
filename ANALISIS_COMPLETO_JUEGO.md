@@ -372,3 +372,327 @@ mobConfig: {
 - **Código Mantenible**: TypeScript estricto y patrones consistentes
 
 El juego está **listo para producción** con solo la adición de sprites faltantes para completar todos los tipos de enemigos implementados. 
+
+---
+
+# 🎮 PROPUESTAS DE GAME DESIGN - SISTEMA DE HABILIDADES RENOVADO
+
+## 🧙‍♂️ NUEVO SISTEMA DE ÁRBOLES DE HABILIDADES
+
+### 🌳 Estructura Propuesta: 3 Árboles Especializados
+
+En lugar del sistema lineal actual, propongo **3 árboles de especialización** que el jugador puede combinar:
+
+#### 🔥 **ÁRBOL DE DEVASTACIÓN** (Damage Tree)
+**Filosofía**: Raw DPS y destrucción masiva
+- **Nodo 1**: `Focused Blast` - +50% daño, -25% área de efecto
+- **Nodo 2**: `Piercing Spells` - Proyectiles atraviesan 2 enemigos
+- **Nodo 3**: `Critical Strike` - 20% chance de x3 daño
+- **Nodo 4**: `Executioner` - +100% daño vs enemigos <30% vida
+- **Nodo 5**: `Annihilation` - Los críticos causan explosión de área
+
+#### ⚡ **ÁRBOL DE VELOCIDAD** (Speed Tree)
+**Filosofía**: Cadencia de fuego y movilidad
+- **Nodo 1**: `Rapid Fire` - -30% cooldown entre hechizos
+- **Nodo 2**: `Swift Casting` - +50% velocidad de proyectiles
+- **Nodo 3**: `Multicast` - Dispara 2 proyectiles simultáneos
+- **Nodo 4**: `Machine Gun Magic` - -50% cooldown adicional
+- **Nodo 5**: `Arcane Gatling` - Dispara 4 proyectiles en ráfaga
+
+#### 🌊 **ÁRBOL DE CONTROL** (Utility Tree)
+**Filosofía**: Área de efecto y control de masas
+- **Nodo 1**: `Wide Blast` - +100% área de proyectiles
+- **Nodo 2**: `Frost Touch` - 30% chance de ralentizar enemigos 50%
+- **Nodo 3**: `Chain Lightning` - Proyectiles saltan a 2 enemigos cercanos
+- **Nodo 4**: `Time Dilation` - Zona de ralentización al impactar
+- **Nodo 5**: `Arcane Storm` - Cada 10mo disparo es un tornado que persigue enemigos
+
+---
+
+## 🎯 SISTEMA DE ESPECIALIZACIÓN HÍBRIDA
+
+### 💎 **Mecánica de Puntos de Habilidad**
+```typescript
+Sistema Propuesto:
+- 1 Punto por oleada completada
+- Máximo 5 puntos por árbol (15 total)
+- Posibilidad de "respec" por 20 cristales
+- Builds híbridos incentivados
+```
+
+### 🔄 **Ejemplos de Builds Viables**
+- **"Glass Cannon"**: Devastación 5 + Velocidad 3 (Ultra DPS, frágil)
+- **"Crowd Controller"**: Control 5 + Velocidad 2 (AoE supremo)
+- **"Balanced Destroyer"**: 3-3-3 en todos (Versátil)
+- **"Speed Demon"**: Velocidad 5 + Devastación 2 (Ametralladora mágica)
+
+---
+
+## 🪄 NUEVOS TIPOS DE PROYECTILES (Con Limitaciones Técnicas)
+
+### 🎨 **Proyectiles Implementables con "Bolitas"**
+
+#### 🔴 **Fire Bolt** (Devastación)
+- **Visual**: Bolita roja con trail naranja
+- **Mecánica**: Daño estándar + burning DoT (2 dmg/sec por 3 seg)
+- **Sonido**: Whoosh + crackle
+
+#### 🔵 **Frost Bolt** (Control)
+- **Visual**: Bolita azul con partículas heladas
+- **Mecánica**: Daño reducido (-25%) + slow effect (50% velocidad por 2 seg)
+- **Sonido**: Cristalino + impacto helado
+
+#### ⚡ **Lightning Bolt** (Velocidad)
+- **Visual**: Bolita amarilla con efecto eléctrico
+- **Mecánica**: Viaje instantáneo + chain effect
+- **Sonido**: Zap eléctrico
+
+#### 🟣 **Arcane Bolt** (Hybrid)
+- **Visual**: Bolita púrpura con aura mágica
+- **Mecánica**: Daño balanceado + penetra shields de casters
+- **Sonido**: Mystical hum
+
+#### 🟢 **Poison Bolt** (DoT Specialist)
+- **Visual**: Bolita verde con burbujas tóxicas
+- **Mecánica**: Bajo daño inicial + DoT potente (5 dmg/sec por 4 seg)
+- **Sonido**: Burbujeo químico
+
+---
+
+## 🎪 MECÁNICAS FRENÉTICAS ADICIONALES
+
+### 💥 **Sistema de Combo Multiplier**
+```typescript
+Mecánica:
+- Matar enemigos consecutivamente sin ser dañado = combo
+- x2 cristales a 5 kills, x3 a 10 kills, x4 a 15+ kills
+- Combo se resetea al recibir daño
+- Indicador visual de combo actual
+```
+
+### 🌪️ **"Frenzy Mode" Temporal**
+```typescript
+Activación: Cada 25 kills consecutivos
+Duración: 8 segundos
+Efectos:
+- +100% velocidad de disparo
+- +50% velocidad de movimiento
+- Proyectiles son 50% más grandes
+- Screen tint púrpura + screen shake
+```
+
+### 🎲 **Cristales Especiales Aleatorios**
+- **💎 Ruby Crystal**: +50 cristales (raro)
+- **⚡ Lightning Crystal**: Frenzy Mode instantáneo (muy raro)
+- **🛡️ Shield Crystal**: Invulnerabilidad 3 segundos (raro)
+- **🔄 Respec Crystal**: Respec gratuito (muy raro)
+
+---
+
+## 👹 MEJORAS AL SISTEMA DE ENEMIGOS
+
+### 🆕 **Nuevos Comportamientos (Sin Sprites Nuevos)**
+
+#### 🟠 **Berserker Mode** (Para Tanks)
+- Al llegar a 25% vida: +200% velocidad, +50% daño
+- Visual: Tint rojizo sobre sprite existente
+- Duración: 10 segundos o hasta morir
+
+#### 👥 **Pack Hunting** (Para Speed creatures)
+- Aparecen en grupos de 3-4
+- Bonus de velocidad si están cerca entre sí
+- Se coordinan para rodear al jugador
+
+#### 🔄 **Adaptive AI** (Para Casters)
+- Cambian patron de disparo cada 5 proyectiles
+- Alternan entre: Single shot, Spread shot, Homing shot
+- Más impredecibles y desafiantes
+
+#### 💀 **Death Curse** (Para Bosses)
+- Al morir: Spawna 3-5 criaturas normales debilitadas
+- Última venganza del boss
+- Mantiene la presión después de victoria
+
+---
+
+## 🏪 MARKETPLACE EXPANDIDO
+
+### 🛒 **Nuevas Categorías de Mejoras**
+
+#### ⚗️ **Consumibles Temporales**
+- **Mana Potion**: +50% mana regen por 3 oleadas (15 cristales)
+- **Berserker Brew**: +100% fire rate por 2 oleadas (25 cristales)
+- **Ghost Walk**: Atravesar obstáculos por 1 oleada (30 cristales)
+
+#### 🎯 **Mejoras Pasivas Permanentes**
+- **Crystal Magnet**: +25% radio recolección cristales (40 cristales)
+- **Battle Trance**: Combo multiplier se resetea más lento (60 cristales)
+- **Arcane Mastery**: -10% costo de todas las mejoras futuras (80 cristales)
+
+#### 🎰 **Mejoras Aleatorias** ("Mystery Box")
+- **Costo**: 20 cristales
+- **Contenido**: Mejora aleatoria de valor 15-50 cristales
+- **Risk/Reward**: Gambling element para tryhardears
+
+---
+
+## 🌊 EVENTOS ESPECIALES DE OLEADAS
+
+### 🎭 **Oleadas Temáticas Especiales**
+
+#### 🌙 **"Blood Moon"** (Cada 13 oleadas)
+- Todos los enemigos tienen +50% vida y velocidad
+- Recompensa: x3 cristales por kill
+- Visual: Screen tint rojizo, música intensificada
+
+#### ⚡ **"Speed Demon"** (Cada 17 oleadas)
+- Solo aparecen Speed creatures (x3 cantidad normal)
+- Duración reducida: 60 segundos máximo
+- Recompensa: Frenzy mode gratuito al completar
+
+#### 🏰 **"Boss Rush"** (Cada 25 oleadas)
+- 3 bosses simultáneos con 75% vida cada uno
+- Sin criaturas normales
+- Recompensa: 150 cristales + mejora gratuita
+
+#### 👻 **"Ghost Swarm"** (Cada 31 oleadas)
+- Enemigos aparecen semi-transparentes (50% alpha)
+- Más difíciles de ver pero misma mecánica
+- Recompensa: x2 cristales + mejora visual permanente
+
+---
+
+## 🎮 MECÁNICAS DE TRYHARD/ENDGAME
+
+### 🏆 **Sistema de Prestige**
+```typescript
+Unlock: Al llegar a oleada 50
+Mecánica:
+- Reset completo del progreso
+- Mantiene 1 punto de habilidad permanente
+- +10% cristales base para siempre
+- Nuevo título en leaderboard
+```
+
+### 📊 **Challenges Diarios**
+- **"Pacifist Run"**: Sobrevivir 10 oleadas sin mejorar daño
+- **"Speed Demon"**: Completar 5 oleadas en menos de 3 minutos
+- **"Minimalist"**: Ganar sin usar marketplace
+- **Recompensas**: Cristales bonus + cosmetic unlocks
+
+### 🎯 **Sistema de Logros Ocultos**
+- **"Untouchable"**: 20 oleadas sin recibir daño
+- **"Combo Master"**: Combo x10 por 30 segundos seguidos
+- **"Element Master"**: Usar 4 tipos de proyectiles en una partida
+- **"Boss Slayer"**: Matar 10 bosses en una partida
+
+---
+
+## 🎨 MEJORAS VISUALES SIMPLES PERO EFECTIVAS
+
+### ✨ **Efectos de Impacto Mejorados**
+- **Screen Shake**: Intensidad basada en daño causado
+- **Time Freeze**: 0.1 segundos al matar boss
+- **Color Flashing**: Enemigos flashean al recibir daño
+- **Particle Burst**: Más partículas en kills de combo alto
+
+### 🌈 **Sistema de Skins de Proyectiles**
+- **Unlock**: Por achievements o cristales
+- **Mecánica**: Solo visual, no afecta gameplay
+- **Ejemplos**: Rainbow bolts, Skull bolts, Star bolts, Heart bolts
+
+---
+
+## 📱 MEJORAS ESPECÍFICAS PARA MOBILE
+
+### 📱 **Controles Adaptativos**
+- **Auto-Aim Toggle**: Opción para principiantes
+- **Fire Button Size**: Ajustable por el usuario
+- **Haptic Feedback**: Vibración en impactos y kills
+- **Simplified UI**: Modo "lean UI" para pantallas pequeñas
+
+### ⚡ **Optimizaciones de Performance**
+- **Dynamic Quality**: Reduce partículas automáticamente si FPS < 50
+- **Battery Saver**: Modo que reduce efectos visuales
+- **Quick Sessions**: Modo de oleadas más cortas (5 min máximo)
+
+---
+
+## 🔄 SISTEMA DE PROGRESIÓN META
+
+### 💎 **Moneda Secundaria: "Essence"**
+```typescript
+Obtención:
+- 1 Essence por oleada 10+ completada
+- 5 Essence por primera vez llegando a oleada X
+- 10 Essence por achievements específicos
+
+Uso:
+- Unlock nuevos tipos de proyectiles
+- Mejoras permanentes cross-runs
+- Cosmetic items
+```
+
+### 🏛️ **"Academy" - Mejoras Permanentes**
+- **Arcane Studies**: +10% daño base permanente (20 Essence)
+- **Combat Reflexes**: +15% velocidad movimiento base (15 Essence)
+- **Crystal Affinity**: +25% cristales ganados (25 Essence)
+- **Elemental Mastery**: Unlock todos los tipos de proyectiles (50 Essence)
+
+---
+
+## 🎯 **FILOSOFÍA DE DISEÑO FINAL**
+
+### 🎮 **Para Jugadores Casuales**:
+- Progresión clara y satisfactoria
+- Builds simples pero efectivas
+- Victorias frecuentes y cristales abundantes
+- Mecánicas auto-explicativas
+
+### 🏆 **Para Tryhardears**:
+- Builds complejas que requieren optimización
+- Challenges ocultos y achievements difíciles
+- Sistema de Prestige para replay infinito
+- Leaderboards competitivos con estrategias únicas
+
+### 🔧 **Implementación Técnica**:
+- Todo basado en modificación de valores existentes
+- Nuevos proyectiles = bolitas con colores/efectos diferentes
+- Aprovechar sistema actual de sprites reutilizando assets
+- Sistema modular que permite activar/desactivar features
+
+---
+
+## 🚀 **ROADMAP DE IMPLEMENTACIÓN SUGERIDO**
+
+### 📅 **Fase 1 - Core Systems** (2-3 semanas)
+1. Implementar árbol de habilidades base
+2. Nuevos tipos de proyectiles (sin nuevos sprites)
+3. Sistema de combo multiplier
+4. Marketplace expandido
+
+### 📅 **Fase 2 - Variety & Polish** (2-3 semanas)
+1. Oleadas especiales temáticas
+2. Nuevos comportamientos de enemigos
+3. Sistema de achievements
+4. Mejoras visuales y audio
+
+### 📅 **Fase 3 - Meta Progression** (2-3 semanas)
+1. Sistema de Prestige
+2. Moneda secundaria (Essence)
+3. Academy de mejoras permanentes
+4. Challenges diarios
+
+### 📅 **Fase 4 - Content & Balance** (1-2 semanas)
+1. Balance exhaustivo de todas las mecánicas
+2. Más achievements y challenges
+3. Sistema de skins
+4. Optimizaciones de performance
+
+---
+
+**🔮 CONCLUSIÓN FINAL**
+
+Este sistema mantendría la simplicidad técnica actual pero multiplicaría exponencialmente la profundidad estratégica. Los jugadores casuales pueden ignorar la complejidad y jugar linealmente, mientras que los tryhardears tienen infinitas combinaciones que explorar y optimizar. La clave está en que **todo se construye sobre la base sólida existente**, solo expandiendo posibilidades sin romper nada.
+
+**¡El juego pasaría de ser una experiencia divertida de 10 minutos a un "just one more run" adictivo que podría mantener a los jugadores enganchados por horas!** 🎮✨ 
