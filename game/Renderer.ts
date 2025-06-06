@@ -307,6 +307,26 @@ export const render = (
 		}
 		ctx.textAlign = "left";
 	}
+
+	// Render pause overlay
+	if (gameState.isPaused) {
+		// Semi-transparent overlay
+		ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
+		ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+		// Pause text
+		ctx.font = "bold 48px Arial";
+		ctx.fillStyle = "#FFFFFF";
+		ctx.textAlign = "center";
+		ctx.fillText("PAUSED", canvasWidth / 2, canvasHeight / 2 - 30);
+
+		// Instructions
+		ctx.font = "20px Arial";
+		ctx.fillStyle = "#CCCCCC";
+		ctx.fillText("Press P or ESC to resume", canvasWidth / 2, canvasHeight / 2 + 20);
+		
+		ctx.textAlign = "left";
+	}
 };
 
 const renderMinimap = (

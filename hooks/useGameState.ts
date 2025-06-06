@@ -30,6 +30,7 @@ export const useGameState = () => {
 			creaturesSpawnedThisWave: 0,
 			gameOver: false,
 			gameWon: false,
+			isPaused: false,
 			keys: {},
 			mousePosition: { x: 70, y: 0 },
 			waveTransitioning: false,
@@ -313,6 +314,11 @@ export const useGameState = () => {
 		);
 	}, []);
 
+	const togglePause = useCallback(() => {
+		if (!gameStateRef.current) return;
+		gameStateRef.current.isPaused = !gameStateRef.current.isPaused;
+	}, []);
+
 	return {
 		gameStateRef,
 		initializeGameState,
@@ -324,5 +330,6 @@ export const useGameState = () => {
 		toggleMobType,
 		setMobConfig,
 		getMobConfig,
+		togglePause,
 	};
 };

@@ -11,12 +11,28 @@ import { useCallback, useRef } from "react";
 export const useInputHandlers = (
 	gameStateRef: React.MutableRefObject<GameState | null>,
 	playPlayerCast?: () => void,
+	togglePause?: () => void,
 ) => {
 	const lastCastTimeRef = useRef<number>(0);
 
 	const handleKeyDown = useCallback(
 		(e: KeyboardEvent, isLoading: boolean, waveTransitioning: boolean) => {
 			if (!gameStateRef.current) return;
+
+			// Manejar la tecla de pausa (P o Escape) independientemente del estado del juego
+			if ((e.key.toLowerCase() === "p" || e.key === "Escape") && togglePause) {
+				// Solo permitir pausar si el juego está activo (no en loading, game over, etc.)
+				if (!gameStateRef.current.gameOver && !gameStateRef.current.gameWon && !isLoading && !waveTransitioning) {
+					e.preventDefault();
+					togglePause();
+					return; // No procesar otras teclas cuando se pausa
+				}
+			}
+
+			// Si el juego está pausado, no procesar otras teclas (excepto pausa)
+			if (gameStateRef.current.isPaused) {
+				return;
+			}
 
 			// Prevenir el comportamiento por defecto para teclas de movimiento y acción
 			const movementKeys = [
@@ -150,12 +166,17 @@ export const useInputHandlers = (
 				}
 			}
 		},
-		[gameStateRef, playPlayerCast],
+		[gameStateRef, playPlayerCast, togglePause],
 	);
 
 	const handleKeyUp = useCallback(
 		(e: KeyboardEvent) => {
 			if (!gameStateRef.current) return;
+
+			// Si el juego está pausado, no procesar la liberación de teclas (excepto pausa)
+			if (gameStateRef.current.isPaused && e.key.toLowerCase() !== "p" && e.key !== "Escape") {
+				return;
+			}
 
 			// Prevenir el comportamiento por defecto para teclas de movimiento
 			const movementKeys = [

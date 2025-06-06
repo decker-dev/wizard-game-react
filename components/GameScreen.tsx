@@ -419,6 +419,10 @@ export function GameScreen({
 										spells
 									</p>
 									<p className="hover:text-purple-400 transition-colors">
+										🔄 <span className="text-purple-300">ESC</span> to pause or
+										resume the game
+									</p>
+									<p className="hover:text-purple-400 transition-colors">
 										🐉 <span className="text-purple-300">Defeat creatures</span>{" "}
 										and survive
 									</p>

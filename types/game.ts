@@ -108,6 +108,7 @@ export interface GameState {
 	creaturesSpawnedThisWave: number;
 	gameOver: boolean;
 	gameWon: boolean;
+	isPaused: boolean;
 	keys: { [key: string]: boolean };
 	mousePosition: Vector2;
 	waveTransitioning: boolean;

@@ -146,7 +146,8 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
 	const gameLoop = useCallback(() => {
 		if (!gameState) return;
 
-		if (!gameState.gameOver && !gameState.gameWon) {
+		// Solo actualizar el estado del juego si no está pausado
+		if (!gameState.gameOver && !gameState.gameWon && !gameState.isPaused) {
 			updatePlayer(gameState);
 			updateCreatures(gameState);
 			updateProjectiles(gameState);
@@ -166,6 +167,7 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
 			);
 		}
 
+		// Siempre renderizar, incluso cuando esté pausado
 		const canvas = canvasRef.current;
 		if (canvas) {
 			const ctx = canvas.getContext("2d");

@@ -19,6 +19,7 @@ export function useGameController(autoStart = false) {
 		continueFromMarketplace,
 		upgradeWeapon,
 		upgradeHealth,
+		togglePause,
 	} = useGameState();
 
 	const {
@@ -60,7 +61,7 @@ export function useGameController(autoStart = false) {
 
 	// Input handling
 	const { handleKeyDown, handleKeyUp, handleMouseMove, handleMouseClick } =
-		useInputHandlers(gameStateRef, playPlayerCast);
+		useInputHandlers(gameStateRef, playPlayerCast, togglePause);
 
 	// Game lifecycle methods
 	const handleStartNextWave = useCallback(() => {
@@ -245,6 +246,7 @@ export function useGameController(autoStart = false) {
 		handleKeyDownWrapper,
 		handleKeyUp,
 		handleMouseClick,
+		togglePause,
 
 		// Score actions
 		handleScoreSubmit,
