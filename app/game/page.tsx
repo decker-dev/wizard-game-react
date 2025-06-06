@@ -12,6 +12,7 @@ import React from "react";
 export default function GamePage() {
 	const router = useRouter();
 	const gameController = useGameController(true); // Auto-start the game
+	const [isPaused, setIsPaused] = React.useState(false);
 
 	const {
 		screenState,
@@ -29,6 +30,21 @@ export default function GamePage() {
 	const handleReturnHome = () => {
 		router.push("/");
 	};
+
+	// Sync isPaused state with gameState
+	React.useEffect(() => {
+		const syncPauseState = () => {
+			const currentIsPaused = gameController.gameStateRef.current?.isPaused || false;
+			if (currentIsPaused !== isPaused) {
+				setIsPaused(currentIsPaused);
+			}
+		};
+
+		// Check every frame
+		const intervalId = setInterval(syncPauseState, 16); // ~60fps
+
+		return () => clearInterval(intervalId);
+	}, [gameController.gameStateRef, isPaused]);
 
 	// Handle effects
 	useGameEffects({
@@ -72,6 +88,8 @@ export default function GamePage() {
 				onReturnHome={handleReturnHome}
 				onShare={() => setShowShareModal(true)}
 				onSaveScore={handleSaveScore}
+				togglePause={gameController.togglePause}
+				isPaused={isPaused}
 				onUpgradeWeapon={gameController.handleUpgradeWeapon}
 				onUpgradeHealth={gameController.handleUpgradeHealth}
 				onContinueFromMarketplace={gameController.handleContinueFromMarketplace}

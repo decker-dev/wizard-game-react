@@ -320,10 +320,14 @@ export const render = (
 		ctx.textAlign = "center";
 		ctx.fillText("PAUSED", canvasWidth / 2, canvasHeight / 2 - 30);
 
-		// Instructions
+		// Instructions - different for mobile vs desktop
 		ctx.font = "16px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace";
 		ctx.fillStyle = "#CCCCCC";
-		ctx.fillText("Press P or ESC to resume", canvasWidth / 2, canvasHeight / 2 + 20);
+		if (isMobile) {
+			ctx.fillText("Tap the ⏸️ button to resume", canvasWidth / 2, canvasHeight / 2 + 20);
+		} else {
+			ctx.fillText("Press P or ESC to resume", canvasWidth / 2, canvasHeight / 2 + 20);
+		}
 		
 		ctx.textAlign = "left";
 	}
