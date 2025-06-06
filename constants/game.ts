@@ -17,6 +17,7 @@ export const BASE_MAX_HEALTH = 100; // Vida base del jugador
 
 // Projectile constants
 export const PROJECTILE_SPEED = 10;
+export const PROJECTILE_MAX_RANGE = 350; // Distancia máxima que pueden viajar los proyectiles del jugador
 
 // Creature constants
 export const CREATURE_SPEED_BASE = 0.7;

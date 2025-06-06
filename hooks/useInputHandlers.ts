@@ -6,6 +6,7 @@ import {
 	PROJECTILE_SPEED,
 } from "@/constants/game";
 import type { GameState } from "@/types/game";
+import { createProjectile } from "@/game/Projectiles";
 import { useCallback, useRef } from "react";
 
 export const useInputHandlers = (
@@ -102,16 +103,13 @@ export const useInputHandlers = (
 
 						if (projectileCount === 1) {
 							// Hechizo simple
-							const newProjectile = {
-								position: { ...player.position },
-								velocity: {
-									x: baseDirection.x * PROJECTILE_SPEED,
-									y: baseDirection.y * PROJECTILE_SPEED,
-								},
-								radius: 4.1 * projectileSize,
-								speed: PROJECTILE_SPEED,
-								isMagicBolt: false, // Player spells are not magic bolts (those are enemy projectiles)
-							};
+							const newProjectile = createProjectile(
+								player.position,
+								baseDirection,
+								false // Player spells are not magic bolts (those are enemy projectiles)
+							);
+							// Ajustar el radio según el projectileSize
+							newProjectile.radius = 4.1 * projectileSize;
 							gameStateRef.current.projectiles.push(newProjectile);
 							console.log("Created spell projectile:", newProjectile);
 						} else {
@@ -139,16 +137,13 @@ export const useInputHandlers = (
 									y: Math.sin(finalAngle),
 								};
 
-								const newProjectile = {
-									position: { ...player.position },
-									velocity: {
-										x: direction.x * PROJECTILE_SPEED,
-										y: direction.y * PROJECTILE_SPEED,
-									},
-									radius: 4.5 * projectileSize,
-									speed: PROJECTILE_SPEED,
-									isMagicBolt: false, // Player spells are not magic bolts
-								};
+								const newProjectile = createProjectile(
+									player.position,
+									direction,
+									false // Player spells are not magic bolts
+								);
+								// Ajustar el radio según el projectileSize
+								newProjectile.radius = 4.5 * projectileSize;
 								gameStateRef.current.projectiles.push(newProjectile);
 								console.log(
 									"Created multi-spell projectile:",

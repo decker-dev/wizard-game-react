@@ -44,6 +44,7 @@ export interface Projectile {
 	speed: number;
 	isMagicBolt?: boolean;
 	isBossProjectile?: boolean;
+	initialPosition?: Vector2;
 }
 
 export interface Creature {
