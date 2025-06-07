@@ -31,3 +31,16 @@ export const getMapDataForLevel = (level: number): MapData => {
   // Levels 1-5
   return { obstacles: map1Data, spawnPoint: map1SpawnPoint };
 };
+
+// Helper function to determine if there's a map change between two levels
+export const shouldTeleportOnWaveChange = (previousLevel: number, currentLevel: number): boolean => {
+  // Get map data for both levels
+  const previousMapData = getMapDataForLevel(previousLevel);
+  const currentMapData = getMapDataForLevel(currentLevel);
+
+  // Check if the obstacles array is different (indicating a map change)
+  return previousMapData.obstacles !== currentMapData.obstacles;
+};
+
+// Helper function to get the specific map levels where changes occur
+export const getMapChangeLevels = () => mapChangeLevels;

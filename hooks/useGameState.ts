@@ -8,7 +8,7 @@ import {
 	SPELL_DAMAGE_INCREASE,
 	STARTING_WAVE,
 } from "@/constants/game";
-import { getMapDataForLevel } from "@/game/MapManager";
+import { getMapDataForLevel, shouldTeleportOnWaveChange } from "@/game/MapManager";
 import { spawnHealthPacksForWave } from "@/game/HealthPacks";
 import { createInitialPlayer } from "@/game/Player";
 import type { GameState } from "@/types/game";
@@ -98,13 +98,20 @@ export const useGameState = () => {
 			}
 
 			gameStateRef.current.waveTransitioning = true;
+			const previousWave = gameStateRef.current.currentWave;
 			gameStateRef.current.currentWave++;
 			setCurrentWave(gameStateRef.current.currentWave);
 
+			// Check if there's a map change and only teleport if necessary
+			const shouldTeleport = shouldTeleportOnWaveChange(previousWave, gameStateRef.current.currentWave);
 			const newMapDataForNextWave = getMapDataForLevel(gameStateRef.current.currentWave);
 			gameStateRef.current.obstacles = newMapDataForNextWave.obstacles;
-			gameStateRef.current.player.position.x = newMapDataForNextWave.spawnPoint.x;
-			gameStateRef.current.player.position.y = newMapDataForNextWave.spawnPoint.y;
+
+			// Only teleport player if there's actually a map change
+			if (shouldTeleport) {
+				gameStateRef.current.player.position.x = newMapDataForNextWave.spawnPoint.x;
+				gameStateRef.current.player.position.y = newMapDataForNextWave.spawnPoint.y;
+			}
 
 			// Waves are now infinite! No more victory condition by waves
 			// Victory only comes from player death or manual quit
@@ -163,10 +170,17 @@ export const useGameState = () => {
 
 			gameStateRef.current.showMarketplace = false;
 			// gameStateRef.current.obstacles = getMapForLevel(gameStateRef.current.currentWave); // Old line
+
+			// Check if there's a map change from the previous wave to current wave
+			const shouldTeleport = shouldTeleportOnWaveChange(gameStateRef.current.currentWave - 1, gameStateRef.current.currentWave);
 			const newMapDataForMarketplace = getMapDataForLevel(gameStateRef.current.currentWave);
 			gameStateRef.current.obstacles = newMapDataForMarketplace.obstacles;
-			gameStateRef.current.player.position.x = newMapDataForMarketplace.spawnPoint.x;
-			gameStateRef.current.player.position.y = newMapDataForMarketplace.spawnPoint.y;
+
+			// Only teleport player if there's actually a map change
+			if (shouldTeleport) {
+				gameStateRef.current.player.position.x = newMapDataForMarketplace.spawnPoint.x;
+				gameStateRef.current.player.position.y = newMapDataForMarketplace.spawnPoint.y;
+			}
 			gameStateRef.current.waveTransitioning = true;
 
 			// Configurar la wave con escalado progresivo
