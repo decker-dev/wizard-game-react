@@ -370,7 +370,18 @@ We welcome contributions to enhance the mystical realm! Here's how to get involv
 
 ## 📄 **License**
 
-This project was developed during a hackathon and is available for educational and demonstration purposes.
+This project is licensed under the **GNU General Public License v3.0** (GPL-3.0).
+
+**Mystic Realm Defender** - A 2D magical survival game with infinite waves of mythological creatures  
+Copyright (C) 2025 Lauti, Alejo, and Decker (Vibe Gaming Hackathon Team)
+
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this program. If not, see [https://www.gnu.org/licenses/](https://www.gnu.org/licenses/).
+
+For more details, see the [LICENSE](./LICENSE) file.
 
 ---
 
