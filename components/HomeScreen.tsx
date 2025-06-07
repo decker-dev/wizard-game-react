@@ -70,13 +70,13 @@ export function HomeScreen({
 			href: "/settings",
 		},
 		{
-			id: "credits",
-			label: "CREDITS",
+			id: "patch-notes",
+			label: "PATCH NOTES",
 			action: () => {
 				playSelect();
 			},
-			icon: "👥",
-			href: "/credits",
+			icon: "📋",
+			href: "/patch-notes",
 		},
 	];
 
@@ -130,9 +130,9 @@ export function HomeScreen({
 			onKeyDown={handleKeyPress}
 			style={{
 				// Force scroll capability on mobile
-				touchAction: 'auto',
-				overflow: 'visible',
-				height: 'auto'
+				touchAction: "auto",
+				overflow: "visible",
+				height: "auto",
 			}}
 		>
 			{/* Animated Background Elements */}
