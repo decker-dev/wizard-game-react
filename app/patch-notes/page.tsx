@@ -2,6 +2,7 @@
 
 import { FloatingParticles } from "@/components/FloatingParticles";
 import { patchNotes, type PatchNote } from "@/data/patchNotes";
+import { usePatchNotesNotification } from "@/hooks/usePatchNotesNotification";
 import Link from "next/link";
 import React, { useEffect } from "react";
 
@@ -94,17 +95,22 @@ function PatchNoteCard({
 }
 
 export default function PatchNotesPage() {
+	const { markPatchNotesAsSeen } = usePatchNotesNotification();
+
 	// Ensure scrolling is enabled for this page
 	useEffect(() => {
 		document.body.style.overflow = "auto";
 		document.documentElement.style.overflow = "auto";
+
+		// Mark patch notes as seen when user visits the page
+		markPatchNotesAsSeen();
 
 		return () => {
 			// Reset to default when leaving the page
 			document.body.style.overflow = "";
 			document.documentElement.style.overflow = "";
 		};
-	}, []);
+	}, [markPatchNotesAsSeen]);
 
 	return (
 		<div

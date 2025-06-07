@@ -1,4 +1,5 @@
 import { useUISound } from "@/hooks/useUISound";
+import { usePatchNotesNotification } from "@/hooks/usePatchNotesNotification";
 import type { LeaderboardEntry } from "@/types/game";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -31,6 +32,9 @@ export function HomeScreen({
 		audioSettings,
 		updateAudioSettings,
 	} = useUISound();
+
+	const { hasNewPatchNotes, markPatchNotesAsSeen } =
+		usePatchNotesNotification();
 
 	useEffect(() => {
 		setAnimateTitle(true);
@@ -74,9 +78,11 @@ export function HomeScreen({
 			label: "PATCH NOTES",
 			action: () => {
 				playSelect();
+				markPatchNotesAsSeen(); // Mark as seen when clicked
 			},
 			icon: "📋",
 			href: "/patch-notes",
+			hasNotification: hasNewPatchNotes,
 		},
 	];
 
@@ -209,13 +215,20 @@ export function HomeScreen({
 											href={item.href}
 											onClick={() => handleMenuItemClick(item)}
 											onMouseEnter={() => handleMenuItemHover(index)}
-											className={baseClassName}
+											className={`${baseClassName} relative`}
 											data-menu-item={item.id}
 										>
 											<div className="flex items-center justify-center lg:justify-start gap-3">
 												<span className="text-2xl">{item.icon}</span>
 												<span>{item.label}</span>
 											</div>
+											{item.hasNotification && (
+												<div className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center animate-pulse">
+													<span className="text-white text-xs font-bold">
+														!
+													</span>
+												</div>
+											)}
 										</Link>
 									);
 								}
