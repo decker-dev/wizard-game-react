@@ -317,7 +317,47 @@ We welcome contributions to enhance the mystical realm! Here's how to get involv
 2. **Create** a feature branch (`git checkout -b feature/enhanced-spells`)
 3. **Implement** your changes with TypeScript
 4. **Test** thoroughly on both desktop and mobile
-5. **Submit** a pull request with detailed description
+5. **Add patch notes** for your changes (see Patch Notes Requirements below)
+6. **Submit** a pull request with detailed description
+
+### **📝 Patch Notes Requirements**
+**All pull requests MUST include patch notes** describing what was added, modified, or improved:
+
+1. **Update** `/data/patchNotes.ts` with your changes
+2. **Follow the existing format** with proper categorization:
+   - `NEW` ✨ - New features or content
+   - `IMPROVED` ⚡ - Enhancements to existing features
+   - `FIXED` 🔧 - Bug fixes and corrections
+   - `BALANCED` ⚖️ - Game balance adjustments
+3. **Include version number** following semantic versioning (e.g., v1.2.3)
+4. **Write clear descriptions** of what changed and why
+5. **Add your changes** to the top of the patch notes array
+
+**Example patch note entry:**
+```typescript
+{
+  version: "v1.3.0",
+  title: "Enhanced Spell System",
+  date: "2025-06-XX",
+  description: "Major improvements to spell casting mechanics",
+  changes: [
+    {
+      category: "NEW",
+      items: [
+        "Added spell combo system for advanced players",
+        "New visual effects for level 5 spells"
+      ]
+    },
+    {
+      category: "IMPROVED", 
+      items: [
+        "Spell casting now feels more responsive",
+        "Better projectile collision detection"
+      ]
+    }
+  ]
+}
+```
 
 ### **Contribution Areas**
 - 🎨 **New sprites** for explosive and speed creatures
