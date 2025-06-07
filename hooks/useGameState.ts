@@ -8,7 +8,7 @@ import {
 	SPELL_DAMAGE_INCREASE,
 	STARTING_WAVE,
 } from "@/constants/game";
-import { getMapForLevel } from "@/game/MapManager";
+import { getMapDataForLevel } from "@/game/MapManager";
 import { spawnHealthPacksForWave } from "@/game/HealthPacks";
 import { createInitialPlayer } from "@/game/Player";
 import type { GameState } from "@/types/game";
@@ -17,17 +17,23 @@ import { useCallback, useRef } from "react";
 
 export const useGameState = () => {
 	const createInitialGameState = useCallback(
-		(playerSprites: { [key: string]: HTMLImageElement | null }): GameState => ({
-			player: createInitialPlayer(playerSprites),
-			projectiles: [],
-			creatures: [],
-			obstacles: getMapForLevel(STARTING_WAVE), // Assuming STARTING_WAVE is 1-indexed
-			healthPacks: [],
-			score: 0,
-			currentWave: STARTING_WAVE - 1,
-			creaturesToSpawnThisWave: 0,
-			creaturesRemainingInWave: 0,
-			creaturesSpawnedThisWave: 0,
+		(playerSprites: { [key: string]: HTMLImageElement | null }): GameState => {
+			const initialMapData = getMapDataForLevel(STARTING_WAVE);
+			const player = createInitialPlayer(playerSprites);
+			player.position.x = initialMapData.spawnPoint.x;
+			player.position.y = initialMapData.spawnPoint.y;
+
+			return {
+				player,
+				projectiles: [],
+				creatures: [],
+				obstacles: initialMapData.obstacles,
+				healthPacks: [],
+				score: 0,
+				currentWave: STARTING_WAVE, // Initialize to STARTING_WAVE
+				creaturesToSpawnThisWave: 0,
+				creaturesRemainingInWave: 0,
+				creaturesSpawnedThisWave: 0,
 			gameOver: false,
 			gameWon: false,
 			isPaused: false,
@@ -88,7 +94,11 @@ export const useGameState = () => {
 			gameStateRef.current.waveTransitioning = true;
 			gameStateRef.current.currentWave++;
 			setCurrentWave(gameStateRef.current.currentWave);
-			gameStateRef.current.obstacles = getMapForLevel(gameStateRef.current.currentWave);
+
+			const newMapDataForNextWave = getMapDataForLevel(gameStateRef.current.currentWave);
+			gameStateRef.current.obstacles = newMapDataForNextWave.obstacles;
+			gameStateRef.current.player.position.x = newMapDataForNextWave.spawnPoint.x;
+			gameStateRef.current.player.position.y = newMapDataForNextWave.spawnPoint.y;
 
 			// Waves are now infinite! No more victory condition by waves
 			// Victory only comes from player death or manual quit
@@ -146,7 +156,11 @@ export const useGameState = () => {
 			if (!gameStateRef.current) return;
 
 			gameStateRef.current.showMarketplace = false;
-			gameStateRef.current.obstacles = getMapForLevel(gameStateRef.current.currentWave);
+			// gameStateRef.current.obstacles = getMapForLevel(gameStateRef.current.currentWave); // Old line
+			const newMapDataForMarketplace = getMapDataForLevel(gameStateRef.current.currentWave);
+			gameStateRef.current.obstacles = newMapDataForMarketplace.obstacles;
+			gameStateRef.current.player.position.x = newMapDataForMarketplace.spawnPoint.x;
+			gameStateRef.current.player.position.y = newMapDataForMarketplace.spawnPoint.y;
 			gameStateRef.current.waveTransitioning = true;
 
 			// Configurar la wave con escalado progresivo
