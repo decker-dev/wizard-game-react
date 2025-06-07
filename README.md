@@ -116,8 +116,8 @@ Fire Button        →  Cast spells in movement direction
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/decker-dev/fork-game-jam-paisanos
-cd fork-game-jam-paisanos
+git clone https://github.com/decker-dev/wizard-game-react
+cd wizard-game-react
 ```
 
 2. **Install dependencies**
