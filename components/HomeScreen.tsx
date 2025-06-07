@@ -126,8 +126,14 @@ export function HomeScreen({
 
 	return (
 		<div
-			className="min-h-dvh relative bg-gradient-to-br from-gray-900 via-gray-800 to-black"
+			className="lg:min-h-dvh relative bg-gradient-to-br from-gray-900 via-gray-800 to-black"
 			onKeyDown={handleKeyPress}
+			style={{
+				// Force scroll capability on mobile
+				touchAction: 'auto',
+				overflow: 'visible',
+				height: 'auto'
+			}}
 		>
 			{/* Animated Background Elements */}
 			<div className="absolute inset-0">
@@ -146,8 +152,8 @@ export function HomeScreen({
 			</div>
 
 			{/* Main Content */}
-			<div className="relative z-10 flex items-center justify-center lg:min-h-dvh py-4 sm:py-6 lg:py-4 pb-8 sm:pb-12 lg:pb-4">
-				<div className="flex flex-col lg:flex-row items-center gap-8 w-full max-w-7xl">
+			<div className="relative z-10 lg:flex lg:items-center lg:justify-center lg:min-h-dvh py-4 sm:py-6 lg:py-4 pb-16 sm:pb-20 lg:pb-4">
+				<div className="flex flex-col lg:flex-row items-center gap-8 w-full max-w-7xl min-h-[120vh] lg:min-h-0">
 					{/* Left Section - Title and Menu */}
 					<div className="flex-1 text-center lg:text-left px-4 sm:px-6 lg:px-0">
 						{/* Title */}

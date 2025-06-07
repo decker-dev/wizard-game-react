@@ -6,14 +6,19 @@
 html,
 body {
 	font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Game mode only - set dvh height and prevent scrolling */
+.game-mode html,
+.game-mode body {
 	height: 100%;
 	height: 100dvh; /* Dynamic viewport height for mobile */
 }
 
-/* Mobile viewport unit support */
+/* Mobile viewport unit support for game mode */
 @supports (height: 100dvh) {
-	html,
-	body {
+	.game-mode html,
+	.game-mode body {
 		height: 100dvh;
 	}
 }
@@ -190,13 +195,22 @@ canvas {
 	}
 }
 
+/* Home mode - ensure scrolling works */
+@media (max-width: 1023px) {
+	html,
+	body {
+		overflow-y: auto !important;
+		height: auto !important;
+	}
+}
+
 /* Game mode - prevent scrolling when in game */
 .game-mode {
 	overflow: hidden !important;
 }
-
 /* Apply game mode to html and body when game is active */
 .game-mode html,
 .game-mode body {
 	overflow: hidden !important;
 }
+
