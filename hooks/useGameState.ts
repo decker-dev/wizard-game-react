@@ -8,7 +8,7 @@ import {
 	SPELL_DAMAGE_INCREASE,
 	STARTING_WAVE,
 } from "@/constants/game";
-import { obstaclesData } from "@/data/obstacles";
+import { getMapDataForLevel, shouldTeleportOnWaveChange } from "@/game/MapManager";
 import { spawnHealthPacksForWave } from "@/game/HealthPacks";
 import { createInitialPlayer } from "@/game/Player";
 import type { GameState } from "@/types/game";
@@ -17,37 +17,49 @@ import { useCallback, useRef } from "react";
 
 export const useGameState = () => {
 	const createInitialGameState = useCallback(
-		(playerSprites: { [key: string]: HTMLImageElement | null }): GameState => ({
-			player: createInitialPlayer(playerSprites),
-			projectiles: [],
-			creatures: [],
-			obstacles: obstaclesData,
-			healthPacks: [],
-			score: 0,
-			currentWave: STARTING_WAVE - 1,
-			creaturesToSpawnThisWave: 0,
-			creaturesRemainingInWave: 0,
-			creaturesSpawnedThisWave: 0,
-			gameOver: false,
-			gameWon: false,
-			isPaused: false,
-			keys: {},
-			mousePosition: { x: 70, y: 0 },
-			waveTransitioning: false,
-			showMarketplace: false,
-			crystalParticles: [],
-			mobConfig: {
-				normal: true, // ✅ Tiene sprites
-				caster: true, // ✅ Tiene sprites (mage)
-				tank: true, // ✅ Habilitado - usa sprites de normal pero más grande
-				speed: false, // ❌ Sin sprites aún
-				explosive: false, // ❌ Sin sprites aún
-				boss: true, // ✅ Usa sprites de mage temporalmente
-			},
-			// Combo System - initialized
-			comboKills: 0,
-			lastComboKillTime: 0,
-		}),
+		(playerSprites: { [key: string]: HTMLImageElement | null }): GameState => {
+			const initialMapData = getMapDataForLevel(STARTING_WAVE);
+			const player = createInitialPlayer(playerSprites);
+			player.position.x = initialMapData.spawnPoint.x;
+			player.position.y = initialMapData.spawnPoint.y;
+
+			const exponentialBonus = Math.floor(STARTING_WAVE / EXPONENTIAL_SCALING_INTERVAL);
+			const spawnMultiplier = EXPONENTIAL_SPAWN_MULTIPLIER ** exponentialBonus;
+			const baseCreatures = BASE_CREATURES_PER_WAVE + STARTING_WAVE * CREATURES_INCREASE_PER_WAVE;
+			const creaturesToSpawn = Math.floor(baseCreatures * spawnMultiplier);
+
+			return {
+				player,
+				projectiles: [],
+				creatures: [],
+				obstacles: initialMapData.obstacles,
+				healthPacks: [],
+				score: 0,
+				currentWave: STARTING_WAVE, // Initialize to STARTING_WAVE
+				creaturesToSpawnThisWave: creaturesToSpawn,
+				creaturesRemainingInWave: creaturesToSpawn,
+				creaturesSpawnedThisWave: 0,
+				gameOver: false,
+				gameWon: false,
+				isPaused: false,
+				keys: {},
+				mousePosition: { x: 70, y: 0 },
+				waveTransitioning: false,
+				showMarketplace: false,
+				crystalParticles: [],
+				mobConfig: {
+					normal: true, // ✅ Tiene sprites
+					caster: true, // ✅ Tiene sprites (mage)
+					tank: true, // ✅ Habilitado - usa sprites de normal pero más grande
+					speed: false, // ❌ Sin sprites aún
+					explosive: false, // ❌ Sin sprites aún
+					boss: true, // ✅ Usa sprites de mage temporalmente
+				},
+				// Combo System - initialized
+				comboKills: 0,
+				lastComboKillTime: 0,
+			};
+		},
 		[],
 	);
 
@@ -86,8 +98,20 @@ export const useGameState = () => {
 			}
 
 			gameStateRef.current.waveTransitioning = true;
+			const previousWave = gameStateRef.current.currentWave;
 			gameStateRef.current.currentWave++;
 			setCurrentWave(gameStateRef.current.currentWave);
+
+			// Check if there's a map change and only teleport if necessary
+			const shouldTeleport = shouldTeleportOnWaveChange(previousWave, gameStateRef.current.currentWave);
+			const newMapDataForNextWave = getMapDataForLevel(gameStateRef.current.currentWave);
+			gameStateRef.current.obstacles = newMapDataForNextWave.obstacles;
+
+			// Only teleport player if there's actually a map change
+			if (shouldTeleport) {
+				gameStateRef.current.player.position.x = newMapDataForNextWave.spawnPoint.x;
+				gameStateRef.current.player.position.y = newMapDataForNextWave.spawnPoint.y;
+			}
 
 			// Waves are now infinite! No more victory condition by waves
 			// Victory only comes from player death or manual quit
@@ -145,6 +169,18 @@ export const useGameState = () => {
 			if (!gameStateRef.current) return;
 
 			gameStateRef.current.showMarketplace = false;
+			// gameStateRef.current.obstacles = getMapForLevel(gameStateRef.current.currentWave); // Old line
+
+			// Check if there's a map change from the previous wave to current wave
+			const shouldTeleport = shouldTeleportOnWaveChange(gameStateRef.current.currentWave - 1, gameStateRef.current.currentWave);
+			const newMapDataForMarketplace = getMapDataForLevel(gameStateRef.current.currentWave);
+			gameStateRef.current.obstacles = newMapDataForMarketplace.obstacles;
+
+			// Only teleport player if there's actually a map change
+			if (shouldTeleport) {
+				gameStateRef.current.player.position.x = newMapDataForMarketplace.spawnPoint.x;
+				gameStateRef.current.player.position.y = newMapDataForMarketplace.spawnPoint.y;
+			}
 			gameStateRef.current.waveTransitioning = true;
 
 			// Configurar la wave con escalado progresivo
