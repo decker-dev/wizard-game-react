@@ -8,7 +8,6 @@ export interface PatchNote {
     category: "NEW" | "IMPROVED" | "FIXED" | "BALANCED";
     items: string[];
   }[];
-  isLatest?: boolean;
 }
 
 export const patchNotes: PatchNote[] = [
@@ -17,7 +16,6 @@ export const patchNotes: PatchNote[] = [
     date: "2025-06-07",
     title: "Map System Update",
     description: "New dynamic map system! Experience different battlefield layouts that change automatically as you progress through the waves.",
-    isLatest: true,
     changes: [
       {
         category: "NEW",

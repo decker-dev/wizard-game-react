@@ -19,7 +19,10 @@ const categoryIcons = {
 	BALANCED: "⚖️",
 };
 
-function PatchNoteCard({ patchNote }: { patchNote: PatchNote }) {
+function PatchNoteCard({
+	patchNote,
+	isLatest,
+}: { patchNote: PatchNote; isLatest: boolean }) {
 	return (
 		<div className="bg-black/60 backdrop-blur-sm border border-purple-500/30 rounded-lg p-6 hover:border-purple-500/50 transition-all duration-300 transform hover:scale-[1.02]">
 			{/* Header */}
@@ -29,7 +32,7 @@ function PatchNoteCard({ patchNote }: { patchNote: PatchNote }) {
 						<span className="text-2xl font-bold text-purple-400 font-mono">
 							{patchNote.version}
 						</span>
-						{patchNote.isLatest && (
+						{isLatest && (
 							<span className="px-2 py-1 bg-purple-500/20 text-purple-300 text-xs font-mono border border-purple-500/30 rounded">
 								LATEST
 							</span>
@@ -138,7 +141,11 @@ export default function PatchNotesPage() {
 					{/* Patch Notes List */}
 					<div className="space-y-6 mb-8">
 						{patchNotes.map((patchNote, index) => (
-							<PatchNoteCard key={patchNote.version} patchNote={patchNote} />
+							<PatchNoteCard
+								key={patchNote.version}
+								patchNote={patchNote}
+								isLatest={index === 0}
+							/>
 						))}
 					</div>
 
