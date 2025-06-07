@@ -8,7 +8,7 @@ import {
 	SPELL_DAMAGE_INCREASE,
 	STARTING_WAVE,
 } from "@/constants/game";
-import { obstaclesData } from "@/data/obstacles";
+import { getMapForLevel } from "@/game/MapManager";
 import { spawnHealthPacksForWave } from "@/game/HealthPacks";
 import { createInitialPlayer } from "@/game/Player";
 import type { GameState } from "@/types/game";
@@ -21,7 +21,7 @@ export const useGameState = () => {
 			player: createInitialPlayer(playerSprites),
 			projectiles: [],
 			creatures: [],
-			obstacles: obstaclesData,
+			obstacles: getMapForLevel(STARTING_WAVE), // Assuming STARTING_WAVE is 1-indexed
 			healthPacks: [],
 			score: 0,
 			currentWave: STARTING_WAVE - 1,
@@ -88,6 +88,7 @@ export const useGameState = () => {
 			gameStateRef.current.waveTransitioning = true;
 			gameStateRef.current.currentWave++;
 			setCurrentWave(gameStateRef.current.currentWave);
+			gameStateRef.current.obstacles = getMapForLevel(gameStateRef.current.currentWave);
 
 			// Waves are now infinite! No more victory condition by waves
 			// Victory only comes from player death or manual quit
@@ -145,6 +146,7 @@ export const useGameState = () => {
 			if (!gameStateRef.current) return;
 
 			gameStateRef.current.showMarketplace = false;
+			gameStateRef.current.obstacles = getMapForLevel(gameStateRef.current.currentWave);
 			gameStateRef.current.waveTransitioning = true;
 
 			// Configurar la wave con escalado progresivo
