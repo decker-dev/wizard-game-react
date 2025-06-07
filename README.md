@@ -13,9 +13,9 @@
 **Mystic Realm Defender** is a 2D magical survival game developed during the **first Vibe Gaming Hackathon in LATAM** as part of Buenos Aires Tech Week. Control a powerful wizard and defend the mystical realm by surviving infinite waves of mythological creatures using powerful spells and magical abilities.
 
 ### 🏆 **Developed by:**
-- **[Lauti](https://x.com/lautidev_)** - Frontend Developer & Game Logic
-- **[Alejo](https://x.com/alejorrojass)** - UI/UX Designer & Game Balance  
-- **[Decker](https://x.com/0xDecker)** - Full Stack Developer & Infrastructure
+- **[Lauti](https://x.com/lautidev_)** - Vibe Developer
+- **[Alejo](https://x.com/alejorrojass)** - Vibe Developer
+- **[Decker](https://x.com/0xDecker)** - Vibe Developer
 
 ---
 
