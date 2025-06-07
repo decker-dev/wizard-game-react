@@ -23,6 +23,11 @@ export const useGameState = () => {
 			player.position.x = initialMapData.spawnPoint.x;
 			player.position.y = initialMapData.spawnPoint.y;
 
+			const exponentialBonus = Math.floor(STARTING_WAVE / EXPONENTIAL_SCALING_INTERVAL);
+			const spawnMultiplier = EXPONENTIAL_SPAWN_MULTIPLIER ** exponentialBonus;
+			const baseCreatures = BASE_CREATURES_PER_WAVE + STARTING_WAVE * CREATURES_INCREASE_PER_WAVE;
+			const creaturesToSpawn = Math.floor(baseCreatures * spawnMultiplier);
+
 			return {
 				player,
 				projectiles: [],
@@ -31,8 +36,8 @@ export const useGameState = () => {
 				healthPacks: [],
 				score: 0,
 				currentWave: STARTING_WAVE, // Initialize to STARTING_WAVE
-				creaturesToSpawnThisWave: 0,
-				creaturesRemainingInWave: 0,
+				creaturesToSpawnThisWave: creaturesToSpawn,
+				creaturesRemainingInWave: creaturesToSpawn,
 				creaturesSpawnedThisWave: 0,
 				gameOver: false,
 				gameWon: false,

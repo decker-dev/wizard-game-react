@@ -109,13 +109,11 @@ export function useGameController(autoStart = false) {
 			// Initialize playerHealth with player's health
 			setPlayerHealth(gameState.player.health);
 			setPlayerCoins(gameState.player.crystals);
+			setCurrentWave(gameState.currentWave);
 
-			// Registrar nueva partida iniciada
 			await recordNewGame();
 
-			// Pasar los cristales iniciales al tracking
 			setGameReady(gameState.player.crystals);
-			handleStartNextWave();
 		} catch (error) {
 			console.error("Failed to load game assets:", error);
 			navigateToHome();
@@ -123,13 +121,13 @@ export function useGameController(autoStart = false) {
 	}, [
 		loadAssets,
 		initializeGameState,
-		handleStartNextWave,
 		navigateToGame,
 		setGameReady,
 		navigateToHome,
 		recordNewGame,
 		setPlayerHealth,
 		setPlayerCoins,
+		setCurrentWave,
 	]);
 
 	// Auto-start game when needed (for /game route)
