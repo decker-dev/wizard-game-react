@@ -13,16 +13,16 @@ export const map2Data: Obstacle[] = [
     { x: (MAP_WIDTH * 3) / 4 - 100, y: (MAP_HEIGHT * 3) / 4 - 50, width: 200, height: 100 },
 
     // Central feature - more open
-    // Two horizontal bars with a gap in the middle
-    { x: MAP_WIDTH / 2 - 200, y: MAP_HEIGHT / 2 - 25, width: 150, height: 50 }, // Left part
-    { x: MAP_WIDTH / 2 + 50, y: MAP_HEIGHT / 2 - 25, width: 150, height: 50 },  // Right part
+    // Two horizontal bars with a gap in the middle - moved further apart
+    { x: MAP_WIDTH / 2 - 250, y: MAP_HEIGHT / 2 - 25, width: 150, height: 50 }, // Left part - moved further left
+    { x: MAP_WIDTH / 2 + 100, y: MAP_HEIGHT / 2 - 25, width: 150, height: 50 },  // Right part - moved further right
 
-    // Two vertical columns flanking the center, creating pathways
-    { x: MAP_WIDTH / 2 - 150, y: MAP_HEIGHT / 2 - 150, width: 50, height: 100 }, // Upper left column
-    { x: MAP_WIDTH / 2 - 150, y: MAP_HEIGHT / 2 + 50, width: 50, height: 100 },  // Lower left column
+    // Two vertical columns flanking the center, creating pathways - increased spacing
+    { x: MAP_WIDTH / 2 - 200, y: MAP_HEIGHT / 2 - 200, width: 50, height: 100 }, // Upper left column - moved further out
+    { x: MAP_WIDTH / 2 - 200, y: MAP_HEIGHT / 2 + 100, width: 50, height: 100 },  // Lower left column - moved further out
 
-    { x: MAP_WIDTH / 2 + 100, y: MAP_HEIGHT / 2 - 150, width: 50, height: 100 }, // Upper right column
-    { x: MAP_WIDTH / 2 + 100, y: MAP_HEIGHT / 2 + 50, width: 50, height: 100 },  // Lower right column
+    { x: MAP_WIDTH / 2 + 150, y: MAP_HEIGHT / 2 - 200, width: 50, height: 100 }, // Upper right column - moved further out
+    { x: MAP_WIDTH / 2 + 150, y: MAP_HEIGHT / 2 + 100, width: 50, height: 100 },  // Lower right column - moved further out
 
     // Additional smaller obstacles to add some complexity but not block paths majorly
     { x: 100, y: MAP_HEIGHT / 2 - 25, width: 100, height: 50 }, // Far left middle
