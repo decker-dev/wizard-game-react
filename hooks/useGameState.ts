@@ -34,26 +34,27 @@ export const useGameState = () => {
 				creaturesToSpawnThisWave: 0,
 				creaturesRemainingInWave: 0,
 				creaturesSpawnedThisWave: 0,
-			gameOver: false,
-			gameWon: false,
-			isPaused: false,
-			keys: {},
-			mousePosition: { x: 70, y: 0 },
-			waveTransitioning: false,
-			showMarketplace: false,
-			crystalParticles: [],
-			mobConfig: {
-				normal: true, // ✅ Tiene sprites
-				caster: true, // ✅ Tiene sprites (mage)
-				tank: true, // ✅ Habilitado - usa sprites de normal pero más grande
-				speed: false, // ❌ Sin sprites aún
-				explosive: false, // ❌ Sin sprites aún
-				boss: true, // ✅ Usa sprites de mage temporalmente
-			},
-			// Combo System - initialized
-			comboKills: 0,
-			lastComboKillTime: 0,
-		}),
+				gameOver: false,
+				gameWon: false,
+				isPaused: false,
+				keys: {},
+				mousePosition: { x: 70, y: 0 },
+				waveTransitioning: false,
+				showMarketplace: false,
+				crystalParticles: [],
+				mobConfig: {
+					normal: true, // ✅ Tiene sprites
+					caster: true, // ✅ Tiene sprites (mage)
+					tank: true, // ✅ Habilitado - usa sprites de normal pero más grande
+					speed: false, // ❌ Sin sprites aún
+					explosive: false, // ❌ Sin sprites aún
+					boss: true, // ✅ Usa sprites de mage temporalmente
+				},
+				// Combo System - initialized
+				comboKills: 0,
+				lastComboKillTime: 0,
+			};
+		},
 		[],
 	);
 
