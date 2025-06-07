@@ -6,17 +6,38 @@ import {
 	PROJECTILE_SPEED,
 } from "@/constants/game";
 import type { GameState } from "@/types/game";
+import { createProjectile } from "@/game/Projectiles";
 import { useCallback, useRef } from "react";
 
 export const useInputHandlers = (
 	gameStateRef: React.MutableRefObject<GameState | null>,
 	playPlayerCast?: () => void,
+	togglePause?: () => void,
+	isFullscreen?: boolean,
 ) => {
 	const lastCastTimeRef = useRef<number>(0);
 
 	const handleKeyDown = useCallback(
 		(e: KeyboardEvent, isLoading: boolean, waveTransitioning: boolean) => {
 			if (!gameStateRef.current) return;
+
+			// Manejar la tecla de pausa
+			// En pantalla completa: solo P (ESC está reservado para salir de fullscreen)
+			// En modo normal: P o Escape
+			const pauseKey = e.key.toLowerCase() === "p" || (!isFullscreen && e.key === "Escape");
+			if (pauseKey && togglePause) {
+				// Solo permitir pausar si el juego está activo (no en loading, game over, etc.)
+				if (!gameStateRef.current.gameOver && !gameStateRef.current.gameWon && !isLoading && !waveTransitioning) {
+					e.preventDefault();
+					togglePause();
+					return; // No procesar otras teclas cuando se pausa
+				}
+			}
+
+			// Si el juego está pausado, no procesar otras teclas (excepto pausa)
+			if (gameStateRef.current.isPaused) {
+				return;
+			}
 
 			// Prevenir el comportamiento por defecto para teclas de movimiento y acción
 			const movementKeys = [
@@ -82,16 +103,13 @@ export const useInputHandlers = (
 
 						if (projectileCount === 1) {
 							// Hechizo simple
-							const newProjectile = {
-								position: { ...player.position },
-								velocity: {
-									x: baseDirection.x * PROJECTILE_SPEED,
-									y: baseDirection.y * PROJECTILE_SPEED,
-								},
-								radius: 4.1 * projectileSize,
-								speed: PROJECTILE_SPEED,
-								isMagicBolt: false, // Player spells are not magic bolts (those are enemy projectiles)
-							};
+							const newProjectile = createProjectile(
+								player.position,
+								baseDirection,
+								false // Player spells are not magic bolts (those are enemy projectiles)
+							);
+							// Ajustar el radio según el projectileSize
+							newProjectile.radius = 4.1 * projectileSize;
 							gameStateRef.current.projectiles.push(newProjectile);
 							console.log("Created spell projectile:", newProjectile);
 						} else {
@@ -119,16 +137,13 @@ export const useInputHandlers = (
 									y: Math.sin(finalAngle),
 								};
 
-								const newProjectile = {
-									position: { ...player.position },
-									velocity: {
-										x: direction.x * PROJECTILE_SPEED,
-										y: direction.y * PROJECTILE_SPEED,
-									},
-									radius: 4.5 * projectileSize,
-									speed: PROJECTILE_SPEED,
-									isMagicBolt: false, // Player spells are not magic bolts
-								};
+								const newProjectile = createProjectile(
+									player.position,
+									direction,
+									false // Player spells are not magic bolts
+								);
+								// Ajustar el radio según el projectileSize
+								newProjectile.radius = 4.5 * projectileSize;
 								gameStateRef.current.projectiles.push(newProjectile);
 								console.log(
 									"Created multi-spell projectile:",
@@ -150,12 +165,17 @@ export const useInputHandlers = (
 				}
 			}
 		},
-		[gameStateRef, playPlayerCast],
+		[gameStateRef, playPlayerCast, togglePause, isFullscreen],
 	);
 
 	const handleKeyUp = useCallback(
 		(e: KeyboardEvent) => {
 			if (!gameStateRef.current) return;
+
+			// Si el juego está pausado, no procesar la liberación de teclas (excepto pausa)
+			if (gameStateRef.current.isPaused && e.key.toLowerCase() !== "p" && e.key !== "Escape") {
+				return;
+			}
 
 			// Prevenir el comportamiento por defecto para teclas de movimiento
 			const movementKeys = [

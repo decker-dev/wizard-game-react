@@ -1,4 +1,4 @@
-import { MAP_HEIGHT, MAP_WIDTH, PROJECTILE_SPEED } from "@/constants/game";
+import { MAP_HEIGHT, MAP_WIDTH, PROJECTILE_SPEED, PROJECTILE_MAX_RANGE } from "@/constants/game";
 import type { GameState, Projectile } from "@/types/game";
 import { checkAABBCollision } from "@/utils/math";
 
@@ -8,6 +8,7 @@ export const createProjectile = (
 	isMagicBolt = false,
 ): Projectile => ({
 	position: { ...position },
+	initialPosition: { ...position }, // Guardar posición inicial para calcular distancia
 	velocity: {
 		x: direction.x * PROJECTILE_SPEED,
 		y: direction.y * PROJECTILE_SPEED,
@@ -34,6 +35,19 @@ export const updateProjectiles = (gameState: GameState) => {
 		) {
 			projectiles.splice(i, 1);
 			continue;
+		}
+
+		// Remove player projectiles that have traveled too far (only for player projectiles)
+		if (!p.isMagicBolt && !p.isBossProjectile && p.initialPosition) {
+			const distanceTraveled = Math.sqrt(
+				Math.pow(p.position.x - p.initialPosition.x, 2) +
+				Math.pow(p.position.y - p.initialPosition.y, 2)
+			);
+			
+			if (distanceTraveled > PROJECTILE_MAX_RANGE) {
+				projectiles.splice(i, 1);
+				continue;
+			}
 		}
 
 		// Check collision with obstacles (SOLO si NO es proyectil del Boss)

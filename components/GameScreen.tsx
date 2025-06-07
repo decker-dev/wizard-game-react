@@ -42,11 +42,14 @@ interface GameScreenProps {
 	onReturnHome: () => void;
 	onShare: () => void;
 	onSaveScore: () => void;
+	togglePause?: () => void;
+	isPaused?: boolean;
 
 	// Upgrade actions
 	onUpgradeWeapon: () => void;
 	onUpgradeHealth: () => void;
 	onContinueFromMarketplace: () => void;
+	onFullscreenChange: (isFullscreen: boolean) => void;
 }
 
 export function GameScreen({
@@ -70,9 +73,12 @@ export function GameScreen({
 	onReturnHome,
 	onShare,
 	onSaveScore,
+	togglePause,
+	isPaused,
 	onUpgradeWeapon,
 	onUpgradeHealth,
 	onContinueFromMarketplace,
+	onFullscreenChange,
 }: GameScreenProps) {
 	const {
 		score,
@@ -243,29 +249,84 @@ export function GameScreen({
 			<div className="min-h-dvh w-full bg-black flex flex-col overflow-hidden">
 				{/* Game Stats - Fixed at top */}
 				<div className="flex-shrink-0 p-3 bg-gray-900/80 border-b-2 border-purple-500/30">
-					<div
-						className="bg-black/60 backdrop-blur-sm border border-purple-500/30 rounded-lg px-4 py-2 mx-auto max-w-sm"
-						style={{
-							userSelect: "none",
-							WebkitUserSelect: "none",
-							MozUserSelect: "none",
-							msUserSelect: "none",
-							WebkitTouchCallout: "none",
-							WebkitTapHighlightColor: "transparent",
-							touchAction: "none",
-						}}
-					>
-						<div className="flex items-center justify-center gap-3 text-sm font-mono">
-							<span className="text-purple-400">Wave {currentWave}</span>
-							<span className="text-green-400">HP {playerHealth}</span>
-							<span className="text-blue-400">Score {score}</span>
-							{gameStateRef.current?.comboKills &&
-								gameStateRef.current.comboKills > 0 && (
-									<span className="text-orange-400">
-										🔥{gameStateRef.current.comboKills}x
-									</span>
-								)}
+					<div className="relative flex items-center">
+						{/* Pause Button - Top left */}
+					
+						{/* Game Stats */}
+						<div
+							className="bg-black/60 backdrop-blur-sm border border-purple-500/30 rounded-lg px-4 py-2 flex-1 max-w-sm mx-auto"
+							style={{
+								userSelect: "none",
+								WebkitUserSelect: "none",
+								MozUserSelect: "none",
+								msUserSelect: "none",
+								WebkitTouchCallout: "none",
+								WebkitTapHighlightColor: "transparent",
+								touchAction: "none",
+							}}
+						>
+							<div className="flex items-center justify-center gap-3 text-sm font-mono">
+								<span className="text-purple-400">Wave {currentWave}</span>
+								<span className="text-green-400">HP {playerHealth}</span>
+								<span className="text-blue-400">Score {score}</span>
+								{gameStateRef.current?.comboKills &&
+									gameStateRef.current.comboKills > 0 && (
+										<span className="text-orange-400">
+											🔥{gameStateRef.current.comboKills}x
+										</span>
+									)}
+							</div>
 						</div>
+							{togglePause && (
+							<button
+								type="button"
+								className=" ml-3"
+								style={{
+									touchAction: "manipulation",
+									userSelect: "none",
+									WebkitUserSelect: "none",
+									MozUserSelect: "none",
+									msUserSelect: "none",
+									WebkitTouchCallout: "none",
+									WebkitTapHighlightColor: "transparent",
+									outline: "none",
+									WebkitAppearance: "none",
+									MozAppearance: "none",
+								}}
+								onTouchStart={(e) => {
+									e.preventDefault();
+									e.stopPropagation();
+									togglePause();
+								}}
+								onMouseDown={(e) => {
+									e.preventDefault();
+									e.stopPropagation();
+									togglePause();
+								}}
+								onClick={(e) => {
+									e.preventDefault();
+									e.stopPropagation();
+									togglePause();
+								}}
+								onContextMenu={(e) => e.preventDefault()}
+								onDragStart={(e) => e.preventDefault()}
+							>
+								<div
+									className="text-white text-lg font-bold flex items-center justify-center h-full"
+									style={{
+										userSelect: "none",
+										WebkitUserSelect: "none",
+										MozUserSelect: "none",
+										msUserSelect: "none",
+										WebkitTouchCallout: "none",
+										pointerEvents: "none",
+									}}
+								>
+									{isPaused ? "▶️" : "⏸️"}
+								</div>
+							</button>
+						)}
+						
 					</div>
 				</div>
 
@@ -288,6 +349,7 @@ export function GameScreen({
 								playCreatureDeath={playCreatureDeath}
 								playPlayerShoot={playPlayerCast}
 								playPlayerHit={playPlayerHit}
+								onFullscreenChange={onFullscreenChange}
 							/>
 						</div>
 					</div>
@@ -388,6 +450,7 @@ export function GameScreen({
 									playCreatureDeath={playCreatureDeath}
 									playPlayerShoot={playPlayerCast}
 									playPlayerHit={playPlayerHit}
+									onFullscreenChange={onFullscreenChange}
 								/>
 							</div>
 
@@ -417,6 +480,10 @@ export function GameScreen({
 									<p className="hover:text-purple-400 transition-colors">
 										🔮 <span className="text-purple-300">SPACEBAR</span> to cast
 										spells
+									</p>
+									<p className="hover:text-purple-400 transition-colors">
+										🔄 <span className="text-purple-300">P or ESC</span> to pause or
+										resume the game
 									</p>
 									<p className="hover:text-purple-400 transition-colors">
 										🐉 <span className="text-purple-300">Defeat creatures</span>{" "}

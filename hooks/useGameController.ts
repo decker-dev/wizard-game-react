@@ -5,10 +5,11 @@ import { useGameState } from "@/hooks/useGameState";
 import { useInputHandlers } from "@/hooks/useInputHandlers";
 import { useLeaderboard } from "@/hooks/useLeaderboard";
 import type { ScoreSubmission, GameDataForScoreSubmission } from "@/types/game";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export function useGameController(autoStart = false) {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
+	const [isFullscreen, setIsFullscreen] = useState(false);
 
 	// Core game hooks
 	const {
@@ -19,6 +20,7 @@ export function useGameController(autoStart = false) {
 		continueFromMarketplace,
 		upgradeWeapon,
 		upgradeHealth,
+		togglePause,
 	} = useGameState();
 
 	const {
@@ -60,7 +62,7 @@ export function useGameController(autoStart = false) {
 
 	// Input handling
 	const { handleKeyDown, handleKeyUp, handleMouseMove, handleMouseClick } =
-		useInputHandlers(gameStateRef, playPlayerCast);
+		useInputHandlers(gameStateRef, playPlayerCast, togglePause, isFullscreen);
 
 	// Game lifecycle methods
 	const handleStartNextWave = useCallback(() => {
@@ -205,6 +207,10 @@ export function useGameController(autoStart = false) {
 		continueFromMarketplace(setWaveMessage, healthPackSpriteRef.current);
 	}, [continueFromMarketplace, setWaveMessage, healthPackSpriteRef]);
 
+	const handleFullscreenChange = useCallback((fullscreen: boolean) => {
+		setIsFullscreen(fullscreen);
+	}, []);
+
 	return {
 		// State
 		screenState,
@@ -245,6 +251,7 @@ export function useGameController(autoStart = false) {
 		handleKeyDownWrapper,
 		handleKeyUp,
 		handleMouseClick,
+		togglePause,
 
 		// Score actions
 		handleScoreSubmit,
@@ -255,6 +262,7 @@ export function useGameController(autoStart = false) {
 		handleUpgradeWeapon,
 		handleUpgradeHealth,
 		handleContinueFromMarketplace,
+		handleFullscreenChange,
 
 		// State setters (for GameCanvas)
 		setScore,

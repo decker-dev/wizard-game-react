@@ -126,8 +126,14 @@ export function HomeScreen({
 
 	return (
 		<div
-			className="min-h-dvh relative overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-black"
+			className="lg:min-h-dvh relative bg-gradient-to-br from-gray-900 via-gray-800 to-black"
 			onKeyDown={handleKeyPress}
+			style={{
+				// Force scroll capability on mobile
+				touchAction: 'auto',
+				overflow: 'visible',
+				height: 'auto'
+			}}
 		>
 			{/* Animated Background Elements */}
 			<div className="absolute inset-0">
@@ -146,10 +152,10 @@ export function HomeScreen({
 			</div>
 
 			{/* Main Content */}
-			<div className="relative z-10 flex items-center justify-center min-h-dvh p-4 sm:p-6 lg:p-4">
-				<div className="flex flex-col lg:flex-row items-center gap-8 w-full max-w-7xl">
+			<div className="relative z-10 lg:flex lg:items-center lg:justify-center lg:min-h-dvh py-4 sm:py-6 lg:py-4 pb-16 sm:pb-20 lg:pb-4">
+				<div className="flex flex-col lg:flex-row items-center gap-8 w-full max-w-7xl min-h-[120vh] lg:min-h-0">
 					{/* Left Section - Title and Menu */}
-					<div className="flex-1 text-center lg:text-left p-4 sm:p-6 lg:p-0">
+					<div className="flex-1 text-center lg:text-left px-4 sm:px-6 lg:px-0">
 						{/* Title */}
 						<div
 							className={`mb-8 mt-8 sm:mb-12 lg:mb-8 ${animateTitle ? "animate-fade-in-up" : "opacity-0"}`}
@@ -174,8 +180,8 @@ export function HomeScreen({
                   transition-all duration-300 transform border-2 block
                   ${
 										isSelected
-											? "bg-purple-600/80 border-purple-500 text-white scale-105 shadow-lg shadow-purple-500/50"
-											: "bg-black/40 border-purple-500/30 text-purple-300 hover:bg-purple-600/20 hover:border-purple-500/60 hover:scale-102"
+											? "bg-purple-600/80 border-purple-500 text-white lg:scale-105 shadow-lg shadow-purple-500/50"
+											: "bg-black/40 border-purple-500/30 text-purple-300 hover:bg-purple-600/20 hover:border-purple-500/60 lg:hover:scale-102"
 									}
                   backdrop-blur-sm
                 `;
@@ -239,7 +245,7 @@ export function HomeScreen({
 					</div>
 
 					{/* Right Section - Leaderboard */}
-					<div className="flex-1 w-full max-w-lg p-4 sm:p-6 lg:p-0">
+					<div className="flex-1 w-full max-w-lg px-4 sm:px-6 lg:px-0">
 						<Leaderboard
 							topScores={topScores}
 							allScores={allScores}

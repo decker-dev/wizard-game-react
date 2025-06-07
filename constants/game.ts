@@ -17,6 +17,7 @@ export const BASE_MAX_HEALTH = 100; // Vida base del jugador
 
 // Projectile constants
 export const PROJECTILE_SPEED = 10;
+export const PROJECTILE_MAX_RANGE = 350; // Distancia máxima que pueden viajar los proyectiles del jugador
 
 // Creature constants
 export const CREATURE_SPEED_BASE = 0.7;
@@ -141,8 +142,8 @@ export const BOSS_CONTACT_DAMAGE = 80; // Daño por contacto físico del Boss
 // Health Pack constants
 export const HEALTH_PACK_SIZE = 24; // Tamaño del sprite del pack de vida
 export const HEALTH_PACK_HEAL_AMOUNT = 25; // Cantidad de vida que restaura (pequeña)
-export const HEALTH_PACK_SPAWN_CHANCE_PER_WAVE = 0.8; // 70% de probabilidad por wave de que aparezca al menos uno
-export const HEALTH_PACK_MAX_PER_WAVE = 4; // Máximo 10 packs por oleada
+export const HEALTH_PACK_SPAWN_CHANCE_PER_WAVE = 0.85; // 70% de probabilidad por wave de que aparezca al menos uno
+export const HEALTH_PACK_MAX_PER_WAVE = 5; // Máximo 10 packs por oleada
 export const HEALTH_PACK_MIN_WAVE = 2; // Aparecen a partir de la ronda 1
 export const HEALTH_PACK_MIN_DISTANCE_FROM_PLAYER = 150; // Distancia mínima del jugador para spawn
 export const HEALTH_PACK_MIN_DISTANCE_FROM_OBSTACLES = 50; // Distancia mínima de obstáculos
