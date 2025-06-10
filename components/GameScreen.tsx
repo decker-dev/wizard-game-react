@@ -469,24 +469,38 @@ export function GameScreen({
             </div>
 
             {/* Game Instructions - Below the canvas */}
-            <div className='mt-4 text-center max-w-md'>
-              <div className='bg-black/40 backdrop-blur-sm border border-purple-500/20 rounded-lg p-4 hover:border-purple-500/30 transition-colors'>
-                <div className='text-gray-300 font-mono text-sm space-y-1'>
-                  <p className='hover:text-purple-400 transition-colors'>
-                    🎯 <span className='text-purple-300'>WASD/Arrows</span> to
-                    move
+            <div className='mt-4 text-center max-w-sm mx-auto'>
+              <div className='bg-black/60 backdrop-blur-sm border border-purple-500/40 rounded-lg p-5 max-w-sm mx-auto transition-colors'>
+                <div className='text-gray-200 font-mono text-sm space-y-1'>
+                  <p className='flex items-center gap-2'>
+                    <span>🎯</span>{" "}
+                    <span className='text-purple-400 font-semibold'>
+                      WASD/Arrows
+                    </span>{" "}
+                    <span className='text-gray-300'>to move</span>
                   </p>
-                  <p className='hover:text-purple-400 transition-colors'>
-                    🔮 <span className='text-purple-300'>SPACEBAR</span> to cast
-                    spells
+                  <p className='flex items-center gap-2'>
+                    <span>🔮</span>{" "}
+                    <span className='text-purple-400 font-semibold'>
+                      SPACEBAR
+                    </span>{" "}
+                    <span className='text-gray-300'>to cast spells</span>
                   </p>
-                  <p className='hover:text-purple-400 transition-colors'>
-                    🔄 <span className='text-purple-300'>P or ESC</span> to
-                    pause or resume the game
+                  <p className='flex items-center gap-2'>
+                    <span>🔄</span>{" "}
+                    <span className='text-purple-400 font-semibold'>
+                      P or ESC
+                    </span>{" "}
+                    <span className='text-gray-300'>
+                      to pause or resume the game
+                    </span>
                   </p>
-                  <p className='hover:text-purple-400 transition-colors'>
-                    🐉 <span className='text-purple-300'>Defeat creatures</span>{" "}
-                    and survive
+                  <p className='flex items-center gap-2'>
+                    <span>🐉</span>{" "}
+                    <span className='text-purple-400 font-semibold'>
+                      Defeat creatures
+                    </span>{" "}
+                    <span className='text-gray-300'>and survive</span>
                   </p>
                 </div>
               </div>
