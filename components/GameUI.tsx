@@ -174,22 +174,35 @@ export const GameUI: React.FC<GameUIProps> = ({
 
       {/* Action Buttons */}
       {(onReturnHome || onShare) && (
-        <div className='space-y-2'>
+        <div className='flex flex-row gap-4 w-full'>
           {onReturnHome && (
             <button
               type='button'
               onClick={onReturnHome}
-              className='w-full px-4 py-3 bg-red-600/80 hover:bg-red-600 border border-red-500/50 text-white text-sm font-mono rounded transition-all duration-200 transform hover:scale-105 hover:border-red-500'
+              className='w-1/2 px-4 py-3 bg-red-600/80 hover:bg-red-600 border border-red-500/50 text-white text-sm font-mono rounded transition-all duration-200 transform hover:scale-105 hover:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-400'
+              tabIndex={0}
+              aria-label='Main Menu'
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  onReturnHome();
+                }
+              }}
             >
-              🏠 BACK TO HOME
+              🏠 MAIN MENU
             </button>
           )}
-
           {onShare && (
             <button
               type='button'
               onClick={onShare}
-              className='w-full px-4 py-3 bg-blue-600/80 hover:bg-blue-600 border border-blue-500/50 text-white text-sm font-mono rounded transition-all duration-200 transform hover:scale-105 hover:border-blue-500'
+              className='w-1/2 px-4 py-3 bg-blue-600/80 hover:bg-blue-600 border border-blue-500/50 text-white text-sm font-mono rounded transition-all duration-200 transform hover:scale-105 hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400'
+              tabIndex={0}
+              aria-label='Share your score'
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  onShare();
+                }
+              }}
             >
               📱 SHARE
             </button>
