@@ -68,24 +68,24 @@ export function GameOverlay({
           <div className='flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center'>
             <button
               type='button'
-              onClick={onResetGame}
-              className='px-4 py-3 bg-green-600/80 hover:bg-green-600 border border-green-500/50 text-white font-mono font-bold rounded-lg text-sm sm:text-lg transition-all duration-200 transform hover:scale-105 hover:border-green-500 w-full sm:w-auto'
+              onClick={onReturnHome}
+              className='px-4 py-3 bg-purple-600/80 hover:bg-purple-600 border border-purple-500/50 text-white font-mono font-bold rounded-lg text-sm sm:text-lg transition-all duration-200 transform hover:scale-105 hover:border-purple-500 w-full sm:w-auto'
             >
-              🔄 PLAY AGAIN
+              🏠 MAIN MENU
             </button>
             <button
               type='button'
               onClick={onSaveScore}
               className='px-4 py-3 bg-blue-600/80 hover:bg-blue-600 border border-blue-500/50 text-white font-mono font-bold rounded-lg text-sm sm:text-lg transition-all duration-200 transform hover:scale-105 hover:border-blue-500 w-full sm:w-auto'
             >
-              💾 SAVE SCORE
+              💾 SAVE
             </button>
             <button
               type='button'
-              onClick={onReturnHome}
-              className='px-4 py-3 bg-purple-600/80 hover:bg-purple-600 border border-purple-500/50 text-white font-mono font-bold rounded-lg text-sm sm:text-lg transition-all duration-200 transform hover:scale-105 hover:border-purple-500 w-full sm:w-auto'
+              onClick={onResetGame}
+              className='px-4 py-3 bg-green-600/80 hover:bg-green-600 border border-green-500/50 text-white font-mono font-bold rounded-lg text-sm sm:text-lg transition-all duration-200 transform hover:scale-105 hover:border-green-500 w-full sm:w-auto'
             >
-              🏠 BACK TO HOME
+              🔄 RETRY
             </button>
           </div>
         )}
