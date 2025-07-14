@@ -4,8 +4,8 @@ import {
 	metadata as gameMetadata,
 	viewport as gameViewport,
 } from "@/lib/metadata";
-import { Analytics } from "@vercel/analytics/react";
 import { Press_Start_2P } from "next/font/google";
+import { Analytics } from "better-analytics/next";
 
 const pressStart2P = Press_Start_2P({
 	weight: "400",
