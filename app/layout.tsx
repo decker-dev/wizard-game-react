@@ -5,6 +5,7 @@ import {
 	viewport as gameViewport,
 } from "@/lib/metadata";
 import { Press_Start_2P } from "next/font/google";
+import { Analytics as VercelAnalytics } from "@vercel/analytics/next";
 import { Analytics } from "better-analytics/next";
 
 const pressStart2P = Press_Start_2P({
@@ -28,6 +29,7 @@ export default function RootLayout({
 				{children}
 			</body>
 			<Analytics />
+			<VercelAnalytics />
 		</html>
 	);
 }
